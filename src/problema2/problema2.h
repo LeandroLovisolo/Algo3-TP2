@@ -2,35 +2,27 @@
 #define PROBLEMA2_H
 
 #include <vector>
+#include <algorithm>
 using namespace std;
-//Implementación de disjoint set
-class Set {
-private:
-    Set *_parent;
-    unsigned int _rank; //Para mantener los sets bien planos (menos complejidad)
-    unsigned int _costo;
-public:
-    Set(unsigned int costo);
-    Set *getRoot();
-    unsigned int costo();
-    //Ok, no se puede poner union como nombre de función en C++, hermoso
-    void unionSet(Set &otherSet);
-};
 
-void problema2(vector<Set> &aristas);
-
-/*
 struct enlace {
-	unsigned _srv1;
+    unsigned _srv1;
     unsigned _srv2;
     unsigned _costo;
     enlace(unsigned srv1, unsigned srv2, unsigned costo){
-    	_srv1 = srv1;
-    	_srv2 = srv2;
-    	_costo = costo;
+        _srv1 = srv1;
+        _srv2 = srv2;
+        _costo = costo;
+    }
+    unsigned int costo() const {
+        return _costo;
     }
 };
 
+
+void problema2(unsigned int nodos, vector<enlace> &aristas);
+
+/*
 class Matriz{
 	public:
 		Matriz(vector<enlace> v, unsigned servidores);

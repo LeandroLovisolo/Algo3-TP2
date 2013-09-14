@@ -1,5 +1,8 @@
 #include "problema2.h"
 using namespace std;
+unsigned int *parent;
+unsigned int *ranking;
+
 /*
 Matriz::Matriz(vector<enlace> v, unsigned servidores)
 		: _matriz(servidores * servidores, 0) {
@@ -20,56 +23,51 @@ unsigned Matriz::get(unsigned fila, unsigned columna) {
 	return _matriz[_servidores * fila + columna];
 }
 */
+bool comparador (const enlace& e1, const enlace& e2) { return e1.costo() < e2.costo(); }
 
-Set::Set(unsigned int costo) {
-    _costo = costo;
-    _parent = this;
+unsigned int findSet(unsigned int x){
+	unsigned int actual = x;
+	while(actual != parent[actual]) {
+		actual = parent[actual];
+	}
+	//Path compression, esto le da O(1)
+	parent[x] = actual;
+
+    return actual;
 }
 
-unsigned int Set::costo() {
-	return _costo;
-}
-
-Set *Set::getRoot() {
-    Set *search = 0;
-    while(_parent != search) {
-        search = _parent->_parent;
+void unionSet(int x,int y){
+    unsigned int setX = findSet(x);
+    unsigned int setY = findSet(y);
+    if(ranking[setX] > ranking[setY]){
+        parent[setY] = setX;
+    }else{
+        parent[setX] = setX;
     }
-    //La siguiente linea se llama "path compression"
-    //Aplana aún mas el set, poniendole la raiz que encuentra como padre
-    _parent = search;
-    //-------------------------------------------
-    return search;
-}
-
-//Pre condición, las dos raices no son iguales
-void Set::unionSet(Set &otherSet) {
-    //Quiero unir dos sets, los sets se unen por su nodo raiz
-    //Si uno este al nodo raiz o el que me pasan, depende de cuál es su ranking
-    //El ranking incrementa al unirse uno
-
-    Set *otherSetRoot = otherSet.getRoot(); //Consigo el ranking del otro
-    Set *thisSetRoot = getRoot(); //Consigo el ranking de este
-    if(otherSetRoot->_rank < thisSetRoot->_rank) {
-        thisSetRoot->_parent = otherSetRoot; //Pongo como padre al otro set
-        otherSetRoot->_rank++; //Incremento el rango
-    }
-    else {
-        otherSetRoot->_parent = thisSetRoot;
-        thisSetRoot->_rank++;
+    if(ranking[setX] == ranking[setY]){
+        ++ranking[setY];
     }
 }
 
-void problema2(vector<Set> &aristas) {
-	//Sort aristas por _costo
-	//Tomo aritas 0 como mi conjunto inicial
-	unsigned int costo = aristas[0].costo();
-	for(unsigned int i=1;i<aristas.size();i++) {
-		//Ver si comparten el mismo conjunto, si no comparten, la agrego
-		if(aristas[0].getRoot() != aristas[i].getRoot()) {
-			aristas[0].unionSet(aristas[i]);
-			costo += aristas[i].costo();
-		}
+void problema2(unsigned int nodos, vector<enlace> &aristas) {
+	//Esto debería crearlo en el main mientras recibo los datos
+	parent = new unsigned int[nodos];
+	ranking = new unsigned int[nodos];
+	for(unsigned int i = 0; i < nodos; i++) {
+		parent[i] = i;
+		ranking[i] = 0;
+	}
+	//Ordeno las aristas
+	sort(aristas.begin(),aristas.end(),comparador);
+
+	unsigned int costo = 0;
+	for(unsigned int i=0; i < aristas.size(); i++) {
+		unsigned int set1 = findSet(aristas[i]._srv1);
+		unsigned int set2 = findSet(aristas[i]._srv2);
+		if(set1 != set2){
+            unionSet(set1 , set2);
+            costo += aristas[i].costo();
+        }        
 	}
 	//Falta calcular el problema 2 también y ver que devuelve problema2
 }
