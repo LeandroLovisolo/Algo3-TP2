@@ -25,15 +25,13 @@ unsigned Matriz::get(unsigned fila, unsigned columna) {
 */
 bool comparador (const enlace& e1, const enlace& e2) { return e1.costo() < e2.costo(); }
 
-unsigned int findSet(unsigned int x){
-	unsigned int actual = x;
-	while(actual != parent[actual]) {
-		actual = parent[actual];
+unsigned int findSet(unsigned int x) {
+	if(x != parent[x]) {
+		//Hago path compression, recurisvamente asigno a todos los padres por los que paso
+		//la raíz como padre, para luego tener complejidad inversa de ackermann (O(1) amortizado)
+		parent[x] = findSet(parent[x]);
 	}
-	//Path compression, esto le da O(1)
-	parent[x] = actual;
-
-    return actual;
+	return parent[x];
 }
 
 void unionSet(int x,int y){
