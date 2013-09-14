@@ -2,7 +2,24 @@
 #define PROBLEMA2_H
 
 #include <vector>
+using namespace std;
+//Implementación de disjoint set
+class Set {
+private:
+    Set *_parent;
+    unsigned int _rank; //Para mantener los sets bien planos (menos complejidad)
+    unsigned int _costo;
+public:
+    Set(unsigned int costo);
+    Set *getRoot();
+    unsigned int costo();
+    //Ok, no se puede poner union como nombre de función en C++, hermoso
+    void unionSet(Set &otherSet);
+};
 
+void problema2(vector<Set> &aristas);
+
+/*
 struct enlace {
 	unsigned _srv1;
     unsigned _srv2;
@@ -25,6 +42,7 @@ class Matriz{
     	unsigned _enlaces;
         vector<unsigned> _matriz;
 };
+*/
 
 #endif // PROBLEMA2_H
 
