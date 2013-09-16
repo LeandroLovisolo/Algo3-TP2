@@ -11,7 +11,8 @@ typedef std::tuple<unsigned, unsigned, unsigned> enlace;
 #define nodo2(e) get<1>(e)
 #define costo(e) get<2>(e)
 
-std::pair<unsigned, std::vector<enlace>> problema2(unsigned nodos, std::vector<enlace> &aristas);
+std::pair<unsigned, std::vector<enlace>>
+problema2(unsigned nodos, std::vector<enlace> enlaces);
 
 #endif // PROBLEMA2_H
 

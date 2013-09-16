@@ -43,7 +43,7 @@ unsigned DisjointSet::find(unsigned x) {
     return parent[x];
 }
 
-pair<unsigned, vector<enlace>> problema2(unsigned nodos, vector<enlace> &enlaces) {
+pair<unsigned, vector<enlace>> problema2(unsigned nodos, vector<enlace> enlaces) {
     vector<enlace> camino_minimo;
     DisjointSet disjoint_set(nodos);
 
