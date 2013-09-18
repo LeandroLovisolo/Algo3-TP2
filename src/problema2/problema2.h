@@ -2,39 +2,17 @@
 #define PROBLEMA2_H
 
 #include <vector>
-#include <algorithm>
-using namespace std;
+#include <utility>
+#include <tuple>
 
-struct enlace {
-    unsigned _srv1;
-    unsigned _srv2;
-    unsigned _costo;
-    enlace(unsigned srv1, unsigned srv2, unsigned costo){
-        _srv1 = srv1;
-        _srv2 = srv2;
-        _costo = costo;
-    }
-    unsigned int costo() const {
-        return _costo;
-    }
-};
+typedef std::tuple<unsigned, unsigned, unsigned> enlace;
 
+#define nodo1(e) get<0>(e)
+#define nodo2(e) get<1>(e)
+#define costo(e) get<2>(e)
 
-void problema2(unsigned int nodos, vector<enlace> &aristas);
-
-/*
-class Matriz{
-	public:
-		Matriz(vector<enlace> v, unsigned servidores);
-        void set(unsigned fila, unsigned columna, unsigned valor);
-        unsigned get(unsigned fila, unsigned columna);
-
-	private:
-		unsigned _servidores;
-    	unsigned _enlaces;
-        vector<unsigned> _matriz;
-};
-*/
+std::pair<unsigned, std::vector<enlace>>
+problema2(unsigned nodos, std::vector<enlace> enlaces);
 
 #endif // PROBLEMA2_H
 

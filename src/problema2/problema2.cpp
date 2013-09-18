@@ -1,71 +1,67 @@
+#include <algorithm>
+
 #include "problema2.h"
+
 using namespace std;
-unsigned int *parent;
-unsigned int *ranking;
 
-/*
-Matriz::Matriz(vector<enlace> v, unsigned servidores)
-		: _matriz(servidores * servidores, 0) {
-	_servidores = servidores;
-	_enlaces = v.size();
-	for (int i = 0; i < _enlaces; ++i) {
-		set(v[i]._srv1,v[i]._srv2,v[i]._costo);
-	}
+class DisjointSet {
+public:
+    DisjointSet(unsigned sets);
+    void make_union(unsigned x, unsigned y);
+    unsigned find(unsigned x);
 
-}
+private:
+    std::vector<unsigned> parent;
+    std::vector<unsigned> ranking;
+};
 
-void Matriz::set(unsigned fila, unsigned columna, unsigned valor) {
-	_matriz[_servidores * fila + columna] = valor;
-	_matriz[_servidores * columna + fila] = valor;
-}
-
-unsigned Matriz::get(unsigned fila, unsigned columna) {
-	return _matriz[_servidores * fila + columna];
-}
-*/
-bool comparador (const enlace& e1, const enlace& e2) { return e1.costo() < e2.costo(); }
-
-unsigned int findSet(unsigned int x) {
-	if(x != parent[x]) {
-		//Hago path compression, recurisvamente asigno a todos los padres por los que paso
-		//la raíz como padre, para luego tener complejidad inversa de ackermann (O(1) amortizado)
-		parent[x] = findSet(parent[x]);
-	}
-	return parent[x];
-}
-
-void unionSet(int x,int y){
-    unsigned int setX = findSet(x);
-    unsigned int setY = findSet(y);
-    if(ranking[setX] > ranking[setY]){
-        parent[setY] = setX;
-    }else{
-        parent[setX] = setX;
-    }
-    if(ranking[setX] == ranking[setY]){
-        ++ranking[setY];
+DisjointSet::DisjointSet(unsigned sets)
+        : parent(sets), ranking(sets) {
+    for(unsigned i = 0; i < sets; i++) {
+        parent[i] = i;
+        ranking[i] = 0;
     }
 }
 
-void problema2(unsigned int nodos, vector<enlace> &aristas) {
-	//Esto debería crearlo en el main mientras recibo los datos
-	parent = new unsigned int[nodos];
-	ranking = new unsigned int[nodos];
-	for(unsigned int i = 0; i < nodos; i++) {
-		parent[i] = i;
-		ranking[i] = 0;
-	}
-	//Ordeno las aristas
-	sort(aristas.begin(),aristas.end(),comparador);
+void DisjointSet::make_union(unsigned x, unsigned y) {
+    unsigned set_x = find(x);
+    unsigned set_y = find(y);
+    if(ranking[set_x] > ranking[set_y]) {
+        parent[set_y] = set_x;
+    } else {
+        parent[set_x] = set_y;
+    }
+    if(ranking[set_x] == ranking[set_y]) {
+        ranking[set_y]++;
+    }
+}
 
-	unsigned int costo = 0;
-	for(unsigned int i=0; i < aristas.size(); i++) {
-		unsigned int set1 = findSet(aristas[i]._srv1);
-		unsigned int set2 = findSet(aristas[i]._srv2);
-		if(set1 != set2){
-            unionSet(set1 , set2);
-            costo += aristas[i].costo();
+unsigned DisjointSet::find(unsigned x) {
+    if(x != parent[x]) {
+        parent[x] = find(parent[x]);
+    }
+    return parent[x];
+}
+
+pair<unsigned, vector<enlace>> problema2(unsigned nodos, vector<enlace> enlaces) {
+    vector<enlace> camino_minimo;
+    DisjointSet disjoint_set(nodos);
+
+    sort(enlaces.begin(),
+         enlaces.end(),
+         [] (enlace e, enlace f) { return costo(e) < costo(f); });
+
+    for(unsigned i = 0; i < enlaces.size(); i++) {
+        unsigned set1 = disjoint_set.find(nodo1(enlaces[i]));
+        unsigned set2 = disjoint_set.find(nodo2(enlaces[i]));
+        if(set1 != set2){
+            disjoint_set.make_union(set1, set2);
+            camino_minimo.push_back(enlaces[i]);
         }        
-	}
-	//Falta calcular el problema 2 también y ver que devuelve problema2
+    }
+
+    // Pendiente
+    unsigned nodo_maestro = 0;
+
+    return make_pair(nodo_maestro, camino_minimo);
 }
