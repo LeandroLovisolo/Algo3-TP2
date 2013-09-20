@@ -34,7 +34,7 @@ pair<int, vector<int> > problema1(int cantTareas, vector<vector<int> > tablaCost
   vector<vector<int> >  arrayMemoizacion;
   vector<int> tareasM1;
   tareasM1.reserve(cantTareas);
-  //Creo el arreglo de 3 dimensiones para guardar los resultados ya computados
+  //Creo el arreglo de 2 dimensiones para guardar los resultados ya computados
   cantTareas++;
   arrayMemoizacion.resize(cantTareas);
     for (int j = 0; j < cantTareas; ++j) {

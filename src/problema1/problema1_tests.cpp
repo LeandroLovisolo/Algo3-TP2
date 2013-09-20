@@ -3,6 +3,14 @@
 #include <iostream>
 using namespace std;
 
+TEST(problema1, SinTrabajos) {
+	int cantTareas = 0;
+	vector<vector<int> > tablaCostos;
+	pair<int, vector<int> > res = problema1(cantTareas, tablaCostos);
+
+	EXPECT_EQ(0, get<0>(res));
+}
+
 TEST(problema1, CostoMinimo) {
 	int cantTareas = 3;
 	vector<vector<int> > tablaCostos;
