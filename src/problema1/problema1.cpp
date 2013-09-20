@@ -1,4 +1,5 @@
 #include "problema1.h"
+#include <iostream>
 using namespace std;
 
 //Ti -> tarea a decidir dónde poner
@@ -8,18 +9,22 @@ int cost(int Ti, int TM1, int TM2, int cantTareas,
 		vector<vector<vector<int> > > &arrayMemoizacion,
 		vector<vector<int> > &tablaCostos) {
  	//Si me paso de la cantidad de tareas, el resultado es 0
-	if(Ti > cantTareas) {
+ 	cout << "Tarea a poner: " << Ti << endl;
+	if(Ti == cantTareas) {
+		cout << "Llego al final, devuelvo 0" << endl;
 		return 0;
 	}
 	//Si no, me fijo si ya computé este resultado (MEMOIZACION)
-	else if(arrayMemoizacion[Ti][TM1][TM2] != 1) {
+	else if(arrayMemoizacion[Ti][TM1][TM2] != -1) {
+		cout << "Ya compute este resultado ["<< Ti <<"]["<< TM1 <<"]["<<TM2<<"], es = " << arrayMemoizacion[Ti][TM1][TM2] << endl;
 		return arrayMemoizacion[Ti][TM1][TM2];
 	}
 	//Si no lo tengo computado, hago la llamada recursiva
 	else {
+		cout << "No compute este resultado ["<< Ti <<"]["<< TM1 <<"]["<<TM2<<"]" << endl;
 		arrayMemoizacion[Ti][TM1][TM2] = 
-		min(cost(Ti + 1, Ti, TM2, cantTareas, arrayMemoizacion, tablaCostos) + tablaCostos[TM1][Ti], 
-			cost(Ti + 1, TM1, Ti, cantTareas, arrayMemoizacion, tablaCostos) + tablaCostos[TM2][Ti]);
+		min(cost(Ti + 1, Ti, TM2, cantTareas, arrayMemoizacion, tablaCostos) + tablaCostos[Ti][TM1], 
+			cost(Ti + 1, TM1, Ti, cantTareas, arrayMemoizacion, tablaCostos) + tablaCostos[Ti][TM2]);
 		return arrayMemoizacion[Ti][TM1][TM2];
 	}
 }
@@ -27,7 +32,6 @@ int cost(int Ti, int TM1, int TM2, int cantTareas,
 pair<int, vector<int> > problema1(int cantTareas, vector<vector<int> > tablaCostos) {
   vector<vector<vector<int> > > arrayMemoizacion;
   //Creo el arreglo de 3 dimensiones para guardar los resultados ya computados
-  cantTareas+=2;
   arrayMemoizacion.resize(cantTareas);
   for (int i = 0; i < cantTareas; ++i) {
     arrayMemoizacion[i].resize(cantTareas);
@@ -36,7 +40,7 @@ pair<int, vector<int> > problema1(int cantTareas, vector<vector<int> > tablaCost
   }
 
   //Lamar a cost y ver como recorrer la tabla armada para conseguir las tareas de una máquina
-  int costo = cost(1,0,0,cantTareas,arrayMemoizacion,tablaCostos);
+  int costo = cost(0,0,0,cantTareas,arrayMemoizacion,tablaCostos);
   //El return es cualquier bolazo, ni si quiera puede funcionar
   vector<int> v(1,1);
   return make_pair(costo, v);
