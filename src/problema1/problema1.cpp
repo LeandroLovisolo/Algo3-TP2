@@ -27,6 +27,7 @@ int cost(int Ti, int TM1, int TM2, int cantTareas,
 pair<int, vector<int> > problema1(int cantTareas, vector<vector<int> > tablaCostos) {
   vector<vector<vector<int> > > arrayMemoizacion;
   //Creo el arreglo de 3 dimensiones para guardar los resultados ya computados
+  cantTareas+=2;
   arrayMemoizacion.resize(cantTareas);
   for (int i = 0; i < cantTareas; ++i) {
     arrayMemoizacion[i].resize(cantTareas);
@@ -35,8 +36,8 @@ pair<int, vector<int> > problema1(int cantTareas, vector<vector<int> > tablaCost
   }
 
   //Lamar a cost y ver como recorrer la tabla armada para conseguir las tareas de una máquina
-
+  int costo = cost(1,0,0,cantTareas,arrayMemoizacion,tablaCostos);
   //El return es cualquier bolazo, ni si quiera puede funcionar
   vector<int> v(1,1);
-  return make_pair(0, v);
+  return make_pair(costo, v);
 }
