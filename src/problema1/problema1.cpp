@@ -7,36 +7,33 @@ using namespace std;
 //TM2 -> tarea actual en la máquina 2
 int cost(int Ti, int TM1, int TM2, int cantTareas, 
 		vector<vector<vector<int> > > &arrayMemoizacion,
-		vector<vector<int> > &tablaCostos) {
+		vector<vector<int> > &tablaCostos, vector<int> &tareasM1) {
  	//Si me paso de la cantidad de tareas, el resultado es 0
- 	cout << "Tarea a poner: " << Ti << endl;
 	if(Ti == cantTareas) {
-		cout << "Llego al final, devuelvo 0" << endl;
 		return 0;
 	}
 	//Si no, me fijo si ya computé este resultado (MEMOIZACION)
-	else if(arrayMemoizacion[Ti][TM1][TM2] != -1) {
-		cout << "Ya compute este resultado ["<< Ti <<"]["<< TM1 <<"]["<<TM2<<"], es = " << arrayMemoizacion[Ti][TM1][TM2] << endl;
-		return arrayMemoizacion[Ti][TM1][TM2];
+	else if(arrayMemoizacion[0][TM1][TM2] != -1) {
+		return arrayMemoizacion[0][TM1][TM2];
 	}
 	//Si no lo tengo computado, hago la llamada recursiva
 	else {
-		cout << "No compute este resultado, poner " << Ti <<" dado M1 = "<< TM1 <<" y M2 = "<<TM2<<"" << endl;
-		int costoPonerTiM1 = cost(Ti + 1, Ti, TM2, cantTareas, arrayMemoizacion, tablaCostos) + tablaCostos[Ti-1][TM1];
-		int costoPonerTiM2 = cost(Ti + 1, TM1, Ti, cantTareas, arrayMemoizacion, tablaCostos) + tablaCostos[Ti-1][TM2];
-		arrayMemoizacion[Ti][TM1][TM2] = min(costoPonerTiM1,costoPonerTiM2);
+		cout <<  "Hago una it" << endl;
+		int costoPonerTiM1 = cost(Ti + 1, Ti, TM2, cantTareas, arrayMemoizacion, tablaCostos, tareasM1) + tablaCostos[Ti-1][TM1];
+		int costoPonerTiM2 = cost(Ti + 1, TM1, Ti, cantTareas, arrayMemoizacion, tablaCostos, tareasM1) + tablaCostos[Ti-1][TM2];
+		arrayMemoizacion[0][TM1][TM2] = min(costoPonerTiM1,costoPonerTiM2);
+		//Agrego las tareas de la máquina 1
 		if(costoPonerTiM1 <= costoPonerTiM2) {
-			cout << "Elijo poner la tarea " << Ti << " en la M1" << endl;
+			tareasM1.push_back(Ti);
 		}
-		else {
-			cout << "Elijo poner la tarea " << Ti << " en la M2" << endl;	
-		}
-		return arrayMemoizacion[Ti][TM1][TM2];
+		return arrayMemoizacion[0][TM1][TM2];
 	}
 }
 
 pair<int, vector<int> > problema1(int cantTareas, vector<vector<int> > tablaCostos) {
   vector<vector<vector<int> > > arrayMemoizacion;
+  vector<int> tareasM1;
+  tareasM1.reserve(cantTareas);
   //Creo el arreglo de 3 dimensiones para guardar los resultados ya computados
   cantTareas++;
   arrayMemoizacion.resize(cantTareas);
@@ -47,8 +44,7 @@ pair<int, vector<int> > problema1(int cantTareas, vector<vector<int> > tablaCost
   }
 
   //Lamar a cost y ver como recorrer la tabla armada para conseguir las tareas de una máquina
-  int costo = cost(1,0,0,cantTareas,arrayMemoizacion,tablaCostos);
+  int costo = cost(1,0,0,cantTareas,arrayMemoizacion,tablaCostos,tareasM1);
   //El return es cualquier bolazo, ni si quiera puede funcionar
-  vector<int> v(1,1);
-  return make_pair(costo, v);
+  return make_pair(costo, tareasM1);
 }
