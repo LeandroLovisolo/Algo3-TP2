@@ -33,7 +33,7 @@ int main() {
 
         // Imprimo resultado
         cout << get<0>(solucion) << " " << get<1>(solucion).size() << " ";
-        for (int i = 0; i < get<1>(solucion).size(); ++i) {
+        for (unsigned i = 0; i < get<1>(solucion).size(); ++i) {
         	cout << get<1>(solucion)[i] << " ";
         }
  
