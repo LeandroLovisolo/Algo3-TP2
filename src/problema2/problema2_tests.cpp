@@ -29,7 +29,7 @@ TEST(problema2, DevuelveArbolGeneradorMinimo) {
 	for(size_t i = 0; i < res.second.size(); i++) {
 		costo_total += costo(res.second[i]);
 	}
-
+	
 	EXPECT_EQ(37, costo_total);
 }
 

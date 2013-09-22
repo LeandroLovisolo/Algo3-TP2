@@ -1,5 +1,5 @@
 #include <algorithm>
-
+#include <queue>
 #include "problema2.h"
 
 using namespace std;
@@ -64,4 +64,42 @@ pair<unsigned, vector<enlace>> problema2(unsigned nodos, vector<enlace> enlaces)
     unsigned nodo_maestro = 0;
 
     return make_pair(nodo_maestro, camino_minimo);
+}
+
+struct nodo{
+	vector<unsigned> adyacentes;
+	unsigned distancia;
+	bool visitado = false;
+};
+
+vector<unsigned> bfs(unsigned nodos, vector<enlace> enlaces) {
+	vector<nodo> V;
+	vector<unsigned> distancias;
+	V.resize(nodos);
+	distancias.resize(nodos);
+
+	for (unsigned i = 0; i < enlaces.size(); ++i) {
+		V[nodo1(enlaces[i])].adyacentes.push_back(nodo2(enlaces[i]));
+		V[nodo2(enlaces[i])].adyacentes.push_back(nodo1(enlaces[i]));
+	}
+
+	queue<nodo> cola;
+	cola.push(V[0]);
+	V[0].distancia = 0;
+
+	while (!cola.empty()) {
+		nodo n = cola.front();
+		n.visitado = true;
+		cola.pop();
+		for (unsigned i = 0; i < n.adyacentes.size(); ++i) {
+			if (V[n.adyacentes[i]].visitado != true) {
+				V[n.adyacentes[i]].distancia = n.distancia + 1;
+				cola.push(V[n.adyacentes[i]]);
+			}
+		}
+	}
+
+	for (unsigned i = 0; i < nodos; ++i) distancias[i] = V[i].distancia;
+
+	return distancias;
 }
