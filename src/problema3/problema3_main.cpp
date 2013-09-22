@@ -1,10 +1,11 @@
 #include <iostream>
 #include "problema3.h"
+
 using namespace std;
 
 int main() {
-	vector<ruta> rutas;
 	while(true) {
+		vector<ruta> rutas;
 	    // Leo la cantidad de tareas.
 	    unsigned cantFabricas, cantClientes, cantRutas;
 	    cin >> cantFabricas;
