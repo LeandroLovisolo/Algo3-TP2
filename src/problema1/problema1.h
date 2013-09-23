@@ -1,12 +1,19 @@
 #ifndef PROBLEMA1_H
 #define PROBLEMA1_H
+
 #include <utility>
 #include <vector>
-#include <iostream>
-#include <algorithm>
 
-using namespace std;
+using std::pair;
+using std::vector;
 
-pair<int, vector<int> > problema1(int cantTareas, vector<vector<int> > tablaCostos);
+typedef unsigned trabajo;
+typedef unsigned costo;
+typedef vector<vector<costo>> costos;
 
-#endif // PROBLEMA1_H
+// Genera una tabla de costos para n problemas, inicializada en 0.
+costos crear_costos(unsigned n);
+
+pair<costo, vector<trabajo>> problema1(unsigned n, costos c);
+
+#endif

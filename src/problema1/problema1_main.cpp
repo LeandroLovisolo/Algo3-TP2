@@ -1,42 +1,46 @@
 #include <iostream>
+
 #include "problema1.h"
 
-
 using namespace std;
+
 int main() {
-	while(true) {
-        vector<vector<int> > tablaCostos;
+    while(true) {
 
-        // Leo la cantidad de tareas.
-        int cantTareas;
-        cin >> cantTareas;
+        // Leo la cantidad de trabajos.
+        unsigned n;
+        cin >> n;
 
-        // Termino el ciclo si la lectura anterior fracasó.
-        if(cin.eof()) break;
-
-        // Leo los costos de preparacion de los trabajos.
-        tablaCostos.resize(cantTareas);
-        for(int i = 0; i < cantTareas; i++) {
-        	for (int j = 0; j <= i; ++j) {
-        		int costo;
-            	cin >> costo;
-            	tablaCostos[i].push_back(costo);
-        	}
-        }
-
-        // Ignoro el resto de la línea (numero 0 y comentarios posteriores.)
+        // Ignoro el resto de la línea.
         string s;
         getline(cin, s);
 
-        // Resuelvo el problema
-        pair<int, vector<int> > solucion = problema1(cantTareas, tablaCostos);
+        if(n == 0) break;
 
-        // Imprimo resultado
-        cout << get<0>(solucion) << " " << get<1>(solucion).size() << " ";
-        for (unsigned i = 0; i < get<1>(solucion).size(); ++i) {
-        	cout << get<1>(solucion)[i] << " ";
+        // Leo la tabla de costos de preparación.
+        costos c = crear_costos(n);
+        for(int i = 0; i < (int) n; i++) {
+            for(int j = i + 1; j <= (int) n; j++) {
+                unsigned c_ij;
+                cin >> c_ij;
+                c[i][j] = c_ij;
+            }
         }
- 
 
-	}
+        // Ignoro el resto de la línea.
+        getline(cin, s);        
+
+        // Resuelvo
+        pair<costo, vector<trabajo>> res = problema1(n, c);
+
+        // Imprimo costo hallado y cantidad de trabajos de una máquina.
+        cout << res.first << " " << res.second.size();
+
+        // Imprimo los trabajos de esa máquina.
+        for(size_t i = 0; i < res.second.size(); i++)
+            cout << " " << res.second[i];
+        cout << endl;
+    }
+
+    return 0;
 }

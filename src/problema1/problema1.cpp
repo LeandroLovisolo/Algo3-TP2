@@ -1,48 +1,68 @@
 #include "problema1.h"
-#include <iostream>
+
 using namespace std;
 
-//Ti -> tarea a decidir dónde poner
-//TM1 -> tarea actual en la máquina 1
-//TM2 -> tarea actual en la máquina 2
-int cost(int Ti, int TM1, int TM2, int cantTareas, 
-		vector<vector<int> > &arrayMemoizacion,
-		vector<vector<int> > &tablaCostos, vector<int> &tareasM1) {
- 	//Si me paso de la cantidad de tareas, el resultado es 0
-	if(Ti == cantTareas) {
-		return 0;
-	}
-	//Si no, me fijo si ya computé este resultado (MEMOIZACION)
-	else if(arrayMemoizacion[TM1][TM2] != -1) {
-		return arrayMemoizacion[TM1][TM2];
-	}
-	//Si no lo tengo computado, hago la llamada recursiva
-	else {
-		cout <<  "Hago una it" << endl;
-		int costoPonerTiM1 = cost(Ti + 1, Ti, TM2, cantTareas, arrayMemoizacion, tablaCostos, tareasM1) + tablaCostos[Ti-1][TM1];
-		int costoPonerTiM2 = cost(Ti + 1, TM1, Ti, cantTareas, arrayMemoizacion, tablaCostos, tareasM1) + tablaCostos[Ti-1][TM2];
-		arrayMemoizacion[TM1][TM2] = min(costoPonerTiM1,costoPonerTiM2);
-		//Agrego las tareas de la máquina 1
-		if(costoPonerTiM1 <= costoPonerTiM2) {
-			tareasM1.push_back(Ti);
-		}
-		return arrayMemoizacion[TM1][TM2];
-	}
+costos crear_costos(unsigned n) {
+	return vector<vector<costo>>(n, vector<costo>(n + 1, 0));
 }
 
-pair<int, vector<int> > problema1(int cantTareas, vector<vector<int> > tablaCostos) {
-  vector<vector<int> >  arrayMemoizacion;
-  vector<int> tareasM1;
-  tareasM1.reserve(cantTareas);
-  //Creo el arreglo de 2 dimensiones para guardar los resultados ya computados
-  cantTareas++;
-  arrayMemoizacion.resize(cantTareas);
-    for (int j = 0; j < cantTareas; ++j) {
-      arrayMemoizacion[j].assign(cantTareas, -1);
-  }
+pair<costo, vector<trabajo>> problema1(unsigned n, costos c) {
 
-  //Lamar a cost y ver como recorrer la tabla armada para conseguir las tareas de una máquina
-  int costo = cost(1,0,0,cantTareas,arrayMemoizacion,tablaCostos,tareasM1);
-  //El return es cualquier bolazo, ni si quiera puede funcionar
-  return make_pair(costo, tareasM1);
+    // Tabla de tamaño n * n+1, inicialmente llena con ceros.
+    vector<vector<costo>> dp(n, vector<costo>(n + 1, 0));
+
+    // Recorro las columnas de derecha a izquierda.
+    for(int j = n - 1; j >= 0; j--) {
+
+        // Recorro las filas de arriba a abajo.
+        for(int i = 0; i < (int) n; i++) {
+
+            if(i == 0 && j == 0) {
+                dp[0][0] = dp[0][1] + c[0][1]; // Única transición posible.
+                break;
+            }
+
+            if(i == j) break; // Estados inválidos.
+
+            // Calculo el camino de menor costo desde la posición actual
+            // hasta una posición terminal, evaluando las dos únicas
+            // transiciones posibles desde la posición actual.
+            dp[i][j] = min(dp[i][j + 1] + c[j][j + 1],
+                           dp[j][j + 1] + c[i][j + 1]);
+        }
+    }
+
+    // La coordenada (0, 0) en nuestra tabla contiene el costo del camino
+    // mínimo entre la posición inicial hasta alguna posición terminal.
+    costo costo_minimo = dp[0][0];
+
+    // Cola de trabajos de una de las máquinas.
+    vector<trabajo> trabajos;
+
+    // Agregamos el primer trabajo a la máquina.
+    trabajos.push_back(1);
+
+    // Luego de agregar el primer trabajo a la máquina, recorremos la tabla
+    // desde la posición (0, 1), avanzando por los caminos de menor costo
+    // hasta llegar a una posición terminal.
+    int i = 0, j = 1;
+
+    // Ciclamos hasta haber agregado el n-ésimo trabajo.
+    while(j < (int) n) {
+
+        // Avanzamos desde [i][j] hasta [i][j + 1].
+        if(dp[i][j] == dp[i][j + 1] + c[j][j + 1]) {
+            if(trabajos.back() == (trabajo) j) trabajos.push_back(j + 1);
+            j++;
+        } 
+
+        // Avanzamos desde [i][j] hasta [j][j + 1].
+        else {
+            if(trabajos.back() == (trabajo) i) trabajos.push_back(j + 1);
+            i = j;
+            j++;
+        }
+    }
+
+    return make_pair(costo_minimo, trabajos);
 }
