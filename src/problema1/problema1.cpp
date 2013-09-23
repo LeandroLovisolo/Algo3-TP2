@@ -36,7 +36,8 @@ pair<costo, vector<trabajo>> problema1(unsigned n, costos c) {
     // mínimo entre la posición inicial hasta alguna posición terminal.
     costo costo_minimo = dp[0][0];
 
-    // Cola de trabajos de una de las máquinas.
+    // Construimos una cola de trabajos para una de las máquinas a partir
+    // de los costos calculados en el paso anterior.
     vector<trabajo> trabajos;
 
     // Agregamos el primer trabajo a la máquina.
