@@ -182,7 +182,7 @@ Sin más, presentamos los problemas estudiados a continuación.
 
 \section{Problema 1: Impresiones ordenadas}
 
-Una imprenta dispone de dos máquinas para realizar impresiones a gran escala. Los trabajos realizados pueden ser muy distintos entre sí y para realizarlos, las máquinas requieren que se las prepare para ello. La preparación para realizar un trabajo tiene un costo que va a depender del trabajo que se haya realizado previamente en la impresora.
+Una imprenta dispone de dos máquinas para realizar impresiones a gran escala. Los trabajos realizados pueden ser muy distintos entre sí y para realizarlos, las máquinas requieren que se las prepare para ello. La preparación para realizar un trabajo tiene un costo que va a depender del trabajo que se haya realizado previamente en la impresora.\\
 
 Se nos pide realizar un algoritmo que minimice el costo de realizar una serie de trabajos $t_1$...$t_n$ en el orden que vienen dados con una complejidad temporal de \textbf{peor caso O($n^2$).}.
 
@@ -195,6 +195,8 @@ Se nos pide realizar un algoritmo que minimice el costo de realizar una serie de
 \textbf{Salida}: Costo total: 0, cantidad de trabajos asociados a la máquina 1: 0, trabajos realizados en la máquina 1: 0. \\
 
 \subsection{Solución}
+
+Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociado al costo de preparación del trabajo luego de haber realizado el trabajo $t_j$ para cada par de trabajos $t_i$ y $t_j$ con $j<i$ y al costo de preparación si el trabajo es el primero realizado en la máquina.
 
 \subsection{Complejidad}
 
