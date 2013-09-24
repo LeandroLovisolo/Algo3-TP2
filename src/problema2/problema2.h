@@ -14,6 +14,7 @@ typedef std::tuple<unsigned, unsigned, unsigned> enlace;
 std::pair<unsigned, std::vector<enlace>>
 problema2(unsigned nodos, std::vector<enlace> enlaces);
 std::vector<unsigned> bfs(unsigned nodos, std::vector<enlace> enlaces, unsigned inicial);
+std::vector<unsigned> caminoEntrePuntos(unsigned nodos, std::vector<enlace> enlaces, unsigned inicial, unsigned final);
 
 #endif // PROBLEMA2_H
 

@@ -43,6 +43,20 @@ TEST(problema2, BFSTest) {
 	EXPECT_EQ(1, solucion[2]);
 }
 
+TEST(problema2, CaminoEntrePuntos) {
+	vector<enlace> enlaces;
+	enlaces.push_back(enlace(0,1,1));
+	enlaces.push_back(enlace(0,2,1));
+	enlaces.push_back(enlace(1,3,1));
+	enlaces.push_back(enlace(1,4,1));
+	enlaces.push_back(enlace(2,5,1));
+	enlaces.push_back(enlace(2,6,1));
+	vector<unsigned> solucion = caminoEntrePuntos(7, enlaces, 0, 6);
+	EXPECT_EQ(6, solucion[0]);
+	EXPECT_EQ(2, solucion[1]);
+	EXPECT_EQ(0, solucion[2]);
+}
+
 GTEST_API_ int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

@@ -1,6 +1,7 @@
 #include <algorithm>
 #include <queue>
 #include "problema2.h"
+#include <iostream>
 
 using namespace std;
 
@@ -102,4 +103,45 @@ vector<unsigned> bfs(unsigned nodos, vector<enlace> enlaces, unsigned inicial) {
 	for (unsigned i = 0; i < nodos; ++i) distancias[i] = V[i].distancia;
 
 	return distancias;
+}
+
+bool caminoEntrePuntosRec(vector<nodo> &V, vector<unsigned> &camino, unsigned inicial, unsigned final) {
+    //Si donde estoy es el que buscaba, lo agrego y devuelvo true
+    if(inicial == final) {
+        V[inicial].visitado = true;
+        camino.push_back(inicial);
+        return true; 
+    }
+    //Si donde estoy no es el que busco y no tiene adyacentes, no encontré solución, false
+    if(V[inicial].adyacentes.size() == 0) {
+        V[inicial].visitado = true;
+        return false;
+    }
+    //Si tiene adyacentes, los checkeo
+    else {
+        V[inicial].visitado = true;
+        for (unsigned i = 0; i < V[inicial].adyacentes.size(); ++i) {
+            if(!V[V[inicial].adyacentes[i]].visitado) {
+                if(caminoEntrePuntosRec(V, camino, V[inicial].adyacentes[i], final)) {
+                    camino.push_back(inicial);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+}
+
+vector<unsigned> caminoEntrePuntos(unsigned nodos, vector<enlace> enlaces, unsigned inicial, unsigned final) {
+    vector<nodo> V;
+    vector<unsigned> camino;
+    V.resize(nodos);
+    camino.reserve(nodos);
+
+    for (unsigned i = 0; i < enlaces.size(); ++i) {
+        V[nodo1(enlaces[i])].adyacentes.push_back(nodo2(enlaces[i]));
+        V[nodo2(enlaces[i])].adyacentes.push_back(nodo1(enlaces[i]));
+    }
+    caminoEntrePuntosRec(V, camino, inicial, final);
+    return camino;
 }
