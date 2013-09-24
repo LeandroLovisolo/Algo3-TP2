@@ -94,7 +94,6 @@ vector<unsigned> bfs(unsigned nodos, vector<enlace> enlaces, unsigned inicial) {
 		for (unsigned i = 0; i < n.adyacentes.size(); ++i) {
 			if (V[n.adyacentes[i]].visitado != true) {
 				V[n.adyacentes[i]].distancia = n.distancia + 1;
-                V[n.adyacentes[i]].visitado = true;
 				cola.push(V[n.adyacentes[i]]);
 			}
 		}
