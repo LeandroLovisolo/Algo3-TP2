@@ -33,6 +33,16 @@ TEST(problema2, DevuelveArbolGeneradorMinimo) {
 	EXPECT_EQ(37, costo_total);
 }
 
+TEST(problema2, BFSTest) {
+	vector<enlace> enlaces;
+	enlaces.push_back(enlace(0, 1, 4));
+	enlaces.push_back(enlace(0, 2, 4));
+	vector<unsigned> solucion = bfs(3, enlaces, 0);
+	EXPECT_EQ(0, solucion[0]);
+	EXPECT_EQ(1, solucion[1]);
+	EXPECT_EQ(1, solucion[2]);
+}
+
 GTEST_API_ int main(int argc, char **argv) {
     testing::InitGoogleTest(&argc, argv);
     return RUN_ALL_TESTS();

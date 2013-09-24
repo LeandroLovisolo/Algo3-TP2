@@ -83,18 +83,18 @@ vector<unsigned> bfs(unsigned nodos, vector<enlace> enlaces, unsigned inicial) {
 		V[nodo2(enlaces[i])].adyacentes.push_back(nodo1(enlaces[i]));
 	}
 
-	queue<nodo> cola;
-	cola.push(V[inicial]);
+	queue<unsigned> cola;
+	cola.push(inicial);
 	V[inicial].distancia = 0;
 
 	while (!cola.empty()) {
-		nodo n = cola.front();
-		n.visitado = true;
+		unsigned n = cola.front();
+		V[n].visitado = true;
 		cola.pop();
-		for (unsigned i = 0; i < n.adyacentes.size(); ++i) {
-			if (V[n.adyacentes[i]].visitado != true) {
-				V[n.adyacentes[i]].distancia = n.distancia + 1;
-				cola.push(V[n.adyacentes[i]]);
+		for (unsigned i = 0; i < V[n].adyacentes.size(); ++i) {
+			if (V[V[n].adyacentes[i]].visitado != true) {
+				V[V[n].adyacentes[i]].distancia = V[n].distancia + 1;
+				cola.push(V[n].adyacentes[i]);
 			}
 		}
 	}
