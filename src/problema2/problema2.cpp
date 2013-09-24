@@ -72,7 +72,7 @@ struct nodo{
 	bool visitado = false;
 };
 
-vector<unsigned> bfs(unsigned nodos, vector<enlace> enlaces) {
+vector<unsigned> bfs(unsigned nodos, vector<enlace> enlaces, unsigned inicial) {
 	vector<nodo> V;
 	vector<unsigned> distancias;
 	V.resize(nodos);
@@ -84,8 +84,8 @@ vector<unsigned> bfs(unsigned nodos, vector<enlace> enlaces) {
 	}
 
 	queue<nodo> cola;
-	cola.push(V[0]);
-	V[0].distancia = 0;
+	cola.push(V[inicial]);
+	V[inicial].distancia = 0;
 
 	while (!cola.empty()) {
 		nodo n = cola.front();
@@ -94,6 +94,7 @@ vector<unsigned> bfs(unsigned nodos, vector<enlace> enlaces) {
 		for (unsigned i = 0; i < n.adyacentes.size(); ++i) {
 			if (V[n.adyacentes[i]].visitado != true) {
 				V[n.adyacentes[i]].distancia = n.distancia + 1;
+                V[n.adyacentes[i]].visitado = true;
 				cola.push(V[n.adyacentes[i]]);
 			}
 		}
