@@ -198,6 +198,44 @@ Se nos pide realizar un algoritmo que minimice el costo de realizar una serie de
 
 Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociado al costo de preparación del trabajo luego de haber realizado el trabajo $t_j$ para cada par de trabajos $t_i$ y $t_j$ con $j<i$ y al costo de preparación si el trabajo es el primero realizado en la máquina.
 
+\begin{pseudo}
+\Procedure{Impresiones-ordenadas}{n: entero, costos: matriz}
+    \For{int j = n - 1; j $>$= 0; j$--$}
+        \For{int i = 0; i $<$ n; i$++$}
+            \If{i == 0 $\&\&$ j == 0}                 \Ode{1}
+                \State dp[0][0] = dp[0][1] + c[0][1]  \Ode{1}
+                \State break                          
+            \EndIf
+            \If{i == j}                               \Ode{1}
+                \State break
+            \EndIf
+            \State dp[i][j] = min(dp[i][j + 1] + c[j][j + 1], dp[j][j + 1] + c[i][j + 1])                          \Ode{1}
+        \EndFor
+    \EndFor
+    \State costo\_minimo = dp[0][0]                    \Ode{1}
+    \State i = 0                                       \Ode{1}
+    \State j = 1                                       \Ode{1}
+    \State trabajos$.$agregar\_atras(1);
+    \While{j $<$ n}
+        \If{dp[i][j] == dp[i][j + 1] + c[j][j + 1]}    \Ode{1}
+            \If{trabajos$.$ultimo() == (trabajo) j}    \Ode{1}
+            \State trabajos$.$agregar\_atras(j + 1)    \Ode{1}
+            \State j++                                 \Ode{1}
+            \EndIf
+        \Else
+            \If{trabajos$.$ultimo() == (trabajo) i}    \Ode{1}
+            \State trabajos$.$agregar\_atras(j + 1)    \Ode{1}
+            \State i = j                               \Ode{1}  
+            \State j++                                 \Ode{1}
+            \EndIf
+        \EndIf
+    \EndWhile
+    \State \textbf{return} par$<$costo\_minimo, trabajos$>$ \Ode{1}
+    \EndProcedure
+\end{pseudo}
+
+
+
 \subsection{Complejidad}
 
 \subsection{Correctitud}
