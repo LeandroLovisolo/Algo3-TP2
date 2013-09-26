@@ -230,7 +230,7 @@ Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociad
             \EndIf
         \EndIf
     \EndWhile
-    \State \textbf{return} par$<$costo\_minimo, trabajos$>$ \Ode{1}
+    \Return par$<$costo\_minimo, trabajos$>$ \Ode{1}
     \EndProcedure
 \end{pseudo}
 
@@ -321,6 +321,69 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 
 \subsection{Solución}
 
+
+\subsubsection{Pseudocódigo}
+\begin{pseudo}
+
+\State parent : vector de enteros
+\State ranking : vector de enteros
+\State fabrica : vector de enteros
+\State $tupla <entero, entero>$ es $DatosPadre$
+\\
+\Procedure{find}{x: entero} $\rightarrow$ DatosPadre
+	\If{x != parent[x]}											\Ode{1}
+		\State DatosPadre P = Find(parent$[x]$)					\Ode{1}
+    	\State parent$[x]$ = P.first							\Ode{1}
+	    \State fabrica$[x]$ = P.second							\Ode{1}
+    \EndIf
+    \Return $tupla <parent[x], fabrica[x]>$						\Ode{1}
+\EndProcedure
+
+\\
+\Procedure{make\_union}{x : entero, y : entero}
+    \State DatosPadre set\_x = Find(x)
+    \State DatosPadre set\_y = Find(y)
+    
+    \If{ranking$[set_x.first]$ $>$ ranking$[set\_y.first]$}		\Ode{1}
+        \State parent$[set\_y.first]$ = set\_x.first			\Ode{1}
+    \Else
+        \State parent$[set\_x.first]$ = set\_y.first			\Ode{1}
+    \EndIf
+    
+    \If{ranking$[set\_x.first]$ == ranking$[set\_y.first]$}		\Ode{1}
+        \State ranking$[set\_y.first]++$						\Ode{1}
+	\EndIf
+
+    \If{set\_x.second != inf}									\Ode{1}
+    	\State fabrica$[set\_y.first]$ = set\_x.second			\Ode{1}
+    \Else
+    	\State fabrica$[set\_x.first]$ = set\_y.second			\Ode{1}
+    \EndIf
+\EndProcedure
+
+\\
+
+\State $tupla <nodo1 : entero, nodo2 : entero, costo : entero>$ es $ruta$
+\Procedure{problema3}{cantNodos : entero, cantFabricas : entero, rutas: vector de ruta} $\rightarrow$ vector de ruta
+	\State camino\_minimo : vector de rutas						\Ode{R}
+	\For{i = 0 To Tamaño(parent)} parent$[i]$ = 0 \EndFor
+	\For{i = 0 To Tamaño(parent)} ranking$[i]$ = 0 \EndFor
+	\For{i = 0 To cantFabricas} fabrica$[i]$ = i \EndFor
+	\For{i = cantFabricas To cantNodos} fabrica$[i]$ = 0 \EndFor
+	\State Ordenar(rutas) en orden ascendente por costo			\Ode{R * log R}	
+	
+	\For{i = 0 To tamaño(rutas)}
+		\State DatosPadre set1 = Find(nodo1(rutas$[i]$));		\Ode{1}
+        \State DatosPadre set2 = Find(nodo2(rutas$[i]$));		\Ode{1}
+	    \If{(set1.first != set2.first) AND !(set1.second != inf AND set2.second != inf))} \Ode{1}
+	    	\State Make\_union(set1.first, set2.first)			\Ode{1}
+	    	\State camino\_minimo.Agregar(rutas$[i]$)			\Ode{1}
+	    \EndIf
+	\EndFor
+	\Return camino\_minimo
+\EndProcedure
+
+\end{pseudo}
 \subsection{Complejidad}
 
 \subsection{Correctitud}
