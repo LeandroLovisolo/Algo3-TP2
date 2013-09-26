@@ -395,11 +395,11 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 
 \end{pseudo}
 \subsection{Complejidad}
-Debido a que para el ordenamiento de las rutas, utilizamos la función Sort() de la STL, se obtiene una costo de O(R * log R), siendo R rutas, lo que equivale a O(R * log($(C+F)^2$)), siendo C clientes y F fábricas, por ser $(C+F)^2$ la cantidad máxima de aristas lo que equivale a O(R * 2 log(C+F)) = O(R * log(C+F)).
+Debido a que para el ordenamiento de las rutas, utilizamos la función Sort() de la STL, se obtiene una costo de O(R * log R), siendo R rutas, lo que equivale a O(R * log $(C+F)^2$), siendo C clientes y F fábricas por ser C+F la mayor cantidad de aristas posibles. Por ser F menor que C, O(F) $\subset$ O(C), log($(C+F)^2$) $\subset$ log($C^2$). Siendo O($C^2$) la cota superior para la cantidad de aristas, la complejidad equivale a O(R * 2 log C) $\subset$ O(R * log C).
 
 Como se utiliza el algoritmo de Kruskal, al igual que en el segundo problema, la complejidad de obtener los subconjuntos de rutas que unen clientes con fábricas es de O(R).
 
-Como O(R) $\subset$ O(R * log (C+F)), la complejidad final del algoritmo es O($R * log C+F$)
+Como O(R) $\subset$ O(R * log C), la complejidad final del algoritmo es O(R * log C).
 \subsection{Correctitud}
 
 \subsection{Experimentos computacionales}
