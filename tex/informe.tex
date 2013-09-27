@@ -184,49 +184,22 @@ Sin más, presentamos los problemas estudiados a continuación.
 
 Una imprenta dispone de dos máquinas para realizar impresiones a gran escala. Los trabajos realizados pueden ser muy distintos entre sí y para realizarlos, las máquinas requieren que se las prepare para ello. La preparación para realizar un trabajo tiene un costo que va a depender del trabajo que se haya realizado previamente en la impresora.\\
 
-Se nos pide realizar un algoritmo que minimice el costo de realizar una serie de trabajos $t_1$...$t_n$ en el orden que vienen dados con una complejidad temporal de \textbf{peor caso O($n^2$)}.
+Se nos pide realizar un algoritmo que minimice el costo de realizar una serie de trabajos $t_1$...$t_n$ en el orden que vienen dados con una complejidad temporal de \textbf{peor caso O($n^2$).}.
 
 \textbf{Ejemplos del problema y sus soluciones:}
-\begin{enumerate}
-\item{\textbf{Entrada}:}
-\begin{itemize}
-\item{Trabajo 1: $c_{01}$: 1}
-\item{Trabajo 2: $c_{02}$: 2, $c_{12}$: 4}
-\item{Trabajo 3: $c_{03}$: 3, $c_{13}$: 5, $c_{23}$: 6}
-\end{itemize}
-\textbf{Salida}:
-\begin{itemize}
-\item{Costo total: 8}
-\item{Cantidad de trabajos asociados a la máquina 1: 2}
-\item{Trabajos realizados en la máquina 1: 1 y 3}
-\end{itemize}
 
+\textbf{Entrada}: Trabajo 1 $c_{01}$: 1, Trabajo 2 $c_{02}$: 2 $c_{12}$: 4, Trabajo 3 $c_{03}$: 3 $c_{13}$: 5 $c_{23}$: 6. \\
+\textbf{Salida}: Costo total: 8, cantidad de trabajos asociados a la máquina 1: 2, trabajos realizados en la máquina 1: 1 y 3. \\
 
-\item{\textbf{Entrada}:}
-\begin{itemize}
-\item{Sin trabajos}
-\end{itemize}
-\textbf{Salida}:
-\begin{itemize}
-\item{Costo total: 0}
-\item{Cantidad de trabajos asociados a la máquina 1: 0}
-\item{Trabajos realizados en la máquina 1: 0}
-\end{itemize}
-\end{enumerate}
+\textbf{Entrada}: Sin trabajos. \\
+\textbf{Salida}: Costo total: 0, cantidad de trabajos asociados a la máquina 1: 0, trabajos realizados en la máquina 1: 0. \\
 
 \subsection{Solución}
 
 Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociado al costo de preparación del trabajo luego de haber realizado el trabajo $t_j$ para cada par de trabajos $t_i$ y $t_j$ con $j<i$ y al costo de preparación si el trabajo es el primero realizado en la máquina.
 
-\subsubsection{Pseudocódigo}
-
 \begin{pseudo}
-
-\State trabajos: vector de enteros
-\State costos: matriz de enteros
-\State dp: matriz de enteros
-\\
-\Procedure{Impresiones-ordenadas}{n: entero, costos: c}
+\Procedure{Impresiones-ordenadas}{n: entero, costos: matriz}
     \For{int j = n - 1; j $>$= 0; j$--$}
         \For{int i = 0; i $<$ n; i$++$}
             \If{i == 0 $\&\&$ j == 0}                 \Ode{1}
@@ -265,25 +238,11 @@ Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociad
 
 \subsection{Complejidad}
 
-Para realizar el algoritmo se utilizó la estructura de datos \textbf{vector} que pertenece a la STD de C++.
-
-Las operaciones realizadas fueron \textbf{push\_back()} y \textbf{agregar\_atras()} que corresponden a \textbf{back()} y \textbf{ultimo()} con complejidad O(1).
-
-El algoritmo corre en tiempo O($n^2$), donde $n$ es la cantidad de trabajos.
-
-\textbf{Demostración: }
-
 \subsection{Correctitud}
 
 \subsection{Experimentos computacionales}
 \subsubsection{Verificación de correctitud}
 
-Elegimos los siguientes casos para verificar la correctitud del programa:
-
-\begin{enumerate}
-\item{}
-\item{}
-\end{enumerate}
 \subsubsection{Performance}
 
 
@@ -371,7 +330,25 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 \textbf{Salida}: . \\
 
 \subsection{Solución}
+Dada una serie de aristas y costos, que representan las rutas entre clientes y fábricas y el costo de pavimentación respectivamente, utilizamos para la resolución una modificación del algoritmo de Kruskal con la estrucuta Disjoint-Set.
 
+La idea de la utilización del algoritmo de Kruskal nace de la necesidad de conseguir un AGM entre clientes y fábricas. Como en nuestro caso, solo se necesita que una fábrica este conectada por una serie de rutas a otros clientes, utilizamos el algoritmo para generar conjuntos de AGM que unan una fábrica con clientes en vez de un único AGM, descartando uniones a fábricas innecesarias.
+
+La modificación del algoritmo consiste en que, además del nodo padre representativo del conjunto, los nodos guarden también la fábrica asociada a estos (si es que la tienen hasta el momento).
+
+Los pasos realizados por el algoritmo son los siguientes:
+
+\begin{itemize}
+	\item Se crean 2 vectores inicializados en 0 de longitud C + F con C clientes y F fábricas, llamados \textit{parent} y \textit{ranking} como en el problema 2 y otro vector del mismo tamaño llamado \textit{fábrica} que contiene de la posición 0 a la posición F-1  
+su mismo índice y en las demás una constante alta llamada \textit{inf}. Este nuevo vector se utilizará para asociar a cada nodo con una fábrica, las fábricas comenzarán con su índice ya que están asociadas a si mismas y los demás con \textit{inf} para reconocer que no estan asociadas a niguna fábrica.
+
+	\item Se ordena la secuencia de aristas que se reciben como entrada y con cada una se hace lo siguiente:
+	\begin{itemize}
+		\item Se utiliza la función Find() sobre los nodos que conecta cada arista para determinar si estos pertenecen o no al mismo subconjunto.
+		\item Si pertenecen al mismo, se descarta. Si no pertenecen al mismo, se verifica  mediante lo devuelto por Find(), si ambos subconjuntos a los que están relacionados los nodos tienen una fábrica asociada.
+		\item Si se encuentra una fábrica asociada a ambos, se descarta. Si uno o ninguno tiene una fábrica asociada, se llama a la función Make\_union(). La función Make\_union unirá los dos subconjuntos seleccionando al de menor ranking como padre entre los dos y le asignará al padre del otro conjunto su fábrica asociada en el caso de tenerla.
+	\end{itemize}
+\end{itemize}
 
 \subsubsection{Pseudocódigo}
 \begin{pseudo}
@@ -448,13 +425,14 @@ Sea G = $<V,X>$ grafo, $X = R$ y V = {C,F}. Quiero ver que dado Ci subconjunto d
 	\item \textbf{Caso base:} sea $e \in R$, como es la primera arista, e forma un nuevo subconjunto. Se elije como padre del subconjunto a cualquiera de los  dos nodos a los que conecta y si alguno de estos es una fábrica, se lo elige como fábrica. El conjunto nuevo es minimal ya que la primera arista es la arista de menor peso.
 	\item \textbf{Paso inductivo:} asumo que la HI vale para n aristas recorridas, quiero ver que vale para n+1.
 	
-Para la nueva arista, se verifica si los dos nodos conectados pertenecen al mismo subconjunto (Ci, Cj), si esto pasa, se descarta ya se busca el AGM y esta arista creará ciclos, creando una conección entre nodos redundante haciendo que no sea minimal.
+Para la nueva arista (e), se verifica si los dos nodos conectados pertenecen al mismo subconjunto (Ci, Cj), si esto pasa, se descarta ya se busca el AGM y esta arista creará ciclos, creando una conección entre nodos redundante haciendo que no sea minimal.
 	
-Si no pasa, se verifica si el subconjunto de ambos nodos tienen o no una fábrica asociada (si anteriormente una arista del subconjunto conectó una fábrica), ya que, al tener una fábrica asociada en cada subconjunto, la arista a la fábrica asociada de cada uno es minimal debido a que se agregó antes (por tener las aristas ordenadas por peso) y como ambos ya están conectados con una fábrica, se descarta, haciendo minimal las conecciones de subconjuntos a fábricas.
+Si no pasa, se verifica si el subconjunto de ambos nodos tienen o no una fábrica asociada (si anteriormente una arista del subconjunto conectó una fábrica), ya que, al tener una fábrica asociada en cada subconjunto, la arista a la fábrica asociada de cada uno es minimal debido a que se agregó antes (por tener las aristas ordenadas por peso) y como ambos ya están conectados con una fábrica, se descarta ya que el problema admite al menos una conección entre clientes y fábricas y la nueva arista es reduntante.
 
-En el caso de no tener ambas una fábrica asociadas, se unen los subconjuntos. Como las aristas estan ordenadas de menor a mayor, la nueva arista que une a los subconjuntos Ci y Cj es minimal y como cada Ci y Cj era minimal por HI, $Ci \cup Cj$ es minimal y comparten una o ninguna fábrica.
-
+En el caso de no tener una o ambas una fábrica asociada, se unen los subconjuntos, es decir, se utiliza la arista. Como las aristas estan ordenadas de menor a mayor, la nueva arista que une a los subconjuntos Ci y Cj es minimal y como cada Ci y Cj era minimal por HI, $Ci \cup Cj \cup \{e\}$ es minimal y comparten una o ninguna fábrica.
 \end{itemize}
+
+Debido a que se obtienen una serie de subconjuntos, los cuales son minimales en sus costos de aristas y todos contienen una fábrica, se consiguen las rutas necesarias a pavimentar para unir clientes y fábricas en el menor costo posible.
 
 \subsection{Experimentos computacionales}
 \subsubsection{Verificación de correctitud}
