@@ -401,6 +401,19 @@ Como se utiliza el algoritmo de Kruskal, al igual que en el segundo problema, la
 
 Como O(R) $\subset$ O(R * log C), la complejidad final del algoritmo es O(R * log C).
 \subsection{Correctitud}
+Prueba por inducción en aristas recorridas:
+Sea G = $<V,X>$ grafo, $X = R$ y V = {C,F}. Quiero ver que dado Ci subconjunto de aristas tal que, $Ci \subset R$, cada Ci es un subconjunto de aristas de peso mínimo con una fábrica o ninguna. 
+\begin{itemize}
+	\item \textbf{Caso base:} sea $e \in R$, como es la primera arista, e forma un nuevo subconjunto. Se elije como padre del subconjunto a cualquiera de los  dos nodos a los que conecta y si alguno de estos es una fábrica, se lo elige como fábrica. El conjunto nuevo es minimal ya que la primera arista es la arista de menor peso.
+	\item \textbf{Paso inductivo:} asumo que la HI vale para n aristas recorridas, quiero ver que vale para n+1.
+	
+Para la nueva arista, se verifica si los dos nodos conectados pertenecen al mismo subconjunto (Ci, Cj), si esto pasa, se descarta ya se busca el AGM y esta arista creará ciclos, creando una conección entre nodos redundante haciendo que no sea minimal.
+	
+Si no pasa, se verifica si el subconjunto de ambos nodos tienen o no una fábrica asociada (si anteriormente una arista del subconjunto conectó una fábrica), ya que, al tener una fábrica asociada en cada subconjunto, la arista a la fábrica asociada de cada uno es minimal debido a que se agregó antes (por tener las aristas ordenadas por peso) y como ambos ya están conectados con una fábrica, se descarta, haciendo minimal las conecciones de subconjuntos a fábricas.
+
+En el caso de no tener ambas una fábrica asociadas, se unen los subconjuntos. Como las aristas estan ordenadas de menor a mayor, la nueva arista que une a los subconjuntos Ci y Cj es minimal y como cada Ci y Cj era minimal por HI, $Ci \cup Cj$ es minimal y comparten una o ninguna fábrica.
+
+\end{itemize}
 
 \subsection{Experimentos computacionales}
 \subsubsection{Verificación de correctitud}
