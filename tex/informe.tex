@@ -330,71 +330,73 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 \textbf{Salida}: . \\
 
 \subsection{Solución}
-Dada una serie de aristas y costos, que representan las rutas entre clientes y fábricas y el costo de pavimentación respectivamente, utilizamos para la resolución una modificación del conjuto de datos para luego aplicar el algoritmo de Kruskal con la estrucuta Disjoint-Set.
+Dada una serie de aristas y sus respectivos costos, que representan las rutas entre clientes y fábricas y el costo de pavimentación, utilizamos para la resolución una modificación del conjuto de datos para luego aplicar el algoritmo de Kruskal con la estrucuta Disjoint-Set.
 
-La idea de la utilización del algoritmo de Kruskal nace de la necesidad de conseguir un bosque de AGM's entre clientes y fábricas. Como en nuestro caso, solo se necesita que una fábrica este conectada por una serie de rutas a otros clientes, creamos un nodo \textit{fantasma} al cuál le conectamos cada fábrica mediante una arista de costo cero para poder tener un único set que forzará a que el algoritmo solo conecte una única vez una fábrica con un conjunto.
+La idea de la utilización del algoritmo de Kruskal nace de la necesidad de conseguir un bosque de AGM's entre clientes y fábricas, lo que nos permitirá conseguir los caminos que los interconecten de mínimo costo. Como en nuestro caso, solo se necesita que una fábrica este conectada por una serie de rutas a otros clientes, creamos un nodo \textit{fantasma} al cuál le conectamos cada fábrica mediante una arista de costo cero para poder tener un único set que forzará a que el algoritmo solo conecte una única vez una fábrica con cada set disjunto.
 
-El resultado obtenido será un árbol AGM al cuál, al sacarle el nodo \textit{fantasma} y las aristas de las fábricas a este, se desvincula las fábricas del nodo fantasma formando un bósque de AGM's que tendrá las rutas necesarias para pavimentar y minimizar el costo.
+El resultado obtenido será un árbol AGM al cual, al sacarle el nodo \textit{fantasma} y las aristas de las fábricas a este, como solo se unían los set disjuntos con una sola fábrica, se forma un bósque, donde los árboles de este tendran las rutas necesarias para pavimentar y minimizar el costo de inversión.
 
 \subsubsection{Pseudocódigo}
 \begin{pseudo}
 
 \State parent : vector de enteros
 \State ranking : vector de enteros
-\State fabrica : vector de enteros
-\State $tupla <entero, entero>$ es $DatosPadre$
-\\
-\Procedure{find}{x: entero} $\rightarrow$ DatosPadre
-	\If{x != parent[x]}											\Ode{1}
-		\State DatosPadre P = Find(parent$[x]$)					\Ode{1}
-    	\State parent$[x]$ = P.first							\Ode{1}
-	    \State fabrica$[x]$ = P.second							\Ode{1}
-    \EndIf
-    \Return $tupla <parent[x], fabrica[x]>$						\Ode{1}
-\EndProcedure
 
-\\
-\Procedure{make\_union}{x : entero, y : entero}
-    \State DatosPadre set\_x = Find(x)
-    \State DatosPadre set\_y = Find(y)
-    
-    \If{ranking$[set_x.first]$ $>$ ranking$[set\_y.first]$}		\Ode{1}
-        \State parent$[set\_y.first]$ = set\_x.first			\Ode{1}
+\Procedure{Make\_union}{x : entero, y : entero}
+    \State set\_x : unsigned = Find(x)										\Ode{1}
+    \State set\_y : unsigned = Find(y)										\Ode{1}
+    \If{ranking[set\_x] $>$ ranking[set\_y]}								\Ode{1}
+		\State parent[set\_y] = set\_x										\Ode{1}
     \Else
-        \State parent$[set\_x.first]$ = set\_y.first			\Ode{1}
+        \State parent[set\_x] = set\_y										\Ode{1}
     \EndIf
     
-    \If{ranking$[set\_x.first]$ == ranking$[set\_y.first]$}		\Ode{1}
-        \State ranking$[set\_y.first]++$						\Ode{1}
-	\EndIf
-
-    \If{set\_x.second != inf}									\Ode{1}
-    	\State fabrica$[set\_y.first]$ = set\_x.second			\Ode{1}
-    \Else
-    	\State fabrica$[set\_x.first]$ = set\_y.second			\Ode{1}
+    \If{ranking[set\_x] == ranking[set\_y]}									\Ode{1}
+        \State ranking[set\_y]++											\Ode{1}
     \EndIf
 \EndProcedure
 
-\\
+
+
+\Procedure{Find}{x : entero} $\rightarrow$ entero
+    \If{x != parent[x]}														\Ode{1}
+        \State parent[x] = Find(parent[x])									\Ode{1}
+    \EndIf
+    \Return parent[x]
+\EndProcedure
+
+
 
 \State $tupla <nodo1 : entero, nodo2 : entero, costo : entero>$ es $ruta$
-\Procedure{problema3}{cantNodos : entero, cantFabricas : entero, rutas: vector de ruta} $\rightarrow$ vector de ruta
-	\State camino\_minimo : vector de rutas						\Ode{R}
-	\For{i = 0 To Tamaño(parent)} parent$[i]$ = 0 \EndFor
-	\For{i = 0 To Tamaño(parent)} ranking$[i]$ = 0 \EndFor
-	\For{i = 0 To cantFabricas} fabrica$[i]$ = i \EndFor
-	\For{i = cantFabricas To cantNodos} fabrica$[i]$ = 0 \EndFor
-	\State Ordenar(rutas) en orden ascendente por costo			\Ode{R * log R}	
+\Procedure{problema3}{nodos : entero, cantFabricas : entero, rutas : vector de ruta}
+	\For{i=0 To Tamaño(parent)} parent[i] = i \EndFor						\Ode{C}
+	\For{i=0 To Tamaño(ranking)} ranking[i] = 0 \EndFor						\Ode{C}
+
+    \State camino\_minimo : vector de ruta									\Ode{1}
+    \For{unsigned i = 0; i < cantFabricas; ++i}								\Ode{1}
+        \State rutas.Agregar(ruta(i, nodos, 0))								\Ode{1}
+    \EndFor
+
 	
-	\For{i = 0 To tamaño(rutas)}
-		\State DatosPadre set1 = Find(nodo1(rutas$[i]$));		\Ode{1}
-        \State DatosPadre set2 = Find(nodo2(rutas$[i]$));		\Ode{1}
-	    \If{(set1.first != set2.first) AND !(set1.second != inf AND set2.second != inf))} \Ode{1}
-	    	\State Make\_union(set1.first, set2.first)			\Ode{1}
-	    	\State camino\_minimo.Agregar(rutas$[i]$)			\Ode{1}
-	    \EndIf
-	\EndFor
-	\Return camino\_minimo
+
+    \State Ordenar(rutas) ordenar de manera creciente las rutas por costo \Ode{R log R}
+
+    \For{i = 0 To Tamaño(rutas)}
+        \State set1 : entero = Find(nodo1(rutas[i]))						\Ode{1}
+        \State set2 : entero = Find(nodo2(rutas[i]))						\Ode{1}
+        \If{set1 != set2}													\Ode{1}
+            \State Make\_union(set1, set2)									\Ode{1}
+            \State camino\_minimo.Agregar(rutas[i])							\Ode{1}
+        \EndIf    
+    \EndFor
+
+	 
+
+    \State res : vector de rutas de tamaño (camino\_minimo.size() - cantFabricas)   \Ode{C}
+    \For{i = cantFabricas To Tamaño(camino\_minimo)}
+        \State res.Agregar(ruta(nodo1(camino\_minimo[i]), nodo2(camino\_minimo[i]), costo(camino\_minimo[i])))	\Ode{1}
+    \EndFor
+    \Return res
 \EndProcedure
 
 \end{pseudo}
@@ -415,6 +417,7 @@ Dada la solución obtenida por Kruskal, quiero ver que al podar el nodo fantasma
 
 Por el absurdo. Supongo que la solución obtenida no es óptima, esto implica que existe otro bosque solución el cuál tiene un costo menor. Para este bosque conecto sus fábricas con un nodo \textit{fantasma} y como los pesos de las aristas agregadas para conectar el nodo fantasma son 0, el árbol generado es AGM. Absurdo, ya que el árbol original devuelto por Kruskal ya era AGM.
 
+Podemos concluir, por el absurdo que el bosque solución obtenido es el ópitmo en costo.
 \subsection{Experimentos computacionales}
 \subsubsection{Verificación de correctitud}
 
