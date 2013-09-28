@@ -330,25 +330,11 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 \textbf{Salida}: . \\
 
 \subsection{Solución}
-Dada una serie de aristas y costos, que representan las rutas entre clientes y fábricas y el costo de pavimentación respectivamente, utilizamos para la resolución una modificación del algoritmo de Kruskal con la estrucuta Disjoint-Set.
+Dada una serie de aristas y costos, que representan las rutas entre clientes y fábricas y el costo de pavimentación respectivamente, utilizamos para la resolución una modificación del conjuto de datos para luego aplicar el algoritmo de Kruskal con la estrucuta Disjoint-Set.
 
-La idea de la utilización del algoritmo de Kruskal nace de la necesidad de conseguir un AGM entre clientes y fábricas. Como en nuestro caso, solo se necesita que una fábrica este conectada por una serie de rutas a otros clientes, utilizamos el algoritmo para generar conjuntos de AGM que unan una fábrica con clientes en vez de un único AGM, descartando uniones a fábricas innecesarias.
+La idea de la utilización del algoritmo de Kruskal nace de la necesidad de conseguir un bosque de AGM's entre clientes y fábricas. Como en nuestro caso, solo se necesita que una fábrica este conectada por una serie de rutas a otros clientes, creamos un nodo \textit{fantasma} al cuál le conectamos cada fábrica mediante una arista de costo cero para poder tener un único set que forzará a que el algoritmo solo conecte una única vez una fábrica con un conjunto.
 
-La modificación del algoritmo consiste en que, además del nodo padre representativo del conjunto, los nodos guarden también la fábrica asociada a estos (si es que la tienen hasta el momento).
-
-Los pasos realizados por el algoritmo son los siguientes:
-
-\begin{itemize}
-	\item Se crean 2 vectores inicializados en 0 de longitud C + F con C clientes y F fábricas, llamados \textit{parent} y \textit{ranking} como en el problema 2 y otro vector del mismo tamaño llamado \textit{fábrica} que contiene de la posición 0 a la posición F-1  
-su mismo índice y en las demás una constante alta llamada \textit{inf}. Este nuevo vector se utilizará para asociar a cada nodo con una fábrica, las fábricas comenzarán con su índice ya que están asociadas a si mismas y los demás con \textit{inf} para reconocer que no estan asociadas a niguna fábrica.
-
-	\item Se ordena la secuencia de aristas que se reciben como entrada y con cada una se hace lo siguiente:
-	\begin{itemize}
-		\item Se utiliza la función Find() sobre los nodos que conecta cada arista para determinar si estos pertenecen o no al mismo subconjunto.
-		\item Si pertenecen al mismo, se descarta. Si no pertenecen al mismo, se verifica  mediante lo devuelto por Find(), si ambos subconjuntos a los que están relacionados los nodos tienen una fábrica asociada.
-		\item Si se encuentra una fábrica asociada a ambos, se descarta. Si uno o ninguno tiene una fábrica asociada, se llama a la función Make\_union(). La función Make\_union unirá los dos subconjuntos seleccionando al de menor ranking como padre entre los dos y le asignará al padre del otro conjunto su fábrica asociada en el caso de tenerla.
-	\end{itemize}
-\end{itemize}
+El resultado obtenido será un árbol AGM al cuál, al sacarle el nodo \textit{fantasma} y las aristas de las fábricas a este, se desvincula las fábricas del nodo fantasma formando un bósque de AGM's que tendrá las rutas necesarias para pavimentar y minimizar el costo.
 
 \subsubsection{Pseudocódigo}
 \begin{pseudo}
@@ -413,26 +399,21 @@ su mismo índice y en las demás una constante alta llamada \textit{inf}. Este n
 
 \end{pseudo}
 \subsection{Complejidad}
-Debido a que para el ordenamiento de las rutas, utilizamos la función Sort() de la STL, se obtiene una costo de O(R * log R), siendo R rutas, lo que equivale a O(R * log $(C+F)^2$), siendo C clientes y F fábricas por ser C+F la mayor cantidad de aristas posibles. Por ser F menor que C, O(F) $\subset$ O(C), log($(C+F)^2$) $\subset$ log($C^2$). Siendo O($C^2$) la cota superior para la cantidad de aristas, la complejidad equivale a O(R * 2 log C) $\subset$ O(R * log C).
+Como se agrega un conjunto nuevo de aristas acotado por la cantidad de fábricas, se obtiene un costo de O(F) para crear las nuevas rutas que se conectarán al nodo \textit{fantasma}. Como R $>$ F, O(F) $\in$ O(R) acotando la cantidad de rutas a O(R).
+
+Debido a que para el ordenamiento de las rutas, utilizamos la función Sort() de la STL de C++, se obtiene una costo de O(R * log R), siendo R rutas, lo que equivale a O(R * log $(C+F)^2$), siendo C clientes y F fábricas por ser C+F la mayor cantidad de aristas posibles. Por ser F menor que C, O(F) $\subset$ O(C), log($(C+F)^2$) $\subset$ log($C^2$). Siendo O($C^2$) la cota superior para la cantidad de aristas, la complejidad equivale a O(R * 2 log C) $\subset$ O(R * log C).
 
 Como se utiliza el algoritmo de Kruskal, al igual que en el segundo problema, la complejidad de obtener los subconjuntos de rutas que unen clientes con fábricas es de O(R).
 
 Como O(R) $\subset$ O(R * log C), la complejidad final del algoritmo es O(R * log C).
 \subsection{Correctitud}
-Prueba por inducción en aristas recorridas:
-Sea G = $<V,X>$ grafo, $X = R$ y V = {C,F}. Quiero ver que dado Ci subconjunto de aristas tal que, $Ci \subset R$, cada Ci es un subconjunto de aristas de peso mínimo con una fábrica o ninguna. 
-\begin{itemize}
-	\item \textbf{Caso base:} sea $e \in R$, como es la primera arista, e forma un nuevo subconjunto. Se elije como padre del subconjunto a cualquiera de los  dos nodos a los que conecta y si alguno de estos es una fábrica, se lo elige como fábrica. El conjunto nuevo es minimal ya que la primera arista es la arista de menor peso.
-	\item \textbf{Paso inductivo:} asumo que la HI vale para n aristas recorridas, quiero ver que vale para n+1.
-	
-Para la nueva arista (e), se verifica si los dos nodos conectados pertenecen al mismo subconjunto (Ci, Cj), si esto pasa, se descarta ya se busca el AGM y esta arista creará ciclos, creando una conección entre nodos redundante haciendo que no sea minimal.
-	
-Si no pasa, se verifica si el subconjunto de ambos nodos tienen o no una fábrica asociada (si anteriormente una arista del subconjunto conectó una fábrica), ya que, al tener una fábrica asociada en cada subconjunto, la arista a la fábrica asociada de cada uno es minimal debido a que se agregó antes (por tener las aristas ordenadas por peso) y como ambos ya están conectados con una fábrica, se descarta ya que el problema admite al menos una conección entre clientes y fábricas y la nueva arista es reduntante.
+Para demostrar la correctitud del algoritmo, debemos demostrar que Kruskal aplicado a la modificación realizada a nuestro conjunto de datos devuelve un AGM al que, al podarle el nodo \textit{fantasma} se convierte en un bosque de AGM's, cada uno con clientes y una fábrica asociada.
 
-En el caso de no tener una o ambas una fábrica asociada, se unen los subconjuntos, es decir, se utiliza la arista. Como las aristas estan ordenadas de menor a mayor, la nueva arista que une a los subconjuntos Ci y Cj es minimal y como cada Ci y Cj era minimal por HI, $Ci \cup Cj \cup \{e\}$ es minimal y comparten una o ninguna fábrica.
-\end{itemize}
+Debido a que asumimos que los costos de pavimentación de todas las rutas son mayor a 0, en las primeras iteraciones (exactamente \#(F)) del algoritmo, se unirán todas las fábricas en único set. Por esta unión, Kruskal se encargará de unir una única vez una fábrica con los conjuntos de clientes. En las próximas iteraciones de Kruskal, el algoritmo se comportará  de la manera habitual.
 
-Debido a que se obtienen una serie de subconjuntos, los cuales son minimales en sus costos de aristas y todos contienen una fábrica, se consiguen las rutas necesarias a pavimentar para unir clientes y fábricas en el menor costo posible.
+Dada la solución obtenida por Kruskal, quiero ver que al podar el nodo fantasma y sus aristas, el bosque generado es mínimo.
+
+Por el absurdo. Supongo que la solución obtenida no es óptima, esto implica que existe otro bosque solución el cuál tiene un costo menor. Para este bosque conecto sus fábricas con un nodo \textit{fantasma} y como los pesos de las aristas agregadas para conectar el nodo fantasma son 0, el árbol generado es AGM. Absurdo, ya que el árbol original devuelto por Kruskal ya era AGM.
 
 \subsection{Experimentos computacionales}
 \subsubsection{Verificación de correctitud}
