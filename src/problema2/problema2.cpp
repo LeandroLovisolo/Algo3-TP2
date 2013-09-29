@@ -44,9 +44,9 @@ unsigned DisjointSet::find(unsigned x) {
     return parent[x];
 }
 
-pair<unsigned, vector<enlace>> problema2(unsigned nodos, vector<enlace> enlaces) {
-    vector<enlace> camino_minimo;
-    DisjointSet disjoint_set(nodos);
+vector<enlace> kruskal(unsigned cant_nodos, vector<enlace> enlaces) {
+    vector<enlace> arbol_generador_minimo;
+    DisjointSet disjoint_set(cant_nodos);
 
     sort(enlaces.begin(),
          enlaces.end(),
@@ -57,72 +57,117 @@ pair<unsigned, vector<enlace>> problema2(unsigned nodos, vector<enlace> enlaces)
         unsigned set2 = disjoint_set.find(nodo2(enlaces[i]));
         if(set1 != set2){
             disjoint_set.make_union(set1, set2);
-            camino_minimo.push_back(enlaces[i]);
+            arbol_generador_minimo.push_back(enlaces[i]);
         }        
     }
 
-    // Pendiente
-    unsigned nodo_maestro = 0;
-
-    return make_pair(nodo_maestro, camino_minimo);
+    return arbol_generador_minimo;
 }
 
-struct nodo{
-	vector<unsigned> adyacentes;
+nodo nodo_mas_distante(vector<unsigned> distancias) {
+	nodo mas_distante;
+	unsigned distancia_maxima = 0;
+	for(nodo n = 0; n < distancias.size(); n++) {
+		if(distancias[n] > distancia_maxima) {
+			distancia_maxima = distancias[n];
+			mas_distante = n;
+		}
+	}
+	return mas_distante;
+}
+
+nodo centro_del_arbol(unsigned cant_nodos, vector<enlace> enlaces) {
+	// Busco un extremo de un camino máximo dentro del árbol.
+	vector<unsigned> distancias = bfs(cant_nodos, enlaces, nodo1(enlaces[0]));
+	nodo inicial = nodo_mas_distante(distancias);
+
+	// Busco el otro extremo del camino máximo dentro del árbol.
+	distancias = bfs(cant_nodos, enlaces, inicial);
+	nodo final = nodo_mas_distante(distancias);
+
+	// Obtengo el camino máximo.
+	vector<nodo> camino = camino_entre_nodos(cant_nodos, enlaces, inicial, final);
+
+	// Devuelvo el punto medio del camino.
+	return camino[camino.size() / 2];
+}
+
+pair<nodo, vector<enlace>> problema2(unsigned cant_nodos, vector<enlace> enlaces) {
+	// Caso borde
+	if(cant_nodos == 1) {
+		return make_pair(0, enlaces);
+	}
+
+	vector<enlace> arbol_generador_minimo = kruskal(cant_nodos, enlaces);
+	nodo maestro = centro_del_arbol(cant_nodos, arbol_generador_minimo);
+
+    return make_pair(maestro, arbol_generador_minimo);
+}
+
+struct nodo_lista_adyacencia {
+	vector<nodo> adyacentes;
 	unsigned distancia;
 	bool visitado = false;
 };
 
-vector<unsigned> bfs(unsigned nodos, vector<enlace> enlaces, unsigned inicial) {
-	vector<nodo> V;
-	vector<unsigned> distancias;
-	V.resize(nodos);
-	distancias.resize(nodos);
-
-	for (unsigned i = 0; i < enlaces.size(); ++i) {
-		V[nodo1(enlaces[i])].adyacentes.push_back(nodo2(enlaces[i]));
-		V[nodo2(enlaces[i])].adyacentes.push_back(nodo1(enlaces[i]));
+vector<nodo_lista_adyacencia> crear_lista_adyacencia(unsigned cant_nodos, vector<enlace> enlaces){
+	vector<nodo_lista_adyacencia> nodos(cant_nodos);
+	for(size_t i = 0; i < enlaces.size(); i++) {
+		nodos[nodo1(enlaces[i])].adyacentes.push_back(nodo2(enlaces[i]));
+		nodos[nodo2(enlaces[i])].adyacentes.push_back(nodo1(enlaces[i]));
 	}
+	return nodos;
+}
 
-	queue<unsigned> cola;
+vector<unsigned> bfs(unsigned cant_nodos, vector<enlace> enlaces, nodo inicial) {
+	vector<nodo_lista_adyacencia> nodos = crear_lista_adyacencia(cant_nodos, enlaces);
+	nodos[inicial].distancia = 0;
+
+	queue<nodo> cola;
 	cola.push(inicial);
-	V[inicial].distancia = 0;
 
-	while (!cola.empty()) {
-		unsigned n = cola.front();
-		V[n].visitado = true;
+	while(!cola.empty()) {
+		nodo n = cola.front();
+		nodos[n].visitado = true;
 		cola.pop();
-		for (unsigned i = 0; i < V[n].adyacentes.size(); ++i) {
-			if (V[V[n].adyacentes[i]].visitado != true) {
-				V[V[n].adyacentes[i]].distancia = V[n].distancia + 1;
-				cola.push(V[n].adyacentes[i]);
+		for(size_t i = 0; i < nodos[n].adyacentes.size(); i++) {
+			nodo adyacente = nodos[n].adyacentes[i];
+			if(nodos[adyacente].visitado != true) {
+				nodos[adyacente].distancia = nodos[n].distancia + 1;
+				cola.push(adyacente);
 			}
 		}
 	}
 
-	for (unsigned i = 0; i < nodos; ++i) distancias[i] = V[i].distancia;
+	vector<unsigned> distancias(cant_nodos);
+	for(nodo n = 0; n < cant_nodos; n++){
+		distancias[n] = nodos[n].distancia;
+	}
 
 	return distancias;
 }
 
-bool caminoEntrePuntosRec(vector<nodo> &V, vector<unsigned> &camino, unsigned inicial, unsigned final) {
-    //Si donde estoy es el que buscaba, lo agrego y devuelvo true
+bool camino_entre_nodos_rec(vector<nodo_lista_adyacencia> &nodos, vector<unsigned> &camino, nodo inicial, nodo final) {
+    // Si donde estoy es el que buscaba, lo agrego y devuelvo true
     if(inicial == final) {
-        V[inicial].visitado = true;
+        nodos[inicial].visitado = true;
         camino.push_back(inicial);
         return true; 
     }
-    //Si donde estoy no es el que busco y no tiene adyacentes, no encontré solución, false
-    if(V[inicial].adyacentes.size() == 0) {
-        V[inicial].visitado = true;
+
+    // Si donde estoy no es el que busco y no tiene adyacentes, no encontré solución, false
+    if(nodos[inicial].adyacentes.size() == 0) {
+        nodos[inicial].visitado = true;
         return false;
     }
-    //Si tiene adyacentes, los checkeo
+
+    // Si tiene adyacentes, los checkeo
     else {
-        V[inicial].visitado = true;
-        for (unsigned i = 0; i < V[inicial].adyacentes.size(); ++i) {
-            if(!V[V[inicial].adyacentes[i]].visitado) {
-                if(caminoEntrePuntosRec(V, camino, V[inicial].adyacentes[i], final)) {
+        nodos[inicial].visitado = true;
+        for(size_t i = 0; i < nodos[inicial].adyacentes.size(); i++) {
+        	nodo adyacente = nodos[inicial].adyacentes[i];
+            if(!nodos[adyacente].visitado) {
+                if(camino_entre_nodos_rec(nodos, camino, adyacente, final)) {
                     camino.push_back(inicial);
                     return true;
                 }
@@ -132,16 +177,12 @@ bool caminoEntrePuntosRec(vector<nodo> &V, vector<unsigned> &camino, unsigned in
     }
 }
 
-vector<unsigned> caminoEntrePuntos(unsigned nodos, vector<enlace> enlaces, unsigned inicial, unsigned final) {
-    vector<nodo> V;
-    vector<unsigned> camino;
-    V.resize(nodos);
-    camino.reserve(nodos);
+vector<nodo> camino_entre_nodos(unsigned cant_nodos, vector<enlace> enlaces, nodo inicial, nodo final) {
+    vector<nodo_lista_adyacencia> nodos = crear_lista_adyacencia(cant_nodos, enlaces);
 
-    for (unsigned i = 0; i < enlaces.size(); ++i) {
-        V[nodo1(enlaces[i])].adyacentes.push_back(nodo2(enlaces[i]));
-        V[nodo2(enlaces[i])].adyacentes.push_back(nodo1(enlaces[i]));
-    }
-    caminoEntrePuntosRec(V, camino, inicial, final);
+    vector<nodo> camino;
+    camino.reserve(cant_nodos);
+
+    camino_entre_nodos_rec(nodos, camino, inicial, final);
     return camino;
 }
