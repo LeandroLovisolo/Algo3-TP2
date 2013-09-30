@@ -22,7 +22,7 @@ TEST(problema2, DosNodos) {
 	EXPECT_EQ(enlaces, res.second);
 }
 
-TEST(problema2, DevuelveSolucionCorrecta) {
+TEST(problema2, CasoGeneral) {
 	// Ejemplo sacado de Introduction to Algorithms, por T. Cormen, pág. 632.
 	vector<enlace> enlaces;
 	enlaces.push_back(enlace(0, 1, 4));

@@ -3,7 +3,7 @@
 
 using namespace std;
 
-TEST(problema3, TestGenerico) {
+TEST(problema3, CasoGeneral) {
 
 	unsigned cantFabricas = 2;
 	unsigned nodos = 7;
@@ -32,7 +32,7 @@ TEST(problema3, TestGenerico) {
     EXPECT_EQ(32, costoTotal);
 }
 
-TEST(problema3, CasoDosClientesUnaFabrica) {
+TEST(problema3, UnaFabricaDosClientes) {
 	/*Representa el caso trivial en el cuál se eligen 
 	los dos únicos caminos para coenctarse con una fábrica*/
 	unsigned cantFabricas = 1;
@@ -60,7 +60,7 @@ TEST(problema3, CasoDosClientesUnaFabrica) {
 
 }
 
-TEST(problema3, CasoDosFabricasUnCliente) {
+TEST(problema3, DosFabricasUnCliente) {
 	/*Representa el caso trivial en el cuál se elige un único camino para
 	conectar con una de las 2 fábrica*/
 	unsigned cantFabricas = 2;
@@ -88,7 +88,7 @@ TEST(problema3, CasoDosFabricasUnCliente) {
     EXPECT_EQ(7, costoTotal);
 }
 
-TEST(problema3, CasoDosSubconjuntos) {
+TEST(problema3, DosGrafosDisjuntos) {
 	/*
 	Representa el caso trivial en el cuál se consiguen 2 subconjuntos, cada uno
 	de un cliente con su fábrica. (Prueba que no se unen subconjuntos con una fábrica)
