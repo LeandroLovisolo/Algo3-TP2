@@ -352,7 +352,9 @@ Debido que el algoritmo de BFS siempre termina en una hoja (si terminara en un n
 Dado un árbol AGM, el nodo arbitrario N1 elegido puede tener las siguientes ubicaciones:
 \begin{itemize}
 	\item Ser parte del camino máximo. Si esto ocurre, la hoja más lejana a N1 será trivialmente un extremo del camino máximo.
-	\item No ser parte del camino máximo. Como el camino máximo maximiza la longitud entre dos nodos, al ser un árbol (existen caminos para todo par de nodos), cualquier camino más lejano desde un nodo terminará en un extremo del camino máximo. Sea C1 el camino desde N1 a su hoja más lejana y sea C2 el camino máximo dentro del árbol, si C1 no terminara en un extremo de C2, como existe camino entre todo par de nodos, al terminar en otro extremo, C1 sería camino máximo y esto es absurdo, ya que C2 era el camino más largo.
+	\item No ser parte del camino máximo. Como el camino máximo maximiza la longitud entre dos nodos, al ser un árbol (existen caminos para todo par de nodos), cualquier camino más lejano desde un nodo terminará en un extremo del camino máximo. Sea C1, camino entre N1 y N2 (nodo más lejano, por lo que lo hace camino máximo entre N1, N2) y sea C2 camino máximo entre dos pares de nodos cuales quiera V1, V2 con V1, V2 $\neq$ N1. Si C2 $\neq$ N2, es decir, el extremo de C1 no es extremo del camino máximo (encuentra su camino más largo sin utilizar el camino máximo), entonces existe C3 con extremos en V1 y N2 de mayor longitud que C2. Absurdo, ya que C2 era el camino de mayor longitud. 
+	
+Por el absurdo, si N1 no pertenece al camino máximo, el extremo encontrado por BFS si.
 \end{itemize}
 
 Al obtener un extremo del camino máximo, otra ejecución de BFS desde el extremo encontrado caerá sobre el caso trivial de pertenecer al camino máximo y encontrará el camino más lejano a este, su otro extremo.
