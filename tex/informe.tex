@@ -313,9 +313,7 @@ Se nos pide:
 \textbf{Entrada}:. \\
 \textbf{Salida}: . \\
 
-\subsection{Minimizar costo de enlaces}
-
-\subsubsection{Solución}
+\subsection{Solución}
 Utilizamos para la representación de la solución un AGM. Este tipo de organización de nodos y aristas satisface los requerimientos de la solución; existen caminos entre todo par de servidores (S1, S2) con costo mínimo. Para conseguir este AGM, utilizamos el algoritmo de Kruskal.
 
 Una vez conseguido el AGM mediante el algoritmo de Kruskal, se busca el nodo \textit{master} pedido por el enunciado.
@@ -329,7 +327,7 @@ Para realizar la búsqueda del nodo \textit{master} se realiza lo siguiente:
 \item Se consigue el nodo \textit{master} consiguiendo el nodo en la mitad del camino máximo obtenido.
 \end{itemize}
 
-\subsubsection{Complejidad}
+\subsection{Complejidad}
 Para la implementación del algoritmo de Kruskal, se utilizó la estructura Disjoint-Set, compuesta por las funciones Make\_union() y Find() y 3 arreglos de longitud cantidad de nodos.
 La función Find() consiste en una función recursiva la cual recorre los padres del nodo para ver encontrar el nodo que define al conjunto. En cada entrada a la función, se realiza un procedimiento llamado compresión de caminos. Cuando se utiliza la función, actualiza el nodo de donde se llamó y todos los nodos que recorre, con el nodo representante del conjunto.
 
@@ -345,15 +343,19 @@ Para el cálculo del nodo central, las dos ejecuciones de BFS tienen una complej
 
 La complejidad total del algoritmo es O($n^2$ log n + n) $\subset$ O($n^2$ log n).
 
-\subsubsection{Correctitud}
+\subsection{Correctitud}
 
-\subsection{Minimizar el tiempo de replicación}
+Dado el AGM provisto por la ejecución de Kruskal, se busca probar que el procedimiento de encontrar el nodo \textit{master} es correcto.
 
-\subsubsection{Solución}
+Debido que el algoritmo de BFS siempre termina en una hoja (si terminara en un nodo, habría una hoja más por la que seguir) y todo camino máximo tiene un extremo en una hoja (ya que si fuera un nodo su extremo, habría una hoja que sería camino más largo), se busca probar que la aplicación del algoritmo desde cualquier nodo arbitrario dará un extremo del camino máximo en el árbol.
 
-\subsubsection{Complejidad}
+Dado un árbol AGM, el nodo arbitrario N1 elegido puede tener las siguientes ubicaciones:
+\begin{itemize}
+	\item Ser parte del camino máximo. Si esto ocurre, la hoja más lejana a N1 será trivialmente un extremo del camino máximo.
+	\item No ser parte del camino máximo. Como el camino máximo maximiza la longitud entre dos nodos, al ser un árbol (existen caminos para todo par de nodos), cualquier camino más lejano desde un nodo terminará en un extremo del camino máximo. Sea C1 el camino desde N1 a su hoja más lejana y sea C2 el camino máximo dentro del árbol, si C1 no terminara en un extremo de C2, como existe camino entre todo par de nodos, al terminar en otro extremo, C1 sería camino máximo y esto es absurdo, ya que C2 era el camino más largo.
+\end{itemize}
 
-\subsubsection{Correctitud}
+Al obtener un extremo del camino máximo, otra ejecución de BFS desde el extremo encontrado caerá sobre el caso trivial de pertenecer al camino máximo y encontrará el camino más lejano a este, su otro extremo.
 
 \subsubsection{Experimentos computacionales}
 
