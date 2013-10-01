@@ -313,19 +313,9 @@ Se nos pide:
 \textbf{Entrada}:. \\
 \textbf{Salida}: . \\
 
-\subsection{Solución}
+\subsection{Minimizar costo de enlaces}
+\subsubsection{Solución}
 Utilizamos para la representación de la solución un AGM. Este tipo de organización de nodos y aristas satisface los requerimientos de la solución; existen caminos entre todo par de servidores (S1, S2) con costo mínimo. Para conseguir este AGM, utilizamos el algoritmo de Kruskal.
-
-Una vez conseguido el AGM mediante el algoritmo de Kruskal, se busca el nodo \textit{master} pedido por el enunciado.
-
-Para realizar la búsqueda del nodo \textit{master} se realiza lo siguiente:
-
-\begin{itemize}
-\item Se utiliza el algoritmo de BFS desde cualquier nodo arbitrario para encontrar un extremo del camino máximo dentro del árbol.
-\item Se ejecuta otra vez BFS desde el extremo encontrado para encontrar el otro extremo del camino máximo.
-\item Se busca el camino máximo con ambos extremos encontrados.
-\item Se consigue el nodo \textit{master} consiguiendo el nodo en la mitad del camino máximo obtenido.
-\end{itemize}
 
 \subsubsection{Pseudocódigo}
 \begin{pseudo}
@@ -435,7 +425,8 @@ nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero
     \Return tupla$<$maestro, arbol\_generador\_minimo$>$
 \EndProcedure
 \end{pseudo}
-\subsection{Complejidad}
+
+\subsubsection{Complejidad}
 Para la implementación del algoritmo de Kruskal, se utilizó la estructura Disjoint-Set, compuesta por las funciones Make\_union() y Find() y 3 arreglos de longitud cantidad de nodos.
 La función Find() consiste en una función recursiva la cual recorre los padres del nodo para ver encontrar el nodo que define al conjunto. En cada entrada a la función, se realiza un procedimiento llamado compresión de caminos. Cuando se utiliza la función, actualiza el nodo de donde se llamó y todos los nodos que recorre, con el nodo representante del conjunto.
 
@@ -447,11 +438,31 @@ Para realizar el ordenamiento, se obtiene una complejidad de O(m log m) utilizan
 
 Como las operaciones sobre la estructura Disjoint-Set se realizan a lo sumo $m$ veces, se obtiene una complejidad de O($m$) para conseguir el AGM.
 
-Para el cálculo del nodo central, las dos ejecuciones de BFS tienen una complejidad de 2 * O(n + m), más el algoritmo para conseguir el camino entre dos puntos que recorre para cada nodo, todas sus aristas ejecutándose con un costo de O(n + m), se tiene un costo toal de O(3*(n + m)) $\subset$ O(n + m) que como la estructura donde se aplican es un árbol (n-1 aristas) O(n + m) $\subset$ O(n), cumpliendo con la complejidad lineal pedida para este punto.
-
 La complejidad total del algoritmo es O($n^2$ log n + n) $\subset$ O($n^2$ log n).
 
-\subsection{Correctitud}
+\subsubsection{Correctitud}
+
+
+\subsection{Minimizar el tiempo de replicación}
+
+\subsubsection{Solución}
+
+Para realizar la búsqueda del nodo \textit{master} se realiza lo siguiente:
+
+\begin{itemize}
+\item Se utiliza el algoritmo de BFS desde cualquier nodo arbitrario para encontrar un extremo del camino máximo dentro del árbol.
+\item Se ejecuta otra vez BFS desde el extremo encontrado para encontrar el otro extremo del camino máximo.
+\item Se busca el camino máximo con ambos extremos encontrados.
+\item Se consigue el nodo \textit{master} consiguiendo el nodo en la mitad del camino máximo obtenido.
+\end{itemize}
+
+\subsubsection{Pseudocódigo}
+
+\subsubsection{Complejidad}
+
+Para el cálculo del nodo \textit{master} , las dos ejecuciones de BFS tienen una complejidad de 2 * O(n + m), más el algoritmo para conseguir el camino entre dos puntos que recorre para cada nodo, todas sus aristas ejecutándose con un costo de O(n + m), se tiene un costo toal de O(3*(n + m)) $\subset$ O(n + m) que como la estructura donde se aplican es un árbol (n-1 aristas) O(n + m) $\subset$ O(n), cumpliendo con la complejidad lineal pedida para este punto.
+
+\subsubsection{Correctitud}
 
 Dado el AGM provisto por la ejecución de Kruskal, se busca probar que el procedimiento de encontrar el nodo \textit{master} es correcto.
 
@@ -459,21 +470,21 @@ Debido que el algoritmo de BFS siempre termina en una hoja (si terminara en un n
 
 Dado un árbol AGM, el nodo arbitrario N1 elegido puede tener las siguientes ubicaciones:
 \begin{itemize}
-	\item Ser parte del camino máximo. Si esto ocurre, la hoja más lejana a N1 será trivialmente un extremo del camino máximo.
-	\item No ser parte del camino máximo.
-	
-	Sea C1 el camino máximo del árbol de extremos U y V, y sea C2 el camino de longitud máxima entre N1 y N2, suponemos que N2 $\neq$ U, lo que implica que h(U) $<$ h(N2), con h la altura del árbol tomando como raíz a N1. Llamamos también a X e Y las bifurcaciones de los caminos a U y a N2 respectivamente.
+  \item Ser parte del camino máximo. Si esto ocurre, la hoja más lejana a N1 será trivialmente un extremo del camino máximo.
+  \item No ser parte del camino máximo.
+  
+  Sea C1 el camino máximo del árbol de extremos U y V, y sea C2 el camino de longitud máxima entre N1 y N2, suponemos que N2 $\neq$ U, lo que implica que h(U) $<$ h(N2), con h la altura del árbol tomando como raíz a N1. Llamamos también a X e Y las bifurcaciones de los caminos a U y a N2 respectivamente.
 
 \begin{figure}[ht!]
 \centering
 \includegraphics[width=60mm]{2b.png}
 \caption{Ejemplo gráfico de la suposición}
 \label{overflow}
-\end{figure}	
-	
-	Entonces, sea l función de longitud entre dos nodos, l(U,V) = h(U) + h(V) - 2*h(X) y l(U,N2) = h(U) + h(N2) - 2*h(X), y como h(N2) $>$ h(U) por ser N2 el nodo más lejano o de mayor altura, esto implica que l(U,N2) $>$ l(U,V) y esto es absurdo por ser C1 el camino máximo.
-	
-	Por el absurdo, concluimos que U = N2, es decir, que N2 es un extremo del camino máximo.
+\end{figure}  
+  
+  Entonces, sea l función de longitud entre dos nodos, l(U,V) = h(U) + h(V) - 2*h(X) y l(U,N2) = h(U) + h(N2) - 2*h(X), y como h(N2) $>$ h(U) por ser N2 el nodo más lejano o de mayor altura, esto implica que l(U,N2) $>$ l(U,V) y esto es absurdo por ser C1 el camino máximo.
+  
+  Por el absurdo, concluimos que U = N2, es decir, que N2 es un extremo del camino máximo.
 \end{itemize}
 
 Al obtener un extremo del camino máximo, otra ejecución de BFS desde el extremo encontrado caerá sobre el caso trivial de pertenecer al camino máximo y encontrará el camino más lejano a este, su otro extremo.
