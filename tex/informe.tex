@@ -318,115 +318,39 @@ Se nos pide:
 Utilizamos para la representación de la solución un AGM. Este tipo de organización de nodos y aristas satisface los requerimientos de la solución; existen caminos entre todo par de servidores (S1, S2) con costo mínimo. Para conseguir este AGM, utilizamos el algoritmo de Kruskal.
 
 \subsubsection{Pseudocódigo}
+
 \begin{pseudo}
-\Procedure{nodo\_mas\_distante}{distancias : vector de enteros} $\rightarrow$ nodo
-	\State mas\_distante : nodo													\Ode{1}
-	\State distancia\_maxima : entero = 0										\Ode{1}
-	\For{n = 0 To Tamaño(distancias)}
-		\If{distancias[n] $>$ distancia\_maxima}								\Ode{1}
-			\State distancia\_maxima = distancias[n]								\Ode{1}
-			\State mas\_distante = n												\Ode{1}
-		\EndIf
-	\EndFor
-	\Return mas\_distante;
-\EndProcedure
 
-\Procedure{centro\_del\_arbol}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ nodo
-	\State distancias : vector de enteros = Bfs(cant\_nodos, enlaces, nodo1(enlaces[0])) \Ode{n}
-	\State inicial : nodo = Nodo\_mas\_distante(distancias)						\Ode{n}
+\State parent : vector de enteros
+\State ranking : vector de enteros
 
-	\State distancias = Bfs(cant\_nodos, enlaces, inicial)						\Ode{n}
-	\State final : nodo = Nodo\_mas\_distante(distancias)						\Ode{n}
-
-	\State camino : vector de nodos = Camino\_entre\_nodos(cant\_nodos, enlaces, inicial, final) \Ode(n)
-	
-	\Return camino[Tamaño(camino)/2]
-\EndProcedure
-
-nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero, visitado : bool$>$
-\Procedure{crear\_lista\_adyacencia}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ vector de nodo\_lista\_adyacencia
-	\State nodos : vector de nodo\_lista\_adyacencia [cant\_nodos]				\Ode{n}
-	\For{i = 0 To Tamaño(enlaces)}
-		\State nodos[nodo1(enlaces[i])].adyacentes.Agregar(nodo2(enlaces[i]))	\Ode{1}
-		\State nodos[nodo2(enlaces[i])].adyacentes.Agregar(nodo1(enlaces[i]))	\Ode{1}
-	 \EndFor
-	\Return nodos
-\EndProcedure
-
-\Procedure{bfs}{cant\_nodos : entero, enlaces : vector de enlace, inicial : nodo} $\rightarrow$ vector de enteros
-	\State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{m}
-	\State nodos[inicial].distancia = 0											\Ode{1}
-
-	\State cola : Cola de nodos													\Ode{1}
-	\State cola.Encolar(inicial)												\Ode{1}
-	
-	\While{!cola.Vacia()}														\Ode{1}
-		\State n : nodo = cola.Siguiente()										\Ode{1}
-		\State nodos[n].visitado = true											\Ode{1}
-		\State cola.Desencolar()												\Ode{1}
-		\For({i = 0 To Tamaño(nodos[n].adyacentes)}								\Ode{1}
-			\State nodo adyacente = nodos[n].adyacentes[i]						\Ode{1}
-			\If{nodos[adyacente].visitado != true}								\Ode{1}
-				\State nodos[adyacente].distancia = nodos[n].distancia + 1		\Ode{1}
-				\State cola.Encolar(adyacente)									\Ode{1}
-			\EndIf
-		\EndFor
-	\EndWhile
-
-	\State distancias : vector de enteros [cant\_nodos]							\Ode{n}
-	\For{n = 0 To cant\_nodos}
-		\State distancias[n] = nodos[n].distancia								\Ode{1}
-	\EndFor
-	\Return distancias
-\EndProcedure
-
-\Procedure{camino\_entre\_nodos\_rec}{\&nodos : vector de nodo\_lista\_adyacencia, \&camino : vector de enteros, inicial : nodo, final : nodo} $\rightarrow$ bool
-    \If{inicial == final}															\Ode{1}
-        \State nodos[inicial].visitado = true										\Ode{1}
-        \State camino.Agregar(inicial)												\Ode{1}
-        \State \textbf{return} true
-    \EndIf
-
-    \If{Tamaño(nodos[inicial].adyacentes) == 0}										\Ode{1}
-        \State nodos[inicial].visitado = true										\Ode{1}
-        \State \textbf{return} false
+\Procedure{Make\_union}{x : entero, y : entero}
+    \State set\_x : unsigned = Find(x)                    \Ode{1}
+    \State set\_y : unsigned = Find(y)                    \Ode{1}
+    \If{ranking[set\_x] $>$ ranking[set\_y]}                \Ode{1}
+    \State parent[set\_y] = set\_x                    \Ode{1}
     \Else
-        \State nodos[inicial].visitado = true										\Ode{1}
-        \For{i = 0 To Tamaño(nodos[inicial].adyacentes.size())}
-        	\State adyacente : nodo = nodos[inicial].adyacentes[i]					\Ode{1}
-            \If{!nodos[adyacente].visitado}											\Ode{1}
-                \If{Camino\_entre\_nodos\_rec(nodos, camino, adyacente, final)}		\Ode{n}
-                    \State camino.Agregar(inicial)									\Ode{1}
-                    \textbf{return} true
-                \EndIf
-            \EndIf
-        \EndFor
-        \State \textbf{return} false
+        \State parent[set\_x] = set\_y                    \Ode{1}
+    \EndIf
+    
+    \If{ranking[set\_x] == ranking[set\_y]}                 \Ode{1}
+        \State ranking[set\_y]++                      \Ode{1}
     \EndIf
 \EndProcedure
 
-\Procedure{camino\_entre\_nodos}{cant\_nodos : entero, enlaces : vector de enlace, inicial : nodo, final : nodo} $\rightarrow$ vecot de nodo
-    \State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{n}
-    \State camino : vector de nodo [cant\_nodos]											\Ode{n}
-    \State camino\_entre\_nodos\_rec(nodos, camino, inicial, final)							\Ode{n}
-    \Return camino
+
+
+\Procedure{Find}{x : entero} $\rightarrow$ entero
+    \If{x != parent[x]}                           \Ode{1}
+        \State parent[x] = Find(parent[x])                  \Ode{1}
+    \EndIf
+    \Return parent[x]
 \EndProcedure
 
-
-\Procedure{problema2}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ tupla $<$nodo, vector de enlace$>$
-
-	\If{cant\_nodos == 1}																\Ode{1}
-		\State \textbf{return} tupla$<$0, enlaces$>$
-	\EndIf
-
-	\State arbol\_generador\_minimo : vector de enlace = Kruskal(cant\_nodos, enlaces) \Ode{n^2 log n}
-	\State maestro : nodo = Centro\_del\_arbol(cant\_nodos, arbol\_generador\_minimo)	\Ode{n}
-
-    \Return tupla$<$maestro, arbol\_generador\_minimo$>$
-\EndProcedure
 \end{pseudo}
 
 \subsubsection{Complejidad}
+
 Para la implementación del algoritmo de Kruskal, se utilizó la estructura Disjoint-Set, compuesta por las funciones Make\_union() y Find() y 3 arreglos de longitud cantidad de nodos.
 La función Find() consiste en una función recursiva la cual recorre los padres del nodo para ver encontrar el nodo que define al conjunto. En cada entrada a la función, se realiza un procedimiento llamado compresión de caminos. Cuando se utiliza la función, actualiza el nodo de donde se llamó y todos los nodos que recorre, con el nodo representante del conjunto.
 
@@ -458,6 +382,114 @@ Para realizar la búsqueda del nodo \textit{master} se realiza lo siguiente:
 
 \subsubsection{Pseudocódigo}
 
+\begin{pseudo}
+\Procedure{nodo\_mas\_distante}{distancias : vector de enteros} $\rightarrow$ nodo
+  \State mas\_distante : nodo                         \Ode{1}
+  \State distancia\_maxima : entero = 0                   \Ode{1}
+  \For{n = 0 To Tamaño(distancias)}
+    \If{distancias[n] $>$ distancia\_maxima}                \Ode{1}
+      \State distancia\_maxima = distancias[n]                \Ode{1}
+      \State mas\_distante = n                        \Ode{1}
+    \EndIf
+  \EndFor
+  \Return mas\_distante;
+\EndProcedure
+
+\Procedure{centro\_del\_arbol}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ nodo
+  \State distancias : vector de enteros = Bfs(cant\_nodos, enlaces, nodo1(enlaces[0])) \Ode{n}
+  \State inicial : nodo = Nodo\_mas\_distante(distancias)           \Ode{n}
+
+  \State distancias = Bfs(cant\_nodos, enlaces, inicial)            \Ode{n}
+  \State final : nodo = Nodo\_mas\_distante(distancias)           \Ode{n}
+
+  \State camino : vector de nodos = Camino\_entre\_nodos(cant\_nodos, enlaces, inicial, final) \Ode(n)
+  
+  \Return camino[Tamaño(camino)/2]
+\EndProcedure
+
+nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero, visitado : bool$>$
+\Procedure{crear\_lista\_adyacencia}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ vector de nodo\_lista\_adyacencia
+  \State nodos : vector de nodo\_lista\_adyacencia [cant\_nodos]        \Ode{n}
+  \For{i = 0 To Tamaño(enlaces)}
+    \State nodos[nodo1(enlaces[i])].adyacentes.Agregar(nodo2(enlaces[i])) \Ode{1}
+    \State nodos[nodo2(enlaces[i])].adyacentes.Agregar(nodo1(enlaces[i])) \Ode{1}
+   \EndFor
+  \Return nodos
+\EndProcedure
+
+\Procedure{bfs}{cant\_nodos : entero, enlaces : vector de enlace, inicial : nodo} $\rightarrow$ vector de enteros
+  \State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{m}
+  \State nodos[inicial].distancia = 0                     \Ode{1}
+
+  \State cola : Cola de nodos                         \Ode{1}
+  \State cola.Encolar(inicial)                        \Ode{1}
+  
+  \While{!cola.Vacia()}                           \Ode{1}
+    \State n : nodo = cola.Siguiente()                    \Ode{1}
+    \State nodos[n].visitado = true                     \Ode{1}
+    \State cola.Desencolar()                        \Ode{1}
+    \For({i = 0 To Tamaño(nodos[n].adyacentes)}               \Ode{1}
+      \State nodo adyacente = nodos[n].adyacentes[i]            \Ode{1}
+      \If{nodos[adyacente].visitado != true}                \Ode{1}
+        \State nodos[adyacente].distancia = nodos[n].distancia + 1    \Ode{1}
+        \State cola.Encolar(adyacente)                  \Ode{1}
+      \EndIf
+    \EndFor
+  \EndWhile
+
+  \State distancias : vector de enteros [cant\_nodos]             \Ode{n}
+  \For{n = 0 To cant\_nodos}
+    \State distancias[n] = nodos[n].distancia               \Ode{1}
+  \EndFor
+  \Return distancias
+\EndProcedure
+
+\Procedure{camino\_entre\_nodos\_rec}{\&nodos : vector de nodo\_lista\_adyacencia, \&camino : vector de enteros, inicial : nodo, final : nodo} $\rightarrow$ bool
+    \If{inicial == final}                             \Ode{1}
+        \State nodos[inicial].visitado = true                   \Ode{1}
+        \State camino.Agregar(inicial)                        \Ode{1}
+        \State \textbf{return} true
+    \EndIf
+
+    \If{Tamaño(nodos[inicial].adyacentes) == 0}                   \Ode{1}
+        \State nodos[inicial].visitado = true                   \Ode{1}
+        \State \textbf{return} false
+    \Else
+        \State nodos[inicial].visitado = true                   \Ode{1}
+        \For{i = 0 To Tamaño(nodos[inicial].adyacentes.size())}
+          \State adyacente : nodo = nodos[inicial].adyacentes[i]          \Ode{1}
+            \If{!nodos[adyacente].visitado}                     \Ode{1}
+                \If{Camino\_entre\_nodos\_rec(nodos, camino, adyacente, final)}   \Ode{n}
+                    \State camino.Agregar(inicial)                  \Ode{1}
+                    \textbf{return} true
+                \EndIf
+            \EndIf
+        \EndFor
+        \State \textbf{return} false
+    \EndIf
+\EndProcedure
+
+\Procedure{camino\_entre\_nodos}{cant\_nodos : entero, enlaces : vector de enlace, inicial : nodo, final : nodo} $\rightarrow$ vecot de nodo
+    \State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{n}
+    \State camino : vector de nodo [cant\_nodos]                      \Ode{n}
+    \State camino\_entre\_nodos\_rec(nodos, camino, inicial, final)             \Ode{n}
+    \Return camino
+\EndProcedure
+
+
+\Procedure{problema2}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ tupla $<$nodo, vector de enlace$>$
+
+  \If{cant\_nodos == 1}                               \Ode{1}
+    \State \textbf{return} tupla$<$0, enlaces$>$
+  \EndIf
+
+  \State arbol\_generador\_minimo : vector de enlace = Kruskal(cant\_nodos, enlaces) \Ode{n^2 log n}
+  \State maestro : nodo = Centro\_del\_arbol(cant\_nodos, arbol\_generador\_minimo) \Ode{n}
+
+    \Return tupla$<$maestro, arbol\_generador\_minimo$>$
+\EndProcedure
+\end{pseudo}
+
 \subsubsection{Complejidad}
 
 Para el cálculo del nodo \textit{master} , las dos ejecuciones de BFS tienen una complejidad de 2 * O(n + m), más el algoritmo para conseguir el camino entre dos puntos que recorre para cada nodo, todas sus aristas ejecutándose con un costo de O(n + m), se tiene un costo toal de O(3*(n + m)) $\subset$ O(n + m) que como la estructura donde se aplican es un árbol (n-1 aristas) O(n + m) $\subset$ O(n), cumpliendo con la complejidad lineal pedida para este punto.
@@ -469,6 +501,7 @@ Dado el AGM provisto por la ejecución de Kruskal, se busca probar que el proced
 Debido que el algoritmo de BFS siempre termina en una hoja (si terminara en un nodo, habría una hoja más por la que seguir) y todo camino máximo tiene un extremo en una hoja (ya que si fuera un nodo su extremo, habría una hoja que sería camino más largo), se busca probar que la aplicación del algoritmo desde cualquier nodo arbitrario dará un extremo del camino máximo en el árbol.
 
 Dado un árbol AGM, el nodo arbitrario N1 elegido puede tener las siguientes ubicaciones:
+
 \begin{itemize}
   \item Ser parte del camino máximo. Si esto ocurre, la hoja más lejana a N1 será trivialmente un extremo del camino máximo.
   \item No ser parte del camino máximo.
@@ -522,6 +555,7 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 \textbf{Salida}: . \\
 
 \subsection{Solución}
+
 Dada una serie de aristas y sus respectivos costos, que representan las rutas entre clientes y fábricas y el costo de pavimentación, utilizamos para la resolución una modificación del conjuto de datos para luego aplicar el algoritmo de Kruskal con la estrucuta Disjoint-Set.
 
 La idea de la utilización del algoritmo de Kruskal nace de la necesidad de conseguir un bosque de AGM's entre clientes y fábricas, lo que nos permitirá conseguir los caminos que los interconecten de mínimo costo. Como en nuestro caso, solo se necesita que una fábrica este conectada por una serie de rutas a otros clientes, creamos un nodo \textit{fantasma} al cuál le conectamos cada fábrica mediante una arista de costo cero para poder tener un único set que forzará a que el algoritmo solo conecte una única vez una fábrica con cada set disjunto.
@@ -531,33 +565,7 @@ El resultado obtenido será un árbol AGM al cual, al sacarle el nodo \textit{fa
 \subsubsection{Pseudocódigo}
 \begin{pseudo}
 
-\State parent : vector de enteros
 \State ranking : vector de enteros
-
-\Procedure{Make\_union}{x : entero, y : entero}
-    \State set\_x : unsigned = Find(x)										\Ode{1}
-    \State set\_y : unsigned = Find(y)										\Ode{1}
-    \If{ranking[set\_x] $>$ ranking[set\_y]}								\Ode{1}
-		\State parent[set\_y] = set\_x										\Ode{1}
-    \Else
-        \State parent[set\_x] = set\_y										\Ode{1}
-    \EndIf
-    
-    \If{ranking[set\_x] == ranking[set\_y]}									\Ode{1}
-        \State ranking[set\_y]++											\Ode{1}
-    \EndIf
-\EndProcedure
-
-
-
-\Procedure{Find}{x : entero} $\rightarrow$ entero
-    \If{x != parent[x]}														\Ode{1}
-        \State parent[x] = Find(parent[x])									\Ode{1}
-    \EndIf
-    \Return parent[x]
-\EndProcedure
-
-
 
 \State $tupla <nodo1 : entero, nodo2 : entero, costo : entero>$ es $ruta$
 \Procedure{problema3}{nodos : entero, cantFabricas : entero, rutas : vector de ruta}
@@ -592,7 +600,9 @@ El resultado obtenido será un árbol AGM al cual, al sacarle el nodo \textit{fa
 \EndProcedure
 
 \end{pseudo}
+
 \subsection{Complejidad}
+
 Como se agrega un conjunto nuevo de aristas acotado por la cantidad de fábricas, se obtiene un costo de O(F) para crear las nuevas rutas que se conectarán al nodo \textit{fantasma}. Como R $>$ F, O(F) $\in$ O(R) acotando la cantidad de rutas a O(R).
 
 Debido a que para el ordenamiento de las rutas, utilizamos la función Sort() de la STL de C++, se obtiene una costo de O(R * log R), siendo R rutas, lo que equivale a O(R * log $(C+F)^2$), siendo C clientes y F fábricas por ser C+F la mayor cantidad de aristas posibles. Por ser F menor que C, O(F) $\subset$ O(C), log($(C+F)^2$) $\subset$ log($C^2$). Siendo O($C^2$) la cota superior para la cantidad de aristas, la complejidad equivale a O(R * 2 log C) $\subset$ O(R * log C).
@@ -610,7 +620,9 @@ Dada la solución obtenida por Kruskal, queremos ver que al podar el nodo fantas
 Por el absurdo. Supongo que la solución obtenida no es óptima, esto implica que existe otro bosque solución el cuál tiene un costo menor. Para este bosque conecto sus fábricas con un nodo \textit{fantasma} y como los pesos de las aristas agregadas para conectar el nodo fantasma son 0, el árbol generado es AGM. Absurdo, ya que el árbol original devuelto por Kruskal ya era AGM.
 
 Podemos concluir, por el absurdo que el bosque solución obtenido es el ópitmo en costo.
+
 \subsection{Experimentos computacionales}
+
 \subsubsection{Verificación de correctitud}
 
 \subsubsection{Performance}
