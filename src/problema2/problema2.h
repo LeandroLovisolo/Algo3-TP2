@@ -16,6 +16,10 @@ typedef std::tuple<nodo, nodo, costo_enlace> enlace;
 std::pair<nodo, std::vector<enlace>>
 problema2(unsigned cant_nodos, std::vector<enlace> enlaces);
 
+std::vector<enlace> problema2a(unsigned cant_nodos, std::vector<enlace> enlaces);
+
+nodo problema2b(unsigned cant_nodos, std::vector<enlace> enlaces);
+
 std::vector<unsigned> bfs(unsigned cant_nodos, std::vector<enlace> enlaces, nodo inicial);
 
 std::vector<nodo> camino_entre_nodos(unsigned cant_nodos, std::vector<enlace> enlaces, nodo inicial, nodo final);

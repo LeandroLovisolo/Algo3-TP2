@@ -22,27 +22,10 @@ void medir(std::string archivo_csv,
 
         auto problema = generar(i);
 
-        // unsigned long tiempo = UINT_MAX;
-        // for(int j = 0; j < mediciones_por_problema; j++) {
-        //     struct timespec inicio, fin;
-        //     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &inicio);
-        //     resolver(problema);
-        //     clock_gettime(CLOCK_THREAD_CPUTIME_ID, &fin);
-        //     tiempo = min(tiempo, (unsigned long)(fin.tv_nsec - inicio.tv_nsec));
-        // }
-
-        // double tiempo = 0;
-        // for(int j = 0; j < mediciones_por_problema; j++) {
-        //     clock_t inicio = clock();
-        //     resolver(problema);
-        //     tiempo += (clock() - inicio);
-        // }
-        // tiempo /= mediciones_por_problema;
-
         clock_t tiempo = UINT_MAX;
         for(int j = 0; j < mediciones_por_problema; j++) {
             clock_t inicio = clock();
-            resolver(problema);
+            resolver(i, problema);
             tiempo = std::min(tiempo, clock() - inicio);
         }
 

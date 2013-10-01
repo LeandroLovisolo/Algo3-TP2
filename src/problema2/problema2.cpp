@@ -44,7 +44,7 @@ unsigned DisjointSet::find(unsigned x) {
     return parent[x];
 }
 
-vector<enlace> kruskal(unsigned cant_nodos, vector<enlace> enlaces) {
+vector<enlace> problema2a(unsigned cant_nodos, vector<enlace> enlaces) {
     vector<enlace> arbol_generador_minimo;
     DisjointSet disjoint_set(cant_nodos);
 
@@ -76,7 +76,10 @@ nodo nodo_mas_distante(vector<unsigned> distancias) {
 	return mas_distante;
 }
 
-nodo centro_del_arbol(unsigned cant_nodos, vector<enlace> enlaces) {
+nodo problema2b(unsigned cant_nodos, vector<enlace> enlaces) {
+    // Caso borde
+    if(cant_nodos == 1) return 0;
+
 	// Busco un extremo de un camino máximo dentro del árbol.
 	vector<unsigned> distancias = bfs(cant_nodos, enlaces, nodo1(enlaces[0]));
 	nodo inicial = nodo_mas_distante(distancias);
@@ -93,13 +96,8 @@ nodo centro_del_arbol(unsigned cant_nodos, vector<enlace> enlaces) {
 }
 
 pair<nodo, vector<enlace>> problema2(unsigned cant_nodos, vector<enlace> enlaces) {
-	// Caso borde
-	if(cant_nodos == 1) {
-		return make_pair(0, enlaces);
-	}
-
-	vector<enlace> arbol_generador_minimo = kruskal(cant_nodos, enlaces);
-	nodo maestro = centro_del_arbol(cant_nodos, arbol_generador_minimo);
+	vector<enlace> arbol_generador_minimo = problema2a(cant_nodos, enlaces);
+	nodo maestro = problema2b(cant_nodos, arbol_generador_minimo);
 
     return make_pair(maestro, arbol_generador_minimo);
 }
@@ -147,28 +145,27 @@ vector<unsigned> bfs(unsigned cant_nodos, vector<enlace> enlaces, nodo inicial) 
 	return distancias;
 }
 
-bool camino_entre_nodos_rec(vector<nodo_lista_adyacencia> &nodos, vector<unsigned> &camino, nodo inicial, nodo final) {
+bool camino_entre_nodos_rec(vector<nodo_lista_adyacencia> &nodos, vector<nodo> &camino, nodo actual, nodo final) {
+    nodos[actual].visitado = true;
+    
     // Si donde estoy es el que buscaba, lo agrego y devuelvo true
-    if(inicial == final) {
-        nodos[inicial].visitado = true;
-        camino.push_back(inicial);
+    if(actual == final) {
+        camino.push_back(actual);
         return true; 
     }
 
     // Si donde estoy no es el que busco y no tiene adyacentes, no encontré solución, false
-    if(nodos[inicial].adyacentes.size() == 0) {
-        nodos[inicial].visitado = true;
+    if(nodos[actual].adyacentes.size() == 0) {
         return false;
     }
 
     // Si tiene adyacentes, los checkeo
     else {
-        nodos[inicial].visitado = true;
-        for(size_t i = 0; i < nodos[inicial].adyacentes.size(); i++) {
-        	nodo adyacente = nodos[inicial].adyacentes[i];
+        for(size_t i = 0; i < nodos[actual].adyacentes.size(); i++) {
+        	nodo adyacente = nodos[actual].adyacentes[i];
             if(!nodos[adyacente].visitado) {
                 if(camino_entre_nodos_rec(nodos, camino, adyacente, final)) {
-                    camino.push_back(inicial);
+                    camino.push_back(actual);
                     return true;
                 }
             }
