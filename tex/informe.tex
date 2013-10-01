@@ -352,9 +352,20 @@ Debido que el algoritmo de BFS siempre termina en una hoja (si terminara en un n
 Dado un árbol AGM, el nodo arbitrario N1 elegido puede tener las siguientes ubicaciones:
 \begin{itemize}
 	\item Ser parte del camino máximo. Si esto ocurre, la hoja más lejana a N1 será trivialmente un extremo del camino máximo.
-	\item No ser parte del camino máximo. Como el camino máximo maximiza la longitud entre dos nodos, al ser un árbol (existen caminos para todo par de nodos), cualquier camino más lejano desde un nodo terminará en un extremo del camino máximo. Sea C1, camino entre N1 y N2 (nodo más lejano, por lo que lo hace camino máximo entre N1, N2) y sea C2 camino máximo entre dos pares de nodos cuales quiera V1, V2 con V1, V2 $\neq$ N1. Si C2 $\neq$ N2, es decir, el extremo de C1 no es extremo del camino máximo (encuentra su camino más largo sin utilizar el camino máximo), entonces existe C3 con extremos en V1 y N2 de mayor longitud que C2. Absurdo, ya que C2 era el camino de mayor longitud. 
+	\item No ser parte del camino máximo.
 	
-Por el absurdo, si N1 no pertenece al camino máximo, el extremo encontrado por BFS si.
+	Sea C1 el camino máximo del árbol de extremos U y V, y sea C2 el camino de longitud máxima entre N1 y N2, suponemos que N2 $\neq$ U, lo que implica que h(U) $<$ h(N2), con h la altura del árbol tomando como raíz a N1. Llamamos también a X e Y las bifurcaciones de los caminos a U y a N2 respectivamente.
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=60mm]{2b.png}
+\caption{Ejemplo gráfico de la suposición}
+\label{overflow}
+\end{figure}	
+	
+	Entonces, sea l función de longitud entre dos nodos, l(U,V) = h(U) + h(V) - 2*h(X) y l(U,N2) = h(U) + h(N2) - 2*h(X), y como h(N2) $>$ h(U) por ser N2 el nodo más lejano o de mayor altura, esto implica que l(U,N2) $>$ l(U,V) y esto es absurdo por ser C1 el camino máximo.
+	
+	Por el absurdo, concluimos que U = N2, es decir, que N2 es un extremo del camino máximo.
 \end{itemize}
 
 Al obtener un extremo del camino máximo, otra ejecución de BFS desde el extremo encontrado caerá sobre el caso trivial de pertenecer al camino máximo y encontrará el camino más lejano a este, su otro extremo.
