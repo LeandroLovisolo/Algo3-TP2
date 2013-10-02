@@ -360,9 +360,9 @@ Mediante la utilización de estas dos funciones se logra que cada llamada a esta
 
 Para realizar el ordenamiento, se obtiene una complejidad de O(m log m) utilizando Sort() de la STL de C++, que por ser m a lo sumo $n^2$, O(m log m) $\subset$ O(m log $n^2$) $\subset$ O(m 2*log n) $\subset$ O(m log n) $\subset$ O($n^2$ log n) que es estrictamente menor a O($n^3$).
 
-Como las operaciones sobre la estructura Disjoint-Set se realizan a lo sumo $m$ veces, se obtiene una complejidad de O($m$) para conseguir el AGM.
+Como las operaciones sobre la estructura Disjoint-Set se realizan a lo sumo $m$ veces, se obtiene una complejidad de O($m$) = O($n^2$) para conseguir el AGM.
 
-La complejidad total del algoritmo es O($n^2$ log n + n) $\subset$ O($n^2$ log n).
+La complejidad del algoritmo es O($n^2$ log n + $n^2$) $\subset$ O($n^2$ log n).
 
 \subsubsection{Correctitud}
 
@@ -402,7 +402,7 @@ Para realizar la búsqueda del nodo \textit{master} se realiza lo siguiente:
   \State distancias = Bfs(cant\_nodos, enlaces, inicial)            \Ode{n}
   \State final : nodo = Nodo\_mas\_distante(distancias)           \Ode{n}
 
-  \State camino : vector de nodos = Camino\_entre\_nodos(cant\_nodos, enlaces, inicial, final) \Ode(n)
+  \State camino : vector de nodos = Camino\_entre\_nodos(cant\_nodos, enlaces, inicial, final) \Ode{n}
   
   \Return camino[Tamaño(camino)/2]
 \EndProcedure
@@ -521,6 +521,19 @@ Dado un árbol AGM, el nodo arbitrario N1 elegido puede tener las siguientes ubi
 \end{itemize}
 
 Al obtener un extremo del camino máximo, otra ejecución de BFS desde el extremo encontrado caerá sobre el caso trivial de pertenecer al camino máximo y encontrará el camino más lejano a este, su otro extremo.
+
+Teniendo los dos extremos, buscamos el camino máximo del árbol (secuencia de nodos) mediante la función Camino\_entre\_nodos. A continuación demostraremos que es correcta.
+
+\begin{itemize}
+\item Terminación:
+
+La función recorre para cada nodo, de forma recursiva, sus nodos adyacentes, si o solo si, no han sido recorridos antes, por lo que el árbol se recorre una única vez por cada nodo, terminando al no tener nodos por recorrer.
+
+\item  Resultado correcto:
+
+Al recorrer una única vez cada nodo y como es un árbol (existe un camino para todo par de nodos), se recorrerá todo el árbol y eventualmente se llegará al nodo buscado. Al llegar al nodo buscado, la función devolverá true, haciendo que se agreguen los caminos recorridos hacia el hasta llegar al inicial.
+\end{itemize}
+
 
 \subsubsection{Experimentos computacionales}
 
