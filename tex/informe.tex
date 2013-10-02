@@ -245,13 +245,13 @@ Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociad
     \State trabajos$.$Agregar\_atras(1);
     \While{j $<$ n}
         \If{dp[i][j] == dp[i][j + 1] + c[j][j + 1]}    \Ode{1}
-            \If{trabajos$.$ultimo() == (trabajo) j}    \Ode{1}
-            \State trabajos$.$agregar\_atras(j + 1)    \Ode{1}
+            \If{trabajos$.$Último() == (trabajo) j}    \Ode{1}
+            \State trabajos$.$Agregar\_atras(j + 1)    \Ode{1}
             \State j++                                 \Ode{1}
             \EndIf
         \Else
             \If{trabajos$.$ultimo() == (trabajo) i}    \Ode{1}
-            \State trabajos$.$agregar\_atras(j + 1)    \Ode{1}
+            \State trabajos$.$Agregar\_atras(j + 1)    \Ode{1}
             \State i = j                               \Ode{1}  
             \State j++                                 \Ode{1}
             \EndIf
@@ -265,11 +265,11 @@ Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociad
 
 \subsection{Complejidad}
 
-Para realizar el algoritmo se utilizó la estructura de datos \textbf{vector} que pertenece a la STD de C++.
+Para realizar el algoritmo se utilizó la estructura de datos \textbf{vector} que pertenece a la STL de C++.
 
-Las operaciones realizadas fueron \textbf{push\_back()} y \textbf{agregar\_atras()} que corresponden a \textbf{back()} y \textbf{ultimo()} con complejidad O(1).
+Las operaciones utilizadas \textbf{Agregar\_atras()} y \textbf{Último()} corresponden a \textbf{push\_back()} y \textbf{back()}, con complejidad O(1) amortizado y O(1) respectivamente.
 
-El algoritmo corre en tiempo O($n^2$), donde $n$ es la cantidad de trabajos.
+Debido a que el algoritmo recorre la matriz dp hasta llenarla, se tiene una complejidad total de O($N^2$), donde $N$ es la cantidad de trabajos.
 
 \textbf{Demostración: }
 
@@ -553,14 +553,18 @@ Al recorrer una única vez cada nodo y como es un árbol (existe un camino para 
 \end{itemize}
 
 
-\subsubsection{Experimentos computacionales}
+\subsection{Experimentos computacionales}
 
 \paragraph{Verificación de correctitud}
 
 \paragraph{Performance}
 
 \subsection{Preguntas adicionales}
+Mostrar con un contraejemplo que es posible resolver las dos partes por separado de manera óptima pero que aún así haya una solución en la que la replicación termine en menos tiempo. Comentarposibles soluciones al problema.
 
+
+¿Cómo se debe modificar la solución si en lugar de transmitir por broadcast se lo hace por
+multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
