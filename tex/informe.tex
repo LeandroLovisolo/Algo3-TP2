@@ -92,6 +92,16 @@
     \vspace{\separacion}
     \include{#3}
 }
+
+% Macro para incluir dos gráficos (dentro de una figura) de manera que
+% entren todos en una sola página.
+\newcommand{\dosgraficos}[2]{
+    \newcommand{\separacion}{-2.2em}
+    \vspace{\separacion}
+    \include{#1}
+    \vspace{\separacion}
+    \include{#2}
+}
 %%%%%%%%%% Gráficos - Fin %%%%%%%%%%
 
 
@@ -574,11 +584,7 @@ Al recorrer una única vez cada nodo y como es un árbol (existe un camino para 
 \end{itemize}
 
 
-\subsection{Experimentos computacionales}
-
 \paragraph{Verificación de correctitud}
-
-\paragraph{Performance}
 
 \subsection{Preguntas adicionales}
 Mostrar con un contraejemplo que es posible resolver las dos partes por separado de manera óptima pero que aún así haya una solución en la que la replicación termine en menos tiempo. Comentarposibles soluciones al problema.
@@ -586,6 +592,32 @@ Mostrar con un contraejemplo que es posible resolver las dos partes por separado
 
 ¿Cómo se debe modificar la solución si en lugar de transmitir por broadcast se lo hace por
 multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
+
+
+
+
+\subsection{Experimentos computacionales}
+
+
+\subsubsection{Caso general}
+
+\begin{figure}[H]
+  \centering
+  \dosgraficos{problema2-caso-general}
+              {problema2-caso-general-n}
+  \caption{Caso general}
+\end{figure}
+
+
+\subsubsection{Instancias aleatorias}
+
+\begin{figure}[H]
+  \centering
+  \dosgraficos{problema2-instancias-aleatorias}
+              {problema2-instancias-aleatorias-n}
+  \caption{Instancias aleatorias}
+\end{figure}
+
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
