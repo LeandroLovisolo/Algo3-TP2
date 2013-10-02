@@ -228,8 +228,8 @@ Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociad
 \State dp: matriz de enteros
 \\
 \Procedure{Impresiones-ordenadas}{n: entero, costos: c}
-    \For{int j = n - 1; j $>$= 0; j$--$}
-        \For{int i = 0; i $<$ n; i$++$}
+    \For{j = n - 1 Downto 0}
+        \For{i = 0 To n}
             \If{i == 0 $\&\&$ j == 0}                 \Ode{1}
                 \State dp[0][0] = dp[0][1] + c[0][1]  \Ode{1}
                 \State break                          
@@ -243,16 +243,16 @@ Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociad
     \State costo\_minimo = dp[0][0]                    \Ode{1}
     \State i = 0                                       \Ode{1}
     \State j = 1                                       \Ode{1}
-    \State trabajos$.$agregar\_atras(1);
+    \State trabajos$.$Agregar\_atras(1);
     \While{j $<$ n}
         \If{dp[i][j] == dp[i][j + 1] + c[j][j + 1]}    \Ode{1}
-            \If{trabajos$.$ultimo() == (trabajo) j}    \Ode{1}
-            \State trabajos$.$agregar\_atras(j + 1)    \Ode{1}
+            \If{trabajos$.$Último() == (trabajo) j}    \Ode{1}
+            \State trabajos$.$Agregar\_atras(j + 1)    \Ode{1}
             \State j++                                 \Ode{1}
             \EndIf
         \Else
             \If{trabajos$.$ultimo() == (trabajo) i}    \Ode{1}
-            \State trabajos$.$agregar\_atras(j + 1)    \Ode{1}
+            \State trabajos$.$Agregar\_atras(j + 1)    \Ode{1}
             \State i = j                               \Ode{1}  
             \State j++                                 \Ode{1}
             \EndIf
@@ -265,11 +265,11 @@ Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociad
 
 \subsection{Complejidad}
 
-Para realizar el algoritmo se utilizó la estructura de datos \textbf{vector} que pertenece a la STD de C++.
+Para realizar el algoritmo se utilizó la estructura de datos \textbf{vector} que pertenece a la STL de C++.
 
-Las operaciones realizadas fueron \textbf{push\_back()} y \textbf{agregar\_atras()} que corresponden a \textbf{back()} y \textbf{ultimo()} con complejidad O(1).
+Las operaciones utilizadas \textbf{Agregar\_atras()} y \textbf{Último()} corresponden a \textbf{push\_back()} y \textbf{back()}, con complejidad O(1) amortizado y O(1) respectivamente.
 
-El algoritmo corre en tiempo O($n^2$), donde $n$ es la cantidad de trabajos.
+Debido a que el algoritmo recorre la matriz dp hasta llenarla, se tiene una complejidad total de O($N^2$), donde $N$ es la cantidad de trabajos.
 
 \textbf{Demostración: }
 
@@ -303,12 +303,12 @@ Elegimos los siguientes casos para verificar la correctitud del programa:
 
 \section{Problema 2: Recopilación de contenido}
 
-Dado $n$ servidores interconectados mediante $m$ enlaces de alta velocidad, una organización debe implementar una solución de replicación de contenido para su red. Para esto, se selecciona un servidor como \textbf{master}, que será el primero en recibir los datos a replicar. Luego, la información será transmitida a otros servidores que, se guardarán una copia y retrasmitiran los datos hasta que los $n$ servidores tengan la nueva información. El uso de los enlaces tiene un costo en función del tráfico que transmiten.
+Dado $N$ servidores interconectados mediante $M$ enlaces de alta velocidad, una organización debe implementar una solución de replicación de contenido para su red. Para esto, se selecciona un servidor como \textbf{master}, que será el primero en recibir los datos a replicar. Luego, la información será transmitida a otros servidores que, se guardarán una copia y retrasmitiran los datos hasta que los $N$ servidores tengan la nueva información. El uso de los enlaces tiene un costo en función del tráfico que transmiten.
 
 Se nos pide:
 \begin{itemize}
-    \item{Elegir los enlaces que se deberán utilizar de manera que la información pueda distribuirse a todos los servidores con un costo mínimo, con una complejidad temporal de \textbf{peor caso estrictamente menor que O($n^3$).}}
-    \item{Definir que servidor seleccionar como \textbf{master} de manera que la replicación termine en el menor tiempo posible, con una complejidad temporal de \textbf{peor caso O($n$).}}
+    \item{Elegir los enlaces que se deberán utilizar de manera que la información pueda distribuirse a todos los servidores con un costo mínimo, con una complejidad temporal de \textbf{peor caso estrictamente menor que O($N^3$).}}
+    \item{Definir que servidor seleccionar como \textbf{master} de manera que la replicación termine en el menor tiempo posible, con una complejidad temporal de \textbf{peor caso O($N$).}}
 \end{itemize}
 
 \textbf{Ejemplos del problema y sus soluciones:}
@@ -331,29 +331,47 @@ Utilizamos para la representación de la solución un AGM. Este tipo de organiza
 \State ranking : vector de enteros
 
 \Procedure{Make\_union}{x : entero, y : entero}
-    \State set\_x : unsigned = Find(x)                    \Ode{1}
-    \State set\_y : unsigned = Find(y)                    \Ode{1}
+    \State set\_x : unsigned = Find(x)                   	\Ode{1}
+    \State set\_y : unsigned = Find(y)                    	\Ode{1}
     \If{ranking[set\_x] $>$ ranking[set\_y]}                \Ode{1}
-    \State parent[set\_y] = set\_x                    \Ode{1}
+    \State parent[set\_y] = set\_x                    		\Ode{1}
     \Else
-        \State parent[set\_x] = set\_y                    \Ode{1}
+        \State parent[set\_x] = set\_y                 	  	\Ode{1}
     \EndIf
     
     \If{ranking[set\_x] == ranking[set\_y]}                 \Ode{1}
-        \State ranking[set\_y]++                      \Ode{1}
+        \State ranking[set\_y]++                     		\Ode{1}
     \EndIf
 \EndProcedure
 
-
-
 \Procedure{Find}{x : entero} $\rightarrow$ entero
-    \If{x != parent[x]}                           \Ode{1}
+    \If{x != parent[x]}                           			\Ode{1}
         \State parent[x] = Find(parent[x])                  \Ode{1}
     \EndIf
     \Return parent[x]
 \EndProcedure
 
+\Procedure{Kruskal}{cant\_nodos: entero, enlaces: vector de enlace} $\rightarrow$ vector de enlace
+    \State arbol\_generador\_minimo : vector de enlace
+    \For{i=0 To Tamaño(parent)} parent[i] = i \EndFor						\Ode{M}
+	\For{i=0 To Tamaño(ranking)} ranking[i] = 0 \EndFor						\Ode{M}
+
+    \State Ordenar(enlaces) por costo de manera ascendente					\Ode{M log M}
+
+    \For{i = 0 To Tamaño(enlaces)}
+        \State set1 : entero = Find(nodo1(enlaces[i]))						\Ode{1}
+        \State set2 : entero = Find(nodo2(enlaces[i]))						\Ode{1}
+        \If{set1 != set2}													\Ode{1}
+            \State Make\_union(set1, set2)									\Ode{1}
+            \State arbol\_generador\_minimo.Agregar(enlaces[i])				\Ode{1}
+        \EndIf        
+    \EndFor
+
+    \Return arbol\_generador\_minimo
+\EndProcedure
 \end{pseudo}
+
+
 
 \subsubsection{Complejidad}
 
@@ -362,13 +380,13 @@ La función Find() consiste en una función recursiva la cual recorre los padres
 
 La función Make\_union realiza una unión de dos subconjuntos. La operación de unión se da sobre el nodo de ranking menor, es decir, el nodo que tenga menos hojas, haciendo que cada unión quede lo más cercana a la raíz posible, comprimiendo distancias.
 
-Mediante la utilización de estas dos funciones se logra que cada llamada a estas tenga una complejidad amortizada de O($\alpha(n)$), donde $\alpha$ corresponde a la función de Ackermann para la cual $\alpha(n)$ es menor a 5 para casi todos los n utilizados en la práctica, haciendo que las operaciones tengan una complejidad de O(1) amortizada.
+Mediante la utilización de estas dos funciones se logra que cada llamada a estas tenga una complejidad amortizada de O($\alpha(N)$), donde $\alpha$ corresponde a la función inversa de Ackermann para la cual $\alpha(n)$ es menor a 5 para casi todos los n utilizados en la práctica, haciendo que las operaciones tengan una complejidad de O(1) amortizada.
 
-Para realizar el ordenamiento, se obtiene una complejidad de O(m log m) utilizando Sort() de la STL de C++, que por ser m a lo sumo $n^2$, O(m log m) $\subset$ O(m log $n^2$) $\subset$ O(m 2*log n) $\subset$ O(m log n) $\subset$ O($n^2$ log n) que es estrictamente menor a O($n^3$).
+Para realizar el ordenamiento, se obtiene una complejidad de O(m log m) utilizando Sort() de la STL de C++, que por ser M a lo sumo $N^2$, O(M log M) $\subset$ O(m log $N^2$) $\subset$ O(M 2*log N) $\subset$ O(m log n) $\subset$ O($N^2$ log N) que es estrictamente menor a O($N^3$).
 
-Como las operaciones sobre la estructura Disjoint-Set se realizan a lo sumo $m$ veces, se obtiene una complejidad de O($m$) para conseguir el AGM.
+Como las operaciones sobre la estructura Disjoint-Set se realizan a lo sumo $m$ veces, se obtiene una complejidad de O($N$) = O($N^2$) para conseguir el AGM.
 
-La complejidad total del algoritmo es O($n^2$ log n + n) $\subset$ O($n^2$ log n).
+La complejidad del algoritmo es O($N^2$ log N + $N^2$) $\subset$ O($N^2$ log N).
 
 \subsubsection{Correctitud}
 
@@ -402,20 +420,20 @@ Para realizar la búsqueda del nodo \textit{master} se realiza lo siguiente:
 \EndProcedure
 
 \Procedure{centro\_del\_arbol}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ nodo
-  \State distancias : vector de enteros = Bfs(cant\_nodos, enlaces, nodo1(enlaces[0])) \Ode{n}
-  \State inicial : nodo = Nodo\_mas\_distante(distancias)           \Ode{n}
+  \State distancias : vector de enteros = Bfs(cant\_nodos, enlaces, nodo1(enlaces[0])) \Ode{N}
+  \State inicial : nodo = Nodo\_mas\_distante(distancias)           \Ode{N}
 
-  \State distancias = Bfs(cant\_nodos, enlaces, inicial)            \Ode{n}
-  \State final : nodo = Nodo\_mas\_distante(distancias)           \Ode{n}
+  \State distancias = Bfs(cant\_nodos, enlaces, inicial)            \Ode{N}
+  \State final : nodo = Nodo\_mas\_distante(distancias)           \Ode{N}
 
-  \State camino : vector de nodos = Camino\_entre\_nodos(cant\_nodos, enlaces, inicial, final) \Ode(n)
+  \State camino : vector de nodos = Camino\_entre\_nodos(cant\_nodos, enlaces, inicial, final) \Ode{N}
   
   \Return camino[Tamaño(camino)/2]
 \EndProcedure
 
 nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero, visitado : bool$>$
 \Procedure{crear\_lista\_adyacencia}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ vector de nodo\_lista\_adyacencia
-  \State nodos : vector de nodo\_lista\_adyacencia [cant\_nodos]        \Ode{n}
+  \State nodos : vector de nodo\_lista\_adyacencia [cant\_nodos]        \Ode{N}
   \For{i = 0 To Tamaño(enlaces)}
     \State nodos[nodo1(enlaces[i])].adyacentes.Agregar(nodo2(enlaces[i])) \Ode{1}
     \State nodos[nodo2(enlaces[i])].adyacentes.Agregar(nodo1(enlaces[i])) \Ode{1}
@@ -443,7 +461,7 @@ nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero
     \EndFor
   \EndWhile
 
-  \State distancias : vector de enteros [cant\_nodos]             \Ode{n}
+  \State distancias : vector de enteros [cant\_nodos]             \Ode{N}
   \For{n = 0 To cant\_nodos}
     \State distancias[n] = nodos[n].distancia               \Ode{1}
   \EndFor
@@ -465,7 +483,7 @@ nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero
         \For{i = 0 To Tamaño(nodos[inicial].adyacentes.size())}
           \State adyacente : nodo = nodos[inicial].adyacentes[i]          \Ode{1}
             \If{!nodos[adyacente].visitado}                     \Ode{1}
-                \If{Camino\_entre\_nodos\_rec(nodos, camino, adyacente, final)}   \Ode{n}
+                \If{Camino\_entre\_nodos\_rec(nodos, camino, adyacente, final)}   \Ode{N}
                     \State camino.Agregar(inicial)                  \Ode{1}
                     \textbf{return} true
                 \EndIf
@@ -476,9 +494,9 @@ nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero
 \EndProcedure
 
 \Procedure{camino\_entre\_nodos}{cant\_nodos : entero, enlaces : vector de enlace, inicial : nodo, final : nodo} $\rightarrow$ vecot de nodo
-    \State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{n}
-    \State camino : vector de nodo [cant\_nodos]                      \Ode{n}
-    \State camino\_entre\_nodos\_rec(nodos, camino, inicial, final)             \Ode{n}
+    \State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{N}
+    \State camino : vector de nodo [cant\_nodos]                      \Ode{N}
+    \State camino\_entre\_nodos\_rec(nodos, camino, inicial, final)             \Ode{N}
     \Return camino
 \EndProcedure
 
@@ -489,8 +507,8 @@ nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero
     \State \textbf{return} tupla$<$0, enlaces$>$
   \EndIf
 
-  \State arbol\_generador\_minimo : vector de enlace = Kruskal(cant\_nodos, enlaces) \Ode{n^2 log n}
-  \State maestro : nodo = Centro\_del\_arbol(cant\_nodos, arbol\_generador\_minimo) \Ode{n}
+  \State arbol\_generador\_minimo : vector de enlace = Kruskal(cant\_nodos, enlaces) \Ode{N^2 log N}
+  \State maestro : nodo = Centro\_del\_arbol(cant\_nodos, arbol\_generador\_minimo) \Ode{N}
 
     \Return tupla$<$maestro, arbol\_generador\_minimo$>$
 \EndProcedure
@@ -498,7 +516,7 @@ nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero
 
 \subsubsection{Complejidad}
 
-Para el cálculo del nodo \textit{master} , las dos ejecuciones de BFS tienen una complejidad de 2 * O(n + m), más el algoritmo para conseguir el camino entre dos puntos que recorre para cada nodo, todas sus aristas ejecutándose con un costo de O(n + m), se tiene un costo toal de O(3*(n + m)) $\subset$ O(n + m) que como la estructura donde se aplican es un árbol (n-1 aristas) O(n + m) $\subset$ O(n), cumpliendo con la complejidad lineal pedida para este punto.
+Para el cálculo del nodo \textit{master} , las dos ejecuciones de BFS tienen una complejidad de 2 * O(N + M), más el algoritmo para conseguir el camino entre dos puntos que recorre para cada nodo, todas sus aristas ejecutándose con un costo de O(N + M), se tiene un costo toal de O(3*(N + M)) $\subset$ O(N + M) que como la estructura donde se aplican es un árbol (N-1 aristas) O(N + M) $\subset$ O(N), cumpliendo con la complejidad lineal pedida para este punto.
 
 \subsubsection{Correctitud}
 
@@ -528,14 +546,31 @@ Dado un árbol AGM, el nodo arbitrario N1 elegido puede tener las siguientes ubi
 
 Al obtener un extremo del camino máximo, otra ejecución de BFS desde el extremo encontrado caerá sobre el caso trivial de pertenecer al camino máximo y encontrará el camino más lejano a este, su otro extremo.
 
-\subsubsection{Experimentos computacionales}
+Teniendo los dos extremos, buscamos el camino máximo del árbol (secuencia de nodos) mediante la función Camino\_entre\_nodos. A continuación demostraremos que es correcta.
+
+\begin{itemize}
+\item Terminación:
+
+La función recorre para cada nodo, de forma recursiva, sus nodos adyacentes, si o solo si, no han sido recorridos antes, por lo que el árbol se recorre una única vez por cada nodo, terminando al no tener nodos por recorrer.
+
+\item  Resultado correcto:
+
+Al recorrer una única vez cada nodo y como es un árbol (existe un camino para todo par de nodos), se recorrerá todo el árbol y eventualmente se llegará al nodo buscado. Al llegar al nodo buscado, la función devolverá true, haciendo que se agreguen los caminos recorridos hacia el hasta llegar al inicial.
+\end{itemize}
+
+
+\subsection{Experimentos computacionales}
 
 \paragraph{Verificación de correctitud}
 
 \paragraph{Performance}
 
 \subsection{Preguntas adicionales}
+Mostrar con un contraejemplo que es posible resolver las dos partes por separado de manera óptima pero que aún así haya una solución en la que la replicación termine en menos tiempo. Comentarposibles soluciones al problema.
 
+
+¿Cómo se debe modificar la solución si en lugar de transmitir por broadcast se lo hace por
+multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
