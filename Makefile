@@ -144,10 +144,9 @@ graficos: graficos-problema1 graficos-problema2 graficos-problema3
 	    grafico-problema1-caso-general-n2 \
 	    grafico-problema1-instancias-aleatorias \
 	    grafico-problema1-instancias-aleatorias-n \
-	    grafico-problema1-instancias-aleatorias-n2 \
+	    grafico-problema1-instancias-aleatorias-n2
 
-graficos-problema1: graficos-problema1-peor-caso \
-	                graficos-problema1-mejor-caso \
+graficos-problema1: graficos-problema1-caso-general \
 	                graficos-problema1-instancias-aleatorias
 
 graficos-problema1-caso-general: grafico-problema1-caso-general \
@@ -181,58 +180,31 @@ grafico-problema1-instancias-aleatorias-n2:
 ###############################################################################
 
 .PHONY: graficos-problema2 \
-	    graficos-problema2-peor-caso \
-	    graficos-problema2-mejor-caso \
+	    graficos-problema2-caso-general \
 	    graficos-problema2-instancias-aleatorias \
-	    grafico-problema2-peor-caso \
-	    grafico-problema2-peor-caso-logn \
-	    grafico-problema2-peor-caso-n \
-	    grafico-problema2-mejor-caso \
-	    grafico-problema2-mejor-caso-logn \
-	    grafico-problema2-mejor-caso-n \
+	    graficos-problema2-instancias-aleatorias \
+	    grafico-problema2-caso-general \
+	    grafico-problema2-caso-general-n \
 	    grafico-problema2-instancias-aleatorias \
-	    grafico-problema2-instancias-aleatorias-logn \
 	    grafico-problema2-instancias-aleatorias-n
 
-graficos-problema2: graficos-problema2-peor-caso \
-	                graficos-problema2-mejor-caso \
+graficos-problema2: graficos-problema2-caso-general \
 	                graficos-problema2-instancias-aleatorias
 
-graficos-problema2-peor-caso: grafico-problema2-peor-caso \
-	                          grafico-problema2-peor-caso-logn \
-	                          grafico-problema2-peor-caso-n
-
-graficos-problema2-mejor-caso: grafico-problema2-mejor-caso \
-	                           grafico-problema2-mejor-caso-logn \
-	                           grafico-problema2-mejor-caso-n
+graficos-problema2-caso-general: grafico-problema2-caso-general \
+	                             grafico-problema2-caso-general-n
 
 graficos-problema2-instancias-aleatorias: grafico-problema2-instancias-aleatorias \
-	                                      grafico-problema2-instancias-aleatorias-logn \
 	                                      grafico-problema2-instancias-aleatorias-n
 
-grafico-problema2-peor-caso:
-	octave/graficar problema2-peor-caso
+grafico-problema2-caso-general:
+	octave/graficar problema2-caso-general
 
-grafico-problema2-peor-caso-logn:
-	octave/graficar problema2-peor-caso-logn
-
-grafico-problema2-peor-caso-n:
-	octave/graficar problema2-peor-caso-n
-
-grafico-problema2-mejor-caso:
-	octave/graficar problema2-mejor-caso
-
-grafico-problema2-mejor-caso-logn:
-	octave/graficar problema2-mejor-caso-logn
-
-grafico-problema2-mejor-caso-n:
-	octave/graficar problema2-mejor-caso-n
+grafico-problema2-caso-general-n:
+	octave/graficar problema2-caso-general-n
 
 grafico-problema2-instancias-aleatorias:
 	octave/graficar problema2-instancias-aleatorias
-
-grafico-problema2-instancias-aleatorias-logn:
-	octave/graficar problema2-instancias-aleatorias-logn
 
 grafico-problema2-instancias-aleatorias-n:
 	octave/graficar problema2-instancias-aleatorias-n
