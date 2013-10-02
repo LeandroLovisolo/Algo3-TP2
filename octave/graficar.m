@@ -10,13 +10,15 @@
 %    - 'logaritmica'
 %   divisor (opcional) Expresión que divide las mediciones. Valores posibles:
 %    - '1'             Sin división.
-%    - 'n'             Divide las mediciones por n.
 %    - 'log(n)'        Divide las mediciones por log(n).
+%    - 'n'             Divide las mediciones por n.
+%    - 'n^2'             Divide las mediciones por n^2.
 %   ajuste (opcional)  Curva de ajuste. Valores posibles:
 %    - 'none'          Sin curva de ajuste.
-%    - 'n'
 %    - 'log(n)'
+%    - 'n'
 %    - 'n*log(n)'
+%    - 'n^2'
 %   coef (opcional)    Coeficiente de la curva de ajuste.
 %   ylim (opcional)    Valor máximo a plottear en el eje y.
 %   inicio (opcional)  Medición inicial a partir de la cual graficar.
@@ -60,12 +62,15 @@ end
 if(strcmp(s.divisor, '1'))
     expr    = t_n;
     leyenda = ['$T(n)$'];
-elseif(strcmp(s.divisor, 'n'))
-    expr    = t_n ./ n;
-    leyenda = ['$T(n) / n$'];
 elseif(strcmp(s.divisor, 'log(n)'))
     expr    = t_n ./ log(n);
     leyenda = ['$T(n) / log(n)$'];
+elseif(strcmp(s.divisor, 'n'))
+    expr    = t_n ./ n;
+    leyenda = ['$T(n) / n$'];
+elseif(strcmp(s.divisor, 'n^2'))
+    expr    = t_n ./ n ./ n;
+    leyenda = ['$T(n) / n^2$'];
 else
     error('Parámetro "divisor" inválido.');
     exit(-1);
@@ -91,22 +96,28 @@ end
 
 if(strcmp(s.ajuste, 'none'))
     % No hacer nada.
-elseif(strcmp(s.ajuste, 'n'))
-    expr_ajuste   = s.coef * n;
-    leyenda = [leyenda; '$O(n)$'];
+elseif(strcmp(s.ajuste, '1'))
+    expr_ajuste    = s.coef * n ./ n;
+    leyenda = [leyenda; '$O(1)$'];
 elseif(strcmp(s.ajuste, 'log(n)'))
     expr_ajuste    = s.coef * log(n);
     leyenda = [leyenda; '$O(log(n))$'];
+elseif(strcmp(s.ajuste, 'n'))
+    expr_ajuste   = s.coef * n;
+    leyenda = [leyenda; '$O(n)$'];
 elseif(strcmp(s.ajuste, 'n*log(n)'))
     expr_ajuste    = s.coef * n .* log(n);
     leyenda = [leyenda; '$O(n * log(n))$'];
+elseif(strcmp(s.ajuste, 'n^2'))
+    expr_ajuste    = s.coef * n .* n;
+    leyenda = [leyenda; '$O(n^2)$'];
 else
     error('Parámetro "ajuste" inválido.');
     exit(-1);
 end
 
 if(exist('expr_ajuste'))
-    plot(n, expr_ajuste, 'color', 'red', 'linestyle', ':');
+    plot(n, expr_ajuste, 'color', 'red', 'linestyle', '--');
 end
 
 legend(leyenda);

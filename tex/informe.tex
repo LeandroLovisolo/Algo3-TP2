@@ -173,6 +173,7 @@ La motivación de este trabajo es comparar las cotas temporales obtenidas del an
 
 Sin más, presentamos los problemas estudiados a continuación.
 
+
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 %% Problema 1: Impresiones ordenadas                                         %%
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -262,7 +263,6 @@ Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociad
 \end{pseudo}
 
 
-
 \subsection{Complejidad}
 
 Para realizar el algoritmo se utilizó la estructura de datos \textbf{vector} que pertenece a la STD de C++.
@@ -272,6 +272,7 @@ Las operaciones realizadas fueron \textbf{push\_back()} y \textbf{agregar\_atras
 El algoritmo corre en tiempo O($n^2$), donde $n$ es la cantidad de trabajos.
 
 \textbf{Demostración: }
+
 
 \subsection{Correctitud}
 
@@ -284,8 +285,13 @@ Elegimos los siguientes casos para verificar la correctitud del programa:
 \item{}
 \item{}
 \end{enumerate}
+
+
 \subsubsection{Performance}
 
+\include{problema1-caso-general}
+\include{problema1-caso-general-n}
+\include{problema1-caso-general-n2}
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
