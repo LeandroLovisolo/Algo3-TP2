@@ -338,8 +338,6 @@ Utilizamos para la representación de la solución un AGM. Este tipo de organiza
     \EndIf
 \EndProcedure
 
-
-
 \Procedure{Find}{x : entero} $\rightarrow$ entero
     \If{x != parent[x]}                           \Ode{1}
         \State parent[x] = Find(parent[x])                  \Ode{1}
@@ -347,7 +345,26 @@ Utilizamos para la representación de la solución un AGM. Este tipo de organiza
     \Return parent[x]
 \EndProcedure
 
+\Procedure{problema2a}{cant\_nodos: entero, enlaces: vector$<$enlace$>$} $\rightarrow$ vector$<$enlace$>$
+    \State vector$<$enlace$>$ arbol\_generador\_minimo
+    \State DisjointSet disjoint\_set(cant\_nodos)
+
+    \State sort(enlaces.begin(),enlaces.end(), [] (enlace e, enlace f) { return costo(e) $<$ costo(f) })
+
+    \For{i $=$ 0; i $<$ enlaces.size(); i$++$}
+        \State unsigned set1 = disjoint\_set.find(nodo1(enlaces[i]))
+        \State unsigned set2 = disjoint\_set.find(nodo2(enlaces[i]))
+        \If{set1 != set2}
+            \State disjoint\_set.make\_union(set1, set2)
+            \State arbol\_generador\_minimo.push\_back(enlaces[i])
+        \EndIf        
+    \EndFor
+
+    \Return arbol\_generador\_minimo
+\EndProcedure
 \end{pseudo}
+
+
 
 \subsubsection{Complejidad}
 
