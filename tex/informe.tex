@@ -346,7 +346,8 @@ Se nos pide:
 
 \subsection{Minimizar costo de enlaces}
 \subsubsection{Solución}
-Utilizamos para la representación de la solución un AGM. Este tipo de organización de nodos y aristas satisface los requerimientos de la solución; existen caminos entre todo par de servidores (S1, S2) con costo mínimo. Para conseguir este AGM, utilizamos el algoritmo de Kruskal.
+Utilizamos para la representación de la solución un AGM. 
+Para conseguir este AGM, utilizamos el algoritmo de Kruskal.
 
 \subsubsection{Pseudocódigo}
 
@@ -414,6 +415,9 @@ Como las operaciones sobre la estructura Disjoint-Set se realizan a lo sumo $m$ 
 La complejidad del algoritmo es O($N^2$ log N + $N^2$) $\subset$ O($N^2$ log N).
 
 \subsubsection{Correctitud}
+Queremos probar que, el árbol generador mínimo obtenido del algoritmo de Kruskal representa la solución del problema.
+
+Sea G el árbol generador mínimo devuelto por el algoritmo de Kruskal, G por ser árbol cumple que es conexo, es decir, todos los servidores están conectados y, por ser mínimo, cumple que la suma de los costos de las aristas seleccionadas es mínimo. Como sincronizar todos los servidores implicará recorrer todas las aristas, el costo de sincronización será la suma de los pesos de las aristas seleccionadas, que como era mínimo por ser G un árbol generador mínimo, G será la solución correcta.
 
 
 \subsection{Minimizar el tiempo de replicación}
@@ -467,7 +471,7 @@ nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero
 \EndProcedure
 
 \Procedure{bfs}{cant\_nodos : entero, enlaces : vector de enlace, inicial : nodo} $\rightarrow$ vector de enteros
-  \State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{m}
+  \State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{M}
   \State nodos[inicial].distancia = 0                     \Ode{1}
 
   \State cola : Cola de nodos                         \Ode{1}
@@ -583,6 +587,12 @@ La función recorre para cada nodo, de forma recursiva, sus nodos adyacentes, si
 Al recorrer una única vez cada nodo y como es un árbol (existe un camino para todo par de nodos), se recorrerá todo el árbol y eventualmente se llegará al nodo buscado. Al llegar al nodo buscado, la función devolverá true, haciendo que se agreguen los caminos recorridos hacia el hasta llegar al inicial.
 \end{itemize}
 
+Una vez obtenido el camino, el nodo que se encuentre en la mitad de este, será el nodo master, es decir, el nodo que se encuentra a menor distancia de todos los nodos.
+
+Hay que probar que el nodo master seleccionado desde el camino máximo va a ser el master que queremos!
+Supongamos ahora, que el nodo master no se encontrara en el camino máximo. (Falta)
+
+Supongamos que el nodo master no se encontrara en la mitad del camino máximo, si no, en otra parte de este. Esto sería absurdo, ya que una elección diferente a la mitad, no cumpliría el estar a menor distancia posible de todos los nodos, ya que, estaría más cerca de alguno de sus extremos.
 
 \paragraph{Verificación de correctitud}
 
