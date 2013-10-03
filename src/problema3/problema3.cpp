@@ -1,4 +1,3 @@
-#include <iostream>
 #include "problema3.h"
 
 using namespace std;
@@ -42,34 +41,39 @@ unsigned DisjointSet::find(unsigned x) {
     return parent[x];
 }
 
-//Según el enunciado, primero van las fábricas y luego los clientes
-//Tener la cantidad de fábricas me ayuda a saber que fábricas son en el DisjointSet
-vector<ruta> problema3(unsigned nodos, unsigned cantFabricas, vector<ruta> rutas) {
-    vector<ruta> camino_minimo;
-    for (unsigned i = 0; i < cantFabricas; ++i) {
-        //Uno cada fábrica con el nuevo nodo fantasma
-        //Asumo que el costo de pavimentación es > 0 siempre
-        rutas.push_back(ruta(i, nodos, 0));
-    }
-    DisjointSet disjoint_set(nodos+1);
+vector<ruta> problema3(unsigned cant_nodos,
+                       unsigned cant_fabricas,
+                       const vector<ruta> &rutas_) {
+    // Creo un vector de rutas.
+    vector<ruta> rutas;
+
+    // Conecto las fábricas a un nodo fantasma con rutas de costo 0.
+    for(unsigned i = 0; i < cant_fabricas; i++) rutas.push_back(ruta(i, cant_nodos, 0));
+    
+    // Agrego las rutas verdaderas al nuevo vector de rutas.
+    rutas.insert(rutas.end(), rutas_.begin(), rutas_.end());
+
+    // Inicio de algoritmo de Kruskal.
+    DisjointSet disjoint_set(cant_nodos + 1);
 
     sort(rutas.begin(),
          rutas.end(),
          [] (ruta e, ruta f) { return costo(e) < costo(f); });
+
+    vector<ruta> arbol_generador_minimo;
 
     for(unsigned i = 0; i < rutas.size(); i++) {
         unsigned set1 = disjoint_set.find(nodo1(rutas[i]));
         unsigned set2 = disjoint_set.find(nodo2(rutas[i]));
         if(set1 != set2){
             disjoint_set.make_union(set1, set2);
-            camino_minimo.push_back(rutas[i]);
+            arbol_generador_minimo.push_back(rutas[i]);
         }        
     }
+    // Fin de algoritmo de Kruskal.
 
-    vector<ruta> res;
-    res.reserve(camino_minimo.size() - cantFabricas);
-    for (unsigned i = cantFabricas; i < camino_minimo.size(); ++i) {
-        res.push_back(ruta(nodo1(camino_minimo[i]), nodo2(camino_minimo[i]), costo(camino_minimo[i])));
-    }
-    return res;
+    // Devuelvo una copia del árbol generador mínimo al que le quito
+    // las rutas que conectan las fábricas al nodo fantasma.
+    return vector<ruta>(arbol_generador_minimo.begin() + cant_fabricas,
+                        arbol_generador_minimo.end());
 }
