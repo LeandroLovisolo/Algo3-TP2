@@ -104,30 +104,67 @@ elseif(strcmp(grafico, 'problema2-instancias-aleatorias-n'))
 elseif(strcmp(grafico, 'problema3-peor-caso'))
     graficar(struct('csv',     'perf/problema3/peor-caso.csv',
                     'titulo',  'Tiempo de ejecuci\''on',
-                    'escala',  'logaritmica',
-                    'ticks_x', true,
-                    'xlabel',  '$n \times m$ (tama\~no del problema)'));
+                    'ajuste',  'n*log(n)',
+                    'coef',    0.001));
+elseif(strcmp(grafico, 'problema3-peor-caso-logn'))
+    graficar(struct('csv',     'perf/problema3/peor-caso.csv',
+                    'titulo',  'Tiempo de ejecuci\''on dividido por $n$',
+                    'unidad',  'microsegundos',
+                    'divisor', 'n',
+                    'ajuste',  'log(n)',
+                    'coef',    1));
+elseif(strcmp(grafico, 'problema3-peor-caso-n'))
+    graficar(struct('csv',     'perf/problema3/peor-caso.csv',
+                    'titulo',  'Tiempo de ejecuci\''on dividido por $log(n)$',
+                    'divisor', 'log(n)',
+                    'ajuste',  'n',
+                    'coef',    0.001));    
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Problema 3: Mejor caso                                                       %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 elseif(strcmp(grafico, 'problema3-mejor-caso'))
+    graficar(struct('csv',    'perf/problema3/mejor-caso.csv',
+                    'titulo', 'Tiempo de ejecuci\''on',
+                    'ajuste', 'n*log(n)',
+                    'coef',   0.0003));
+elseif(strcmp(grafico, 'problema3-mejor-caso-logn'))
     graficar(struct('csv',     'perf/problema3/mejor-caso.csv',
-                    'titulo',  'Tiempo de ejecuci\''on',
-                    'ticks_x', true,
-                    'xlabel',  '$n \times m$ (tama\~no del problema)'));
+                    'titulo',  'Tiempo de ejecuci\''on dividido por $n$',
+                    'unidad',  'microsegundos',                    
+                    'divisor', 'n',
+                    'ajuste',  'log(n)',
+                    'coef',    0.3));
+elseif(strcmp(grafico, 'problema3-mejor-caso-n'))
+    graficar(struct('csv',     'perf/problema3/mejor-caso.csv',
+                    'titulo',  'Tiempo de ejecuci\''on dividido por $log(n)$',
+                    'divisor', 'log(n)',
+                    'ajuste',  'n',
+                    'coef',    0.0003));
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Problema 3: Instancias aleatorias                                            %
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 elseif(strcmp(grafico, 'problema3-instancias-aleatorias'))
+    graficar(struct('csv',    'perf/problema3/instancias-aleatorias.csv',
+                    'titulo', 'Tiempo de ejecuci\''on',
+                    'ajuste', 'n*log(n)',
+                    'coef',   0.0004));
+elseif(strcmp(grafico, 'problema3-instancias-aleatorias-logn'))
     graficar(struct('csv',     'perf/problema3/instancias-aleatorias.csv',
-                    'titulo',  'Tiempo de ejecuci\''on',
-                    'escala',  'logaritmica',
-                    'ticks_x', true,
-                    'xlabel',  '$n \times m$ (tama\~no del problema)'));
+                    'titulo',  'Tiempo de ejecuci\''on dividido por $n$',
+                    'unidad',  'microsegundos',
+                    'divisor', 'n',
+                    'ajuste',  'log(n)',
+                    'coef',    0.4));
+elseif(strcmp(grafico, 'problema3-instancias-aleatorias-n'))
+    graficar(struct('csv',     'perf/problema3/instancias-aleatorias.csv',
+                    'titulo',  'Tiempo de ejecuci\''on dividido por $log(n)$',
+                    'divisor', 'log(n)',
+                    'ajuste',  'n',
+                    'coef',    0.0004));
 
 else
     printf('Gráfico inválido.\n');

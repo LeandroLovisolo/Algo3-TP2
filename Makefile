@@ -214,19 +214,58 @@ grafico-problema2-instancias-aleatorias-n:
 ###############################################################################
 
 .PHONY: graficos-problema3 \
+	    graficos-problema3-peor-caso \
+	    graficos-problema3-mejor-caso \
+	    graficos-problema3-instancias-aleatorias \
 	    grafico-problema3-peor-caso \
+	    grafico-problema3-peor-caso-logn \
+	    grafico-problema3-peor-caso-n \
 	    grafico-problema3-mejor-caso \
+	    grafico-problema3-mejor-caso-logn \
+	    grafico-problema3-mejor-caso-n \
 	    grafico-problema3-instancias-aleatorias \
+	    grafico-problema3-instancias-aleatorias-logn \
+	    grafico-problema3-instancias-aleatorias-n
 
-graficos-problema3: grafico-problema3-peor-caso \
-	                grafico-problema3-mejor-caso \
-	                grafico-problema3-instancias-aleatorias
+graficos-problema3: graficos-problema3-peor-caso \
+	                graficos-problema3-mejor-caso \
+	                graficos-problema3-instancias-aleatorias
+
+graficos-problema3-peor-caso: grafico-problema3-peor-caso \
+	                          grafico-problema3-peor-caso-logn \
+	                          grafico-problema3-peor-caso-n
+
+graficos-problema3-mejor-caso: grafico-problema3-mejor-caso \
+	                           grafico-problema3-mejor-caso-logn \
+	                           grafico-problema3-mejor-caso-n
+
+graficos-problema3-instancias-aleatorias: grafico-problema3-instancias-aleatorias \
+	                                      grafico-problema3-instancias-aleatorias-logn \
+	                                      grafico-problema3-instancias-aleatorias-n
 
 grafico-problema3-peor-caso:
 	octave/graficar problema3-peor-caso
 
+grafico-problema3-peor-caso-logn:
+	octave/graficar problema3-peor-caso-logn
+
+grafico-problema3-peor-caso-n:
+	octave/graficar problema3-peor-caso-n
+
 grafico-problema3-mejor-caso:
 	octave/graficar problema3-mejor-caso
 
+grafico-problema3-mejor-caso-logn:
+	octave/graficar problema3-mejor-caso-logn
+
+grafico-problema3-mejor-caso-n:
+	octave/graficar problema3-mejor-caso-n
+
 grafico-problema3-instancias-aleatorias:
 	octave/graficar problema3-instancias-aleatorias
+
+grafico-problema3-instancias-aleatorias-logn:
+	octave/graficar problema3-instancias-aleatorias-logn
+
+grafico-problema3-instancias-aleatorias-n:
+	octave/graficar problema3-instancias-aleatorias-n
