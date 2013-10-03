@@ -5,6 +5,19 @@
 
 using namespace std;
 
+///////////////////////////////////////////////////////////////////////////////
+// Funciones definidas en problema2.cpp. No se exportan en problema2.h
+// para que no aparezcan en el apéndice del informe.
+vector<unsigned> bfs(unsigned cant_nodos,
+	                 vector<enlace> enlaces,
+	                 nodo inicial);
+
+vector<nodo> camino_entre_nodos(unsigned cant_nodos,
+	                            vector<enlace> enlaces, 
+	                            nodo inicial,
+	                            nodo final);
+///////////////////////////////////////////////////////////////////////////////
+
 TEST(problema2, UnSoloNodo) {
 	pair<nodo, vector<enlace>> res = problema2(1, vector<enlace>());
 

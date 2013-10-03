@@ -1,9 +1,19 @@
 #include <algorithm>
 #include <queue>
+
 #include "problema2.h"
-#include <iostream>
 
 using namespace std;
+
+pair<nodo, vector<enlace>> problema2(unsigned cant_nodos, vector<enlace> enlaces) {
+    vector<enlace> arbol_generador_minimo = problema2a(cant_nodos, enlaces);
+    nodo maestro                          = problema2b(cant_nodos, arbol_generador_minimo);
+    return make_pair(maestro, arbol_generador_minimo);
+}
+
+///////////////////////////////////////////////////////////////////////////////
+// Problema 2a                                                               //
+///////////////////////////////////////////////////////////////////////////////
 
 class DisjointSet {
 public:
@@ -64,6 +74,53 @@ vector<enlace> problema2a(unsigned cant_nodos, vector<enlace> enlaces) {
     return arbol_generador_minimo;
 }
 
+///////////////////////////////////////////////////////////////////////////////
+// Problema 2b                                                               //
+///////////////////////////////////////////////////////////////////////////////
+
+struct nodo_lista_adyacencia {
+    vector<nodo> adyacentes;
+    unsigned distancia;
+    bool visitado = false;
+};
+
+vector<nodo_lista_adyacencia> crear_lista_adyacencia(unsigned cant_nodos, vector<enlace> enlaces){
+    vector<nodo_lista_adyacencia> nodos(cant_nodos);
+    for(size_t i = 0; i < enlaces.size(); i++) {
+        nodos[nodo1(enlaces[i])].adyacentes.push_back(nodo2(enlaces[i]));
+        nodos[nodo2(enlaces[i])].adyacentes.push_back(nodo1(enlaces[i]));
+    }
+    return nodos;
+}
+
+vector<unsigned> bfs(unsigned cant_nodos, vector<enlace> enlaces, nodo inicial) {
+    vector<nodo_lista_adyacencia> nodos = crear_lista_adyacencia(cant_nodos, enlaces);
+    nodos[inicial].distancia = 0;
+
+    queue<nodo> cola;
+    cola.push(inicial);
+
+    while(!cola.empty()) {
+        nodo n = cola.front();
+        nodos[n].visitado = true;
+        cola.pop();
+        for(size_t i = 0; i < nodos[n].adyacentes.size(); i++) {
+            nodo adyacente = nodos[n].adyacentes[i];
+            if(nodos[adyacente].visitado != true) {
+                nodos[adyacente].distancia = nodos[n].distancia + 1;
+                cola.push(adyacente);
+            }
+        }
+    }
+
+    vector<unsigned> distancias(cant_nodos);
+    for(nodo n = 0; n < cant_nodos; n++){
+        distancias[n] = nodos[n].distancia;
+    }
+
+    return distancias;
+}
+
 nodo nodo_mas_distante(vector<unsigned> distancias) {
 	nodo mas_distante;
 	unsigned distancia_maxima = 0;
@@ -74,75 +131,6 @@ nodo nodo_mas_distante(vector<unsigned> distancias) {
 		}
 	}
 	return mas_distante;
-}
-
-nodo problema2b(unsigned cant_nodos, vector<enlace> enlaces) {
-    // Caso borde
-    if(cant_nodos == 1) return 0;
-
-	// Busco un extremo de un camino máximo dentro del árbol.
-	vector<unsigned> distancias = bfs(cant_nodos, enlaces, nodo1(enlaces[0]));
-	nodo inicial = nodo_mas_distante(distancias);
-
-	// Busco el otro extremo del camino máximo dentro del árbol.
-	distancias = bfs(cant_nodos, enlaces, inicial);
-	nodo final = nodo_mas_distante(distancias);
-
-	// Obtengo el camino máximo.
-	vector<nodo> camino = camino_entre_nodos(cant_nodos, enlaces, inicial, final);
-
-	// Devuelvo el punto medio del camino.
-	return camino[camino.size() / 2];
-}
-
-pair<nodo, vector<enlace>> problema2(unsigned cant_nodos, vector<enlace> enlaces) {
-	vector<enlace> arbol_generador_minimo = problema2a(cant_nodos, enlaces);
-	nodo maestro = problema2b(cant_nodos, arbol_generador_minimo);
-
-    return make_pair(maestro, arbol_generador_minimo);
-}
-
-struct nodo_lista_adyacencia {
-	vector<nodo> adyacentes;
-	unsigned distancia;
-	bool visitado = false;
-};
-
-vector<nodo_lista_adyacencia> crear_lista_adyacencia(unsigned cant_nodos, vector<enlace> enlaces){
-	vector<nodo_lista_adyacencia> nodos(cant_nodos);
-	for(size_t i = 0; i < enlaces.size(); i++) {
-		nodos[nodo1(enlaces[i])].adyacentes.push_back(nodo2(enlaces[i]));
-		nodos[nodo2(enlaces[i])].adyacentes.push_back(nodo1(enlaces[i]));
-	}
-	return nodos;
-}
-
-vector<unsigned> bfs(unsigned cant_nodos, vector<enlace> enlaces, nodo inicial) {
-	vector<nodo_lista_adyacencia> nodos = crear_lista_adyacencia(cant_nodos, enlaces);
-	nodos[inicial].distancia = 0;
-
-	queue<nodo> cola;
-	cola.push(inicial);
-
-	while(!cola.empty()) {
-		nodo n = cola.front();
-		nodos[n].visitado = true;
-		cola.pop();
-		for(size_t i = 0; i < nodos[n].adyacentes.size(); i++) {
-			nodo adyacente = nodos[n].adyacentes[i];
-			if(nodos[adyacente].visitado != true) {
-				nodos[adyacente].distancia = nodos[n].distancia + 1;
-				cola.push(adyacente);
-			}
-		}
-	}
-
-	vector<unsigned> distancias(cant_nodos);
-	for(nodo n = 0; n < cant_nodos; n++){
-		distancias[n] = nodos[n].distancia;
-	}
-
-	return distancias;
 }
 
 bool camino_entre_nodos_rec(vector<nodo_lista_adyacencia> &nodos, vector<nodo> &camino, nodo actual, nodo final) {
@@ -162,7 +150,7 @@ bool camino_entre_nodos_rec(vector<nodo_lista_adyacencia> &nodos, vector<nodo> &
     // Si tiene adyacentes, los checkeo
     else {
         for(size_t i = 0; i < nodos[actual].adyacentes.size(); i++) {
-        	nodo adyacente = nodos[actual].adyacentes[i];
+            nodo adyacente = nodos[actual].adyacentes[i];
             if(!nodos[adyacente].visitado) {
                 if(camino_entre_nodos_rec(nodos, camino, adyacente, final)) {
                     camino.push_back(actual);
@@ -182,4 +170,24 @@ vector<nodo> camino_entre_nodos(unsigned cant_nodos, vector<enlace> enlaces, nod
 
     camino_entre_nodos_rec(nodos, camino, inicial, final);
     return camino;
+}
+
+
+nodo problema2b(unsigned cant_nodos, vector<enlace> enlaces) {
+    // Caso borde
+    if(cant_nodos == 1) return 0;
+
+	// Busco un extremo de un camino máximo dentro del árbol.
+	vector<unsigned> distancias = bfs(cant_nodos, enlaces, nodo1(enlaces[0]));
+	nodo inicial = nodo_mas_distante(distancias);
+
+	// Busco el otro extremo del camino máximo dentro del árbol.
+	distancias = bfs(cant_nodos, enlaces, inicial);
+	nodo final = nodo_mas_distante(distancias);
+
+	// Obtengo el camino máximo.
+	vector<nodo> camino = camino_entre_nodos(cant_nodos, enlaces, inicial, final);
+
+	// Devuelvo el punto medio del camino.
+	return camino[camino.size() / 2];
 }
