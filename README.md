@@ -19,10 +19,10 @@ Lucas Rossi (LU 705/11) [lucasrossi20@gmail.com](mailto:lucasrossi20@gmail.com)
 Instrucciones
 -------------
 
-Compilar los binarios invocando ´´make´´ desde la consola.
+Compilar los binarios invocando `make` desde la consola.
 
-Se generará un binario para cada problema: ´´problema1´´, ´´problema2´´ y ´´problema3´´.
+Se generará un binario para cada problema: `problema1`, `problema2` y `problema3`.
 
-El directorio ´´sample_input´´ contiene entradas ilustrativas para cada problema.
+El directorio `sample_input` contiene entradas ilustrativas para cada problema.
 
-Por ejemplo, para ejecutar las entradas para el problema 1, ejecutar en la consola ´´./problema1 < sample_input/problema1´´.
+Por ejemplo, para ejecutar las entradas para el problema 1, ejecutar en la consola `./problema1 < sample_input/problema1`.
