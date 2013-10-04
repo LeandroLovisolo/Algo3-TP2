@@ -570,130 +570,62 @@ Luego, basta con devolver cualquier árbol generador mínimo para satisfacer lo 
 
 \subsection{Solución (subproblema 2)}
 
-\subsubsection{Solución}
+Devolvemos el centro del árbol, es decir, un nodo tal que al tomarse como raíz, minimiza la altura del árbol.
 
-Para realizar la búsqueda del nodo \textit{master} se realiza lo siguiente:
+A tal efecto, realizamos la siguiente serie de pasos:
 
 \begin{itemize}
-\item Se utiliza el algoritmo de BFS desde cualquier nodo arbitrario para encontrar un extremo del camino máximo dentro del árbol.
-\item Se ejecuta otra vez BFS desde el extremo encontrado para encontrar el otro extremo del camino máximo.
-\item Se busca el camino máximo con ambos extremos encontrados.
-\item Se consigue el nodo \textit{master} consiguiendo el nodo en la mitad del camino máximo obtenido.
+  \item Aplicamos el algoritmo BFS tomando como origen un nodo cualquiera y obtenemos el nodo más distante, al que llamamos $u$.
+  \item Aplicamos el algoritmo BFS tomando como origen el nodo $u$ y obtenemos el nodo a mayor distancia de $u$, al que llamamos $v$.
+  \item Obtenemos la secuencia de nodos que yacen el camino simple entre $u$ y $v$ (único, pues el grafo recibido como entrada del algoritmo es un árbol.)
+  \item Devolvemos el nodo exactamente a la mitad del camino, redondeando para abajo si la cantidad de nodos es par.
 \end{itemize}
+
+El algoritmo BFS fue implementado como se explica en el capítulo 22 de \textit{Introduction to Algorithms, 3rd Ed., Cormen, Leiserson, Rivest, Stein}.
+
+El procedimiento BFS usado a continuación toma un grafo $G = (V, E)$ y un vértice origen $s$ y devuelve un arreglo de distancias $d$ de dimensión $|V|$, tal que $d[i - 1] = \delta(s, v_i)$.
+
+Notamos con $G.Ady(v)$ a la lista de adyacencia del vértice $v \in V$ en el grafo $G = (V, E)$.
+
 
 \subsubsection{Pseudocódigo}
 
 \begin{pseudo}
-\Procedure{nodo\_mas\_distante}{distancias : vector de enteros} $\rightarrow$ nodo
-  \State mas\_distante : nodo                         \Ode{1}
-  \State distancia\_maxima : entero = 0                   \Ode{1}
-  \For{n = 0 To Tamaño(distancias)}
-    \If{distancias[n] $>$ distancia\_maxima}                \Ode{1}
-      \State distancia\_maxima = distancias[n]                \Ode{1}
-      \State mas\_distante = n                        \Ode{1}
-    \EndIf
-  \EndFor
-  \Return mas\_distante;
-\EndProcedure
+  \Procedure{Nodo-Master}{$G = (V, E)$}
+    \State $d \leftarrow \textsc{BFS}(G, v_1)$                                         \Ode{|V| + |E|}
+    \State $u \leftarrow$ nodo más distante a $v_1$ (recorremos todo el arreglo $d$)   \Ode{|V|}
+    \State $d \leftarrow \textsc{BFS}(G, u)$                                           \Ode{|V| + |E|}
+    \State $v \leftarrow$ nodo más distante a $u$ (recorremos todo el arreglo $d$)     \Ode{|V|}
+    \State $c \leftarrow \textsc{Camino-Entre-Nodos}(G, u, v)$                         \Ode{|V|}
+    \PReturn $c[|c|\; /\; 2]$                                                          \Ode{1}
+  \EndProcedure
 
-\Procedure{centro\_del\_arbol}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ nodo
-  \State distancias : vector de enteros = Bfs(cant\_nodos, enlaces, nodo1(enlaces[0])) \Ode{N}
-  \State inicial : nodo = Nodo\_mas\_distante(distancias)           \Ode{N}
+  \State
 
-  \State distancias = Bfs(cant\_nodos, enlaces, inicial)            \Ode{N}
-  \State final : nodo = Nodo\_mas\_distante(distancias)           \Ode{N}
-
-  \State camino : vector de nodos = Camino\_entre\_nodos(cant\_nodos, enlaces, inicial, final) \Ode{N}
-  
-  \Return camino[Tamaño(camino)/2]
-\EndProcedure
-
-nodo\_lista\_adyacencia es tupla $<$adyacentes : vector nodo, distancia : entero, visitado : bool$>$
-\Procedure{crear\_lista\_adyacencia}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ vector de nodo\_lista\_adyacencia
-  \State nodos : vector de nodo\_lista\_adyacencia [cant\_nodos]        \Ode{N}
-  \For{i = 0 To Tamaño(enlaces)}
-    \State nodos[nodo1(enlaces[i])].adyacentes.Agregar(nodo2(enlaces[i])) \Ode{1}
-    \State nodos[nodo2(enlaces[i])].adyacentes.Agregar(nodo1(enlaces[i])) \Ode{1}
-   \EndFor
-  \Return nodos
-\EndProcedure
-
-\Procedure{bfs}{cant\_nodos : entero, enlaces : vector de enlace, inicial : nodo} $\rightarrow$ vector de enteros
-  \State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{M}
-  \State nodos[inicial].distancia = 0                     \Ode{1}
-
-  \State cola : Cola de nodos                         \Ode{1}
-  \State cola.Encolar(inicial)                        \Ode{1}
-  
-  \While{!cola.Vacia()}                           \Ode{1}
-    \State n : nodo = cola.Siguiente()                    \Ode{1}
-    \State nodos[n].visitado = true                     \Ode{1}
-    \State cola.Desencolar()                        \Ode{1}
-    \For({i = 0 To Tamaño(nodos[n].adyacentes)}               \Ode{1}
-      \State nodo adyacente = nodos[n].adyacentes[i]            \Ode{1}
-      \If{nodos[adyacente].visitado != true}                \Ode{1}
-        \State nodos[adyacente].distancia = nodos[n].distancia + 1    \Ode{1}
-        \State cola.Encolar(adyacente)                  \Ode{1}
-      \EndIf
-    \EndFor
-  \EndWhile
-
-  \State distancias : vector de enteros [cant\_nodos]             \Ode{N}
-  \For{n = 0 To cant\_nodos}
-    \State distancias[n] = nodos[n].distancia               \Ode{1}
-  \EndFor
-  \Return distancias
-\EndProcedure
-
-\Procedure{camino\_entre\_nodos\_rec}{\&nodos : vector de nodo\_lista\_adyacencia, \&camino : vector de enteros, inicial : nodo, final : nodo} $\rightarrow$ bool
-    \If{inicial == final}                             \Ode{1}
-        \State nodos[inicial].visitado = true                   \Ode{1}
-        \State camino.Agregar(inicial)                        \Ode{1}
-        \State \textbf{return} true
-    \EndIf
-
-    \If{Tamaño(nodos[inicial].adyacentes) == 0}                   \Ode{1}
-        \State nodos[inicial].visitado = true                   \Ode{1}
-        \State \textbf{return} false
-    \Else
-        \State nodos[inicial].visitado = true                   \Ode{1}
-        \For{i = 0 To Tamaño(nodos[inicial].adyacentes.size())}
-          \State adyacente : nodo = nodos[inicial].adyacentes[i]          \Ode{1}
-            \If{!nodos[adyacente].visitado}                     \Ode{1}
-                \If{Camino\_entre\_nodos\_rec(nodos, camino, adyacente, final)}   \Ode{N}
-                    \State camino.Agregar(inicial)                  \Ode{1}
-                    \textbf{return} true
-                \EndIf
-            \EndIf
-        \EndFor
-        \State \textbf{return} false
-    \EndIf
-\EndProcedure
-
-\Procedure{camino\_entre\_nodos}{cant\_nodos : entero, enlaces : vector de enlace, inicial : nodo, final : nodo} $\rightarrow$ vecot de nodo
-    \State nodos : vector de nodo\_lista\_adyacencia = Crear\_lista\_adyacencia(cant\_nodos, enlaces) \Ode{N}
-    \State camino : vector de nodo [cant\_nodos]                      \Ode{N}
-    \State camino\_entre\_nodos\_rec(nodos, camino, inicial, final)             \Ode{N}
-    \Return camino
-\EndProcedure
-
-
-\Procedure{problema2}{cant\_nodos : entero, enlaces : vector de enlace} $\rightarrow$ tupla $<$nodo, vector de enlace$>$
-
-  \If{cant\_nodos == 1}                               \Ode{1}
-    \State \textbf{return} tupla$<$0, enlaces$>$
-  \EndIf
-
-  \State arbol\_generador\_minimo : vector de enlace = Kruskal(cant\_nodos, enlaces) \Ode{N^2 log N}
-  \State maestro : nodo = Centro\_del\_arbol(cant\_nodos, arbol\_generador\_minimo) \Ode{N}
-
-    \Return tupla$<$maestro, arbol\_generador\_minimo$>$
-\EndProcedure
+  \Procedure{Camino-Entre-Nodos}{$G = (V, E),\; u \in V,\; v \in V$}
+    \State $d \leftarrow \textsc{BFS}(G, u)$                                           \Ode{|V| + |E|}
+    \State $c \leftarrow \{ v \}$ \Comment{El camino a devolver}
+    \State $w \leftarrow v$ \Comment{Nos paramos en el nodo $v$}
+    \While{$w \neq u$} \Comment{Repetimos hasta llegar al nodo $u$}
+      \For{$w'$ \In $G.Ady(w)$} \Comment{Recorremos la lista de adyacencia de $w$}
+        \If{$d[w'] = d[w] - 1$} \Comment{Buscamos el siguiente nodo en dirección a $u$}
+          \State $w = w'$
+          \State $c \leftarrow c \cup \{ w \}$ \Comment{Agregamos el nodo hallado al final del camino}
+          \Break
+        \EndIf
+      \EndFor
+    \EndWhile
+    \PReturn $c$
+  \EndProcedure
 \end{pseudo}
+
 
 \subsubsection{Complejidad}
 
-Para el cálculo del nodo \textit{master} , las dos ejecuciones de BFS tienen una complejidad de 2 * O(N + M), más el algoritmo para conseguir el camino entre dos puntos que recorre para cada nodo, todas sus aristas ejecutándose con un costo de O(N + M), se tiene un costo toal de O(3*(N + M)) $\subset$ O(N + M) que como la estructura donde se aplican es un árbol (N-1 aristas) O(N + M) $\subset$ O(N), cumpliendo con la complejidad lineal pedida para este punto.
+El procedimiento \textsc{Nodo-Master} realiza dos búsquedas BFS con costo $O(|V| + |E|)$. Luego invoca a \textsc{Camino-Entre-Nodos}, que a su vez realiza otra búsquda BFS con costo $O(|V| + |E|)$ y recorre un camino entre dos nodos del árbol. En el peor de los casos este camino incluye todos los nodos del árbol. Además, para cada nodo del camino se recorre su lista de adyacencia. Ahora bien, como se trata de un grafo no dirigido, una arista cualquiera aparece en las listas de adyacencia de ambos extremos. Como $G$ es un árbol, la cantidad de aristas es $|V| - 1$, y como en el peor caso se recorren las listas de adyacencia de todos los nodos, se recorren un total de $2 \times (|V| + 1)$ aristas, con una complejidad total de $O(|V| + 2 \times (|V| + 1)) = O(|V|)$.
+
+La complejidad total del procedimiento es entonces $O(|V| + |E|) = O(|V| + |V| - 1) = O(|V|) = O(n)$.
+
 
 \subsubsection{Correctitud}
 
@@ -713,35 +645,35 @@ Dado un árbol AGM, el nodo arbitrario N1 elegido puede tener las siguientes ubi
   
   Sea C1 el camino máximo del árbol de extremos U y V, y sea C2 el camino de longitud máxima entre N1 y N2, suponemos que N2 $\neq$ U, lo que implica que h(U) $<$ h(N2) (ya que, si N2 no es U, entonces N2 es un nodo con mayor distancia que U de N1), con h la altura del árbol tomando como raíz a N1. Llamamos también a X e Y las bifurcaciones de los caminos de N1 a U y a N2 respectivamente.
 
-\begin{figure}[ht!]
-\centering
-\includegraphics[width=60mm]{2b.png}
-\caption{Ejemplo gráfico de la suposición}
-\label{overflow}
-\end{figure}  
-  
-  Entonces, sea l función de longitud entre dos nodos, l(U,V) = h(U) + h(V) - 2*h(X) y l(U,N2) = h(U) + h(N2) - 2*h(X), y como h(N2) $>$ h(U) por ser N2 el nodo más lejano o de mayor altura, esto implica que l(U,N2) $>$ l(U,V) y esto es absurdo por ser C1 el camino máximo.
+    \begin{figure}[ht!]
+    \centering
+    \includegraphics[width=60mm]{2b.png}
+    \caption{Ejemplo gráfico de la suposición}
+    \label{overflow}
+    \end{figure}  
+
+   Entonces, sea l función de longitud entre dos nodos, l(U,V) = h(U) + h(V) - 2*h(X) y l(U,N2) = h(U) + h(N2) - 2*h(X), y como h(N2) $>$ h(U) por ser N2 el nodo más lejano o de mayor altura, esto implica que l(U,N2) $>$ l(U,V) y esto es absurdo por ser C1 el camino máximo.
   
   Por el absurdo, concluimos que U = N2, es decir, que N2 es un extremo del camino máximo.
 \end{itemize}
 
 Al obtener un extremo del camino máximo, otra ejecución de BFS desde el extremo encontrado caerá sobre el caso trivial de pertenecer al camino máximo y encontrará el camino más lejano a este, su otro extremo.
 
-Teniendo los dos extremos, buscamos el camino máximo del árbol (secuencia de nodos) mediante la función Camino\_entre\_nodos. A continuación demostraremos que es correcta.
+Teniendo los dos extremos, buscamos el camino máximo del árbol (secuencia de nodos) mediante el procedimiento \textsc{Camino-Entre-Nodos}. Veamos que el procedimiento es correcto.
 
-\begin{itemize}
-\item Terminación:
+El procedimiento recibe el árbol $G = (V, E)$ y los extremos $u$ y $v$ de un camino simple de longitud máxima en $G$.
 
-La función recorre para cada nodo, de forma recursiva, sus nodos adyacentes, si o solo si, no han sido recorridos antes, por lo que el árbol se recorre una única vez por cada nodo, terminando al no tener nodos por recorrer.
+Como $G$ es un árbol, el camino simple entre $u$ y un nodo $w$ cualquiera es único. Si tomamos como raíz del árbol al nodo $u$, el único camino simple posible desde $w$ a $u$ lo realizamos moviéndonos hacia el nodo antecesor a $w$, y repitiendo hasta alcanzar $u$. Veamos que el procedimiento hace exactamente eso, partiendo del nodo $v$.
 
-\item  Resultado correcto:
+El procedimiento aplica el algoritmo BFS sobre $G$ tomando como origen el vértice $u$, de manera de computar las distancias entre $u$ y el resto de los vértices en $V$ (distancia medida en cantidad de aristas.) Luego se para en $v$, busca su nodo adyacente de distancia $\delta(v) - 1$ (es decir su antecesor), y repite la operación hasta alcanzar el nodo $u$. Luego, el procedimiento cumple con lo dicho en el párrafo anterior.
 
-Al recorrer una única vez cada nodo y como es un árbol (existe un camino para todo par de nodos), se recorrerá todo el árbol y eventualmente se llegará al nodo buscado. Al llegar al nodo buscado, la función devolverá true, haciendo que se agreguen los caminos recorridos hacia el hasta llegar al inicial.
-\end{itemize}
+Tras cada paso, el procedimiento guarda el vértice visitado en la lista de vértices del camino entre $u$ y $v$. Es decir, el procedimiento recorre la secuencia de antecesores de $v$ hasta llegar al nodo raíz $u$. Finalmente devuelve la secuencia obtenida, que necesariamente es la secuencia de vértices que yacen en el camino simple entre $u$ y $v$.
 
 Una vez obtenido el camino, el nodo que se encuentre en la mitad de este, será el nodo master.
 
+
 \subsection{Preguntas adicionales}
+
 Mostrar con un contraejemplo que es posible resolver las dos partes por separado de manera óptima pero que aún así haya una solución en la que la replicación termine en menos tiempo. Comentarposibles soluciones al problema.
 
 

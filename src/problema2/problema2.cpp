@@ -1,6 +1,5 @@
 #include <algorithm>
 #include <queue>
-#include <climits>
 
 #include "problema2.h"
 
@@ -134,71 +133,25 @@ nodo nodo_mas_distante(vector<unsigned> distancias) {
 	return mas_distante;
 }
 
-bool camino_entre_nodos_rec(vector<nodo_lista_adyacencia> &nodos, vector<nodo> &camino, nodo actual, nodo final) {
-    nodos[actual].visitado = true;
-    
-    // Si donde estoy es el que buscaba, lo agrego y devuelvo true
-    if(actual == final) {
-        camino.push_back(actual);
-        return true; 
-    }
-
-    // Si donde estoy no es el que busco y no tiene adyacentes, no encontré solución, false
-    if(nodos[actual].adyacentes.size() == 0) {
-        return false;
-    }
-
-    // Si tiene adyacentes, los checkeo
-    else {
-        for(size_t i = 0; i < nodos[actual].adyacentes.size(); i++) {
-            nodo adyacente = nodos[actual].adyacentes[i];
-            if(!nodos[adyacente].visitado) {
-                if(camino_entre_nodos_rec(nodos, camino, adyacente, final)) {
-                    camino.push_back(actual);
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-}
-
 vector<nodo> camino_entre_nodos(unsigned cant_nodos, vector<enlace> enlaces, nodo inicial, nodo final) {
     vector<unsigned> distancias = bfs(cant_nodos, enlaces, inicial);
     vector<nodo_lista_adyacencia> nodos = crear_lista_adyacencia(cant_nodos, enlaces);
-
-    vector<nodo> camino;
+    vector<nodo> camino = {final};
 
     nodo actual = final;
-    camino.push_back(actual);
-
     while(actual != inicial) {
-        nodo mas_proximo;
-        unsigned distancia = UINT_MAX;
-
         for(size_t i = 0; i < nodos[actual].adyacentes.size(); i++) {
             nodo adyacente = nodos[actual].adyacentes[i];
-            if(distancias[adyacente] < distancia) {
-                mas_proximo = adyacente;
-                distancia = distancias[adyacente];
+            if(distancias[adyacente] == distancias[actual] - 1) {
+                actual = adyacente;
+                camino.push_back(actual);
+                break;
             }
         }
-
-        actual = mas_proximo;
-        camino.push_back(actual);
     }
 
     return camino;
-
-    // vector<nodo_lista_adyacencia> nodos = crear_lista_adyacencia(cant_nodos, enlaces);
-
-    // vector<nodo> camino;
-    // camino.reserve(cant_nodos);
-
-    // camino_entre_nodos_rec(nodos, camino, inicial, final);
-    // return camino;
 }
-
 
 nodo problema2b(unsigned cant_nodos, vector<enlace> enlaces) {
     // Caso borde
