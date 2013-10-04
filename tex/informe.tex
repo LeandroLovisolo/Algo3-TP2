@@ -37,23 +37,31 @@
 %%%%%%%%%% Configuración de Algorithmic - Inicio %%%%%%%%%%
 % Entorno propio para customizar la presentación del pseudocódigo
 \newenvironment{pseudo}[1][]{%
-    \vspace{0.5em}%
+    \vspace{1em}%
     \begin{algorithmic}%
 }
 {%
     \end{algorithmic}%
-    \vspace{0.5em}%
+    \vspace{1em}%
 }
 
 % Valores de verdad
 \newcommand{\True}{\textbf{true}}
 \newcommand{\False}{\textbf{false}}
 
+% Conectivos lógicos
+\newcommand{\PAnd}{\textbf{and} }
+\newcommand{\POr}{\textbf{or} }
+
 % Conectivo 'in' para usar así: \ForAll{$foo$ \In $bar$}
 \newcommand{\In}{\textbf{in} }
 
 % Conectivo 'to' para usar así: \For{$i = 1$ \In $n$}
 \newcommand{\To}{\textbf{to} }
+
+% Control de flujo
+\newcommand{\Break}{\State \textbf{break}}
+\newcommand{\PReturn}{\State \textbf{return} }
 
 % Complejidades
 \newcommand{\Ode}[1]{\hfill $O(#1)$}
@@ -193,108 +201,233 @@ Sin más, presentamos los problemas estudiados a continuación.
 
 \section{Problema 1: Impresiones ordenadas}
 
-Una imprenta dispone de dos máquinas para realizar impresiones a gran escala. Los trabajos realizados pueden ser muy distintos entre sí y para realizarlos, las máquinas requieren que se las prepare para ello. La preparación para realizar un trabajo tiene un costo que va a depender del trabajo que se haya realizado previamente en la impresora.\\
+A una imprenta se le encarga una serie de trabajos $t_1, \cdots, t_n$ que deben ser realizados en el orden dado, sin excepción.
 
-Se nos pide realizar un algoritmo que minimice el costo de realizar una serie de trabajos $t_1$...$t_n$ en el orden que vienen dados con una complejidad temporal de \textbf{peor caso O($n^2$)}.
+La imprenta posee dos impresoras. Cada impresora debe prepararse adecuadamente antes de realizar un trabajo (por ejemplo, se les debe cargar la tinta y el papel correcto.)
+
+Esta preparación tiene un costo asociado que depende del último trabajo realizado en esa impresora y del trabajo para el cual se la desea preparar. Preparar una impresora para realizar el trabajo $t_j$ luego de haber realizado el trabajo $t_i$ tiene costo $c_{ij}$, con $i < j$.
+
+Preparar una impresora para el $i$-ésimo trabajo cuando ésta aún no realizó ningún trabajo también tiene un costo asociado, al que denotaremos $c_{0i}$.
+
+Se nos pide escribir un algoritmo que, dada una cantidad de trabajos $n$ y los costos de preparación $c_{ij}$ correspondientes, determine en qué máquina realizar cada trabajo de manera que la suma de los costos de preparación sea mínima, y devuelva el costo hallado y la cola de trabajos de alguna de las impresoras. El algoritmo debe tener una cota de complejidad temporal de peor caso $O(n^2)$.
 
 \textbf{Ejemplos del problema y sus soluciones:}
-\begin{enumerate}
-\item{\textbf{Entrada}:}
-\begin{itemize}
-\item{Trabajo 1: $c_{01}$: 1}
-\item{Trabajo 2: $c_{02}$: 2, $c_{12}$: 4}
-\item{Trabajo 3: $c_{03}$: 3, $c_{13}$: 5, $c_{23}$: 6}
-\end{itemize}
-\textbf{Salida}:
-\begin{itemize}
-\item{Costo total: 8}
-\item{Cantidad de trabajos asociados a la máquina 1: 2}
-\item{Trabajos realizados en la máquina 1: 1 y 3}
-\end{itemize}
 
+\textbf{Entrada:} $n = 1$, $c_{0, 1} = 1$. \\
+\textbf{Salida:} $\{ 1 \}$ (costo total: 1)
 
-\item{\textbf{Entrada}:}
-\begin{itemize}
-\item{Sin trabajos}
-\end{itemize}
-\textbf{Salida}:
-\begin{itemize}
-\item{Costo total: 0}
-\item{Cantidad de trabajos asociados a la máquina 1: 0}
-\item{Trabajos realizados en la máquina 1: 0}
-\end{itemize}
-\end{enumerate}
+\textbf{Entrada:} $n = 3$, $c_{0, 1} = 1$, $c_{0, 2} = 2$, $c_{0, 3} = 3$, 
+                           $c_{1, 2} = 4$, $c_{1, 3} = 5$, $c_{2, 3} = 6$. \\
+\textbf{Salida:} $\{ 1, 2 \}$ (costo total: 8)
+
 
 \subsection{Solución}
 
-Dado una serie de trabajos $t_1$...$t_n$, donde cada trabajo $t_i$ está asociado al costo de preparación del trabajo luego de haber realizado el trabajo $t_j$ para cada par de trabajos $t_i$ y $t_j$ con $j<i$ y al costo de preparación si el trabajo es el primero realizado en la máquina.
+Resolvemos este problema aplicando la técnica de programación dinámica.
+
+Representamos los últimos trabajos realizados en cada máquina con el par $(i, j)$. Si una de las máquinas aún no realizó ningún trabajo, ponemos un $0$ en su respectivo componente del par. Para simplificar el razonamiento, asumimos de aquí en adelante que $i < j$.
+
+Sea $C(i, j)$ la función que devuelve el costo mínimo de realizar \textbf{los trabajos restantes} cuando los últimos trabajos hechos en cada impresora fueron $t_i$ y $t_j$.
+
+Por ejemplo, para el lote de trabajos $t_1, \cdots, t_6$, vale que $C(1, 3)$ es el costo mínimo de realizar los trabajos $t_4$, $t_5$ y $t_6$ cuando los últimos trabajos realizados en cada impresora fueron $t_1$ y $t_3$.
+
+Podemos definir $C(i, j)$ recursivamente de la siguiente manera, respetando siempre que $i < j$:
+
+$$
+C(i, j) =
+\left\{
+  \begin{array}{ll}
+    min\{ C(i, j + 1) + c_{j, j + 1}, \; C(j, j + 1) + c_{i, j + 1} \} & \mbox{si } j < n \\
+    0                                                                  & \mbox{si } j = n \\
+    \infty                                                             & \mbox{si } i \geq j \mbox{ (caso ińválido)}
+  \end{array}
+\right.
+$$
+
+Si $j < n$, comparamos el costo de realizar $t_{j + 1}$ en cada de las impresoras y nos quedamos con el menor. Si $j = n$, quiere decir que el último trabajo realizado fue $t_n$, es decir que no quedan más trabajos por hacer, entonces el costo de realizar los trabajos restantes es cero.
+
+Lo que nos interesa entonces es hallar $C(0, 0)$, es decir, el costo mínimo de realizar el lote de trabajos $t_1, \cdots, t_n$ cuando las máquinas aún no realizaron ningún trabajo.
+
+El algoritmo a continuación computa cada $C(i, j)$ de manera \textit{bottom-up}, memoriza los resultados en un arreglo $dp$ y luego construye una solución recorriendo este arreglo.
+
 
 \subsubsection{Pseudocódigo}
 
-\begin{pseudo}
+Sean $n$ la cantidad de trabajos a realizar, $dp$ un arreglo de enteros no negativos de dimensión $(n + 1) \times (n + 1)$ y $c$ otro arreglo de mismo tipo y dimensión que contiene los costos de preparación de las máquinas\footnote{Notar que no todas las coordenadas de $c$ son válidas; por ejemplo $c[2][1] = c_{2,1}$ no representa un costo válido pues el trabajo 1 nunca puede realizarse después del trabajo 2.}, tal que $c[i][j] = c_{ij}$.
 
-\State trabajos: vector de enteros
-\State costos: matriz de enteros
-\State dp: matriz de enteros
-\\
-\Procedure{Impresiones-ordenadas}{n: entero, costos: c}
-    \For{j = n - 1 Downto 0}
-        \For{i = 0 To n}
-            \If{i == 0 $\&\&$ j == 0}                 \Ode{1}
-                \State dp[0][0] = dp[0][1] + c[0][1]  \Ode{1}
-                \State break                          
-            \EndIf
-            \If{i == j}                               \Ode{1}
-                \State break
-            \EndIf
-            \State dp[i][j] = min(dp[i][j + 1] + c[j][j + 1], dp[j][j + 1] + c[i][j + 1])                          \Ode{1}
-        \EndFor
-    \EndFor
-    \State costo\_minimo = dp[0][0]                    \Ode{1}
-    \State i = 0                                       \Ode{1}
-    \State j = 1                                       \Ode{1}
-    \State trabajos$.$Agregar\_atras(1);
-    \While{j $<$ n}
-        \If{dp[i][j] == dp[i][j + 1] + c[j][j + 1]}    \Ode{1}
-            \If{trabajos$.$Último() == (trabajo) j}    \Ode{1}
-            \State trabajos$.$Agregar\_atras(j + 1)    \Ode{1}
-            \State j++                                 \Ode{1}
-            \EndIf
-        \Else
-            \If{trabajos$.$ultimo() == (trabajo) i}    \Ode{1}
-            \State trabajos$.$Agregar\_atras(j + 1)    \Ode{1}
-            \State i = j                               \Ode{1}  
-            \State j++                                 \Ode{1}
-            \EndIf
+
+\begin{pseudo}
+  \Procedure{Impresiones-ordenadas}{$n, c$}
+    \State $dp \leftarrow $ arreglo de enteros de dimensión $(n + 1) \times (n + 1)$,
+           inicializado en 0                                                              \Ode{n^2}
+    \For{$j \leftarrow n - 1$ \To $0$} \Comment{Computamos $dp$}
+      \For{$i \leftarrow 0$ \To $n - 1$}
+        \If{$i = 0$ \PAnd $j = 0$} \Comment{El costo que queremos hallar}
+          \State $dp[0][0] \leftarrow dp[0][1] + c[0][1]$                                 \Ode{1}
+          \Break
         \EndIf
+
+        \If{$i = j$} \Comment{Estado inválido}
+          \Break
+        \EndIf
+
+        \State $dp[i][j] \leftarrow \textsc{min}(dp[i][j + 1] + c[j][j + 1],$ \Comment{Caso general}
+        \State \phantom{$dp[i][j] \leftarrow \textsc{min}($}$dp[j][j + 1] + c[i][j + 1])$ \Ode{1}
+      \EndFor
+    \EndFor
+
+    \State $t \leftarrow \{ 1 \}$ \Comment{Cola de trabajos de una de las impresoras}
+    \State $i \leftarrow 0$, $j \leftarrow 1$ \Comment{Comenzamos desde el estado $(0, 1)$}
+
+    \While{$j < n$} \Comment{Recorremos el arreglo $dp$ y construimos $t$}
+      \If{$dp[i][j] = dp[i][j + 1] + c[j][j + 1]$} \Comment{Avanzamos de $(i, j)$ a $(i, j + 1)$}
+        \If{$\textsc{último}(t) = j$} 
+          \State $t \leftarrow t \cup \{j + 1 \}$
+        \EndIf
+        \State $j \leftarrow j + 1$
+      \Else \Comment{Avanzamos de $(i, j)$ a $(j, j + 1)$}
+        \If{$\textsc{último}(t) = i$}
+          \State $t \leftarrow t \cup \{j + 1 \}$
+        \EndIf
+        \State $i \leftarrow j$
+        \State $j \leftarrow j + 1$    
+      \EndIf
     \EndWhile
-    \Return par$<$costo\_minimo, trabajos$>$ \Ode{1}
-    \EndProcedure
+
+    \PReturn $t$
+  \EndProcedure
 \end{pseudo}
 
 
 \subsection{Complejidad}
 
-Para realizar el algoritmo se utilizó la estructura de datos \textbf{vector} que pertenece a la STL de C++.
+El algoritmo inicializa el arreglo $dp$ con costo $O(n^2)$, luego computa cada coordenada válida de $dp$ en dos ciclos anidados con cantidad de iteraciones $O(n^2)$ y finalmente construye una solución a partir de $dp$ en un ciclo de $O(n)$ iteraciones.
 
-Las operaciones utilizadas \textbf{Agregar\_atras()} y \textbf{Último()} corresponden a \textbf{push\_back()} y \textbf{back()}, con complejidad O(1) amortizado y O(1) respectivamente.
-
-Debido a que el algoritmo recorre la matriz dp hasta llenarla, se tiene una complejidad total de O($N^2$), donde $N$ es la cantidad de trabajos.
-
-\textbf{Demostración: }
+La complejidad total es $O(n^2) + O(n^2) + O(n) = O(n^2)$.
 
 
 \subsection{Correctitud}
 
-Elegimos los siguientes casos para verificar la correctitud del programa:
+A continuación vemos que el problema exhibe subestructura óptima y solapamiento de subproblemas, lo cual nos permite aplicar la técnica de programación dinámica.
 
-\begin{enumerate}
-\item{}
-\item{}
-\end{enumerate}
+Luego verificamos que se computa correctamente el costo mínimo de cada subproblema, y que se construye correctamente una solución óptima concreta a partir de los valores memoizados.
+
+
+\subsubsection{Subestructura óptima}
+
+Consideremos el problema $(i, j)$. Los últimos trabajos realizados por cada impresora son $t_i$ y $t_j$, con $i < j$. Nos interesa hallar $C(i, j)$, es decir el costo mínimo de realizar los trabajos $t_{j + 1}, \cdots, t_n$. Tenemos dos opciones: realizar $t_{j + 1}$ en la primera impresora o bien en la segunda.
+
+Supongamos que el costo mínimo se obtiene realizando $t_{j + 1}$ en la segunda impresora. Entonces vale que $C(i, j) = c_{j, j + 1} + C(i, j + 1)$.
+
+Supongamos ahora que existe otra forma más barata de resolver el subproblema $(i, j + 1)$; llamémosla $C'(i, j + 1)$. Entonces vale $C'(i, j + 1) < C(i, j + 1)$.
+
+Sea $C'(i, j)$ el costo de resolver el problema $(i, j)$ utilizando esta nueva solución al subproblema $(i, j + 1)$. Entonces vale $C'(i, j) = c_{j, j + 1} + C'(i, j + 1) < c_{j, j + 1} + C(i, j + 1) = C(i, j)$, lo cual es absurdo pues $C(i, j)$ es el costo mínimo de resolver el problema $(i, j)$ y no existe otra solución con costo menor.
+
+Luego, el problema exhibe subestructura óptima.
+
+
+\subsubsection{Solapamiento de subproblemas}
+
+Consideremos el problema $(0, 2)$. El siguiente trabajo a encolar es $t_3$, por lo que para determinar $C(0, 2)$ necesitamos conocer los subproblemas $C(2, 3)$ y $C(0, 3)$.
+
+Consideremos ahora el problema $(1, 2)$. El siguiente trabajo a encolar también es $t_3$, por lo que para determinar $C(1, 2)$ necesitamos conocer los subproblemas $C(2, 3)$ y $C(1, 3)$.
+
+Notemos que los problemas $(0, 2)$ y $(1, 2)$ ambos comparten el subproblema $(2, 3)$.
+
+Luego, el problema exhibe solapamiento de subproblemas.
+
+
+\subsubsection{Costo mínimo de cada subproblema}
+
+Veamos la sección del algoritmo dedicada a computar el costo mínimo de cada subproblema.
+
+\begin{pseudo}
+  \State $dp \leftarrow $ arreglo de enteros de dimensión $(n + 1) \times (n + 1)$,
+           inicializado en 0  
+  \For{$j \leftarrow n - 1$ \To $0$}
+    \For{$i \leftarrow 0$ \To $n - 1$}
+      \State \ldots computar $dp[i][j]$
+    \EndFor
+  \EndFor
+\end{pseudo}
+
+El ciclo anidado computa $C(i, j)$ y guarda el valor hallado en $dp[i][j]$. Para computar $C(i, j)$ es necesario computar $C(i, j + 1)$ y $C(j, j + 1)$. Como el algoritmo resuelve el problema de manera \textit{bottom-up}, estos valores deben haber sido computados previamente y guardados en $dp[i][j + 1]$ y $dp[j][j + 1]$, respectivamente. Veamos que esto se cumple.
+
+\textbf{Caso base:} Los costos $C(0, n), \cdots, C(n - 1, n)$ siempre tienen valor 0, pues representan el costo de realizar los trabajos restantes luego de finalizar $t_n$, es decir, el conjunto vacío. Como $dp$ se inicializa en 0, cada entrada en $dp$ correspondiente a los valores $C(0, n), \cdots, C(n - 1, n)$ tiene el valor correcto, y dado que el ciclo exterior asigna a $j$ los valores en el rango $n - 1, \cdots, 0$, nunca se vuelven a escribir las entradas $dp[0][n], \cdots, dp[n - 1][n]$.
+
+\textbf{Caso general:} La iteración computa $C(i, j)$. Veamos que disponemos de los valores de $C(i, j + 1)$ y $C(j, j + 1)$. El ciclo exterior asigna a $j$ los valores en el rango $n - 1, \cdots, 0$. Entonces antes de procesar la columna $j$, primero se procesa la columna $j + 1$. Es cierto que se computa $C(i, j + 1)$ al procesarse la columna $j + 1$, pues el ciclo interior recorre los valores de $i$ en el rango $0, \cdots, j$ y vale que $i < j$. De igual manera, es cierto que se computa $C(j, j + 1)$ al procesarse la columna $j + 1$, pues el ciclo interior recorre los valores de $i$ en el rango $0, \cdots, j$ y vale que $i = j$. Luego, $dp[i][j + 1]$ y $dp[j][j + 1]$ guardan los valores necesarios para computar $C(i, j)$.
+
+Vimos que los subproblemas se computan en el orden correcto. Veamos ahora que los valores $dp[i][j]$ hallados respetan la definición de $C(i, j)$:
+
+$$
+C(i, j) =
+\left\{
+  \begin{array}{ll}
+    min\{ C(i, j + 1) + c_{j, j + 1}, \; C(j, j + 1) + c_{i, j + 1} \} & \mbox{si } j < n \\
+    0                                                                  & \mbox{si } j = n \\
+    \infty                                                             & \mbox{si } i \geq j \mbox{ (caso ińválido)}
+  \end{array}
+\right.
+$$
+
+Para el problema general, el algoritmo asigna el valor $dp[0][0] \leftarrow dp[0][1] + c[0][1]$. Entonces es cierto que $dp[0][0] = min\{ C(0, 1) + c_{0, 1}, \; C(0, 1) + c_{0, 1} \}$.
+
+Para los subproblemas, el algoritmo asigna el valor $dp[i][j] \leftarrow \textsc{min}(dp[i][j + 1] + c[j][j + 1], \; dp[j][j + 1] + c[i][j + 1])$. Entonces es cierto que $dp[i][j] =min\{ C(i, j + 1) + c_{j, j + 1}, \; C(j, j + 1) + c_{i, j + 1} \}$.
+
+Para los casos base, el algoritmo inicializa $dp[0][n], \cdots, dp[n - 1][n]$ en 0, entonces se condice con la segunda rama de $C$ ($j = n$).
+
+Luego, el costo mínimo de cada subproblema se computa correctamente.
+
+
+\subsubsection{Construcción de una solución óptima}
+
+El problema pide devolver la cola de trabajos de cualquiera de las impresoras. El algoritmo propuesto siempre devuelve la cola correspondiente a la impresora en la que se realizó el trabajo $t_1$. Veamos qué sucede con los trabajos $t_2, \cdots, t_n$.
+
+El costo de la solución óptima $C(0, 0)$ está memoizado en $dp[0][0]$ y depende únicamente de $C(0, 1)$, que está memoizado en $dp[0][1]$. A su vez, el valor de $C(0, 1)$ depende de $C(0, 2)$ y $C(1, 2)$, memoizados en $dp[0][2]$ y $dp[1][2]$, respectivamente. Queremos saber en qué impresora se realiza el trabajo $t_2$.
+
+Si $t_2$ se realiza en la misma impresora que $t_1$ entonces vale que $dp[0][1] = dp[0][2] + c[1][2]$. Por el contrario, si $t_2$ se realiza en la otra impresora, que hasta el momento no realizó ningún trabajo, entonces vale que $dp[0][1] = dp[1][2] + c[0][2]$. Entonces la cola de trabajos devuelta por el algoritmo comenzará con $\{ t_1, t_2 \}$ si $dp[0][1] = dp[0][2] + c[1][2]$ ó $\{ t_1 \}$ si $dp[0][1] = dp[1][2] + c[0][2]$.
+
+Consideremos ahora un subproblema cualquiera $(i, j)$. Su costo mínimo $C(i, j)$ está memoizado en $dp[i][j]$ y éste depende de $C(i, j + 1)$ y $C(j, j + 1)$, memoizados en $dp[i][j + 1]$ y $dp[j][j + 1]$, respectivamente.  Queremos saber en qué impresora se realiza el trabajo $t_{j + 1}$.
+
+Si $t_{j + 1}$ se encola en la misma impresora que $t_j$ entonces vale que $dp[i][j] = dp[i][j + 1] + c[j][j + 1]$. Si en cambio $t_{j + 1}$ se encola en la misma impresora que $t_i$, entonces vale que $dp[i][j] = dp[j][j + 1] + c[i][j + 1]$.
+
+Con esto último ya estamos en condiciones de construir la cola de trabajos devuelta por el algoritmo: si el último trabajo en dicha cola coincide con el último trabajo de la impresora en la que se encoló $t_{j + 1}$, lo agregamos al final de la cola devuelta por el algoritmo.
+
+El pseudocódigo refleja lo explicado recién: primero inicializa la cola de trabajos $t$ devuelta por el algoritmo agregando el primer trabajo: $t \leftarrow \{ 1 \}$. Luego comienza un ciclo con $i = 0$ y $j = 1$, en el que evalua $dp[i][j]$ para determinar en qué impresora se encoló $t_{j + 1}$, agrega este trabajo a $t$ si $\textsc{último}(t)$ coincide con el último trabajo de la impresora en la que se encoló $t_{j + 1}$ y actualiza $i$ y $j$ según corresponda, hasta llegar a un caso base ($j = n$).
+
+
+\subsection{Instancias del problema para verificar la correctitud del algoritmo}
+
+\textbf{Caso borde:} Un sólo trabajo.
+
+\textbf{Entrada:} $n = 1$, $c_{0, 1} = 1$. \\
+\textbf{Salida:} $\{ 1 \}$ (costo total: 1)
+\\
+
+\textbf{Caso borde:} Todos los trabajos en la misma impresora.
+
+\textbf{Entrada:} $n = 3$, $c_{0, 1} = 1$, $c_{0, 2} = 10$, $c_{0, 3} = 10$, 
+                           $c_{1, 2} = 1$, $c_{1, 3} = 10$, $c_{2, 3} = 1$. \\
+\textbf{Salida:} $\{ 1, 2, 3 \}$ (costo total: 3)
+\\
+
+\textbf{Caso general:} Trabajos repartidos entre ambas impresoras.
+
+\textbf{Entrada:} $n = 3$, $c_{0, 1} = 1$, $c_{0, 2} = 2$, $c_{0, 3} = 3$, 
+                           $c_{1, 2} = 4$, $c_{1, 3} = 5$, $c_{2, 3} = 6$. \\
+\textbf{Salida:} $\{ 1, 2 \}$ (costo total: 8)
 
 
 \subsection{Experimentos computacionales}
+
+Realizamos dos conjuntos de experimentos: caso general e instancias aleatorias.
+
+Para el caso general, medimos el tiempo de ejecución para cantidad de trabajos $n$ en el rango $1, \cdots, 1000$ y asignamos los costos de preparación $c_{ij}$ de forma creciente. Por ejemplo, para $n = 3$ estos costos serían $c_{0, 1} = 1$, $c_{0, 2} = 2$, $c_{0, 3} = 3$, $c_{1, 2} = 4$, $c_{1, 3} = 5$, $c_{2, 3} = 6$.
+
+Los experimentos sobre instancias aleatorias se realizan de la misma manera, con la diferencia que los costos $c_{ij}$ se toman de un generador de números pseudoaleatorios.
+
+
+\newpage
 
 
 \subsubsection{Caso general}
@@ -317,6 +450,13 @@ Elegimos los siguientes casos para verificar la correctitud del programa:
                {problema1-instancias-aleatorias-n2}
   \caption{Instancias aleatorias}
 \end{figure}
+
+
+\subsection{Conclusiones}
+
+Deducimos del análisis del algoritmo que éste no presenta instancias que requieran distintas cantidades de operaciones para un mismo tamaño de problema $n$, pues siempre se completa la misma cantidad de entradas en la tabla de memoización $dp$ de tamaño $(n + 1) \times (n + 1)$ y la construcción de una solución concreta siempre realiza $n$ iteraciones sobre la tabla $dp$ para decidir qué trabajos incluir en la misma.
+
+La experimentación computacional se condice con el análisis teórico.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -657,35 +797,35 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 \item{La lonitud de la ruta desde el cliente 1 al cliente 2 es 7.}
 \end{itemize}
 
-\begin{figure}[ht!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntos.png}
 \caption{Grafo inicial}
 \label{1}
 \end{figure} 
 
-\begin{figure}[ht!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosConNodoFantasma.png}
 \caption{Se le agrega el nodo \textit{fantasma}}
 \label{2}
 \end{figure} 
 
-\begin{figure}[ht!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosConNodoFantasmaSolucion.png}
 \caption{AGM con nodo \textit{fantasma}}
 \label{3}
 \end{figure} 
 
-\begin{figure}[ht!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosSolucion.png}
 \caption{Se le quita el nodo \textit{fantasma}}
 \label{4}
 \end{figure} 
 
-\begin{figure}[ht!]
+\begin{figure}[H]
 \centering
 \includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosSolucionSinFantasma.png}
 \caption{Solución final}
