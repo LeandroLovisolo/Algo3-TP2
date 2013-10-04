@@ -649,11 +649,54 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 
 \textbf{Ejemplos del problema y sus soluciones:}
 
-\textbf{Entrada}: . \\
-\textbf{Salida}: . \\
+\textbf{Entrada}: 2 fábricas, 2 clientes y 4 rutas.
+\begin{itemize}
+\item{La lonitud de la ruta desde la fábrica 1 a la fábrica 2 es 1.}
+\item{La lonitud de la ruta desde la fábrica 1 al cliente 1 es 4.}
+\item{La lonitud de la ruta desde la fábrica 2 al cleinte 2 es 5.}
+\item{La lonitud de la ruta desde el cliente 1 al cliente 2 es 7.}
+\end{itemize}
 
-\textbf{Entrada}: . \\
-\textbf{Salida}: . \\
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntos.png}
+\caption{Grafo inicial}
+\label{1}
+\end{figure} 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosConNodoFantasma.png}
+\caption{Se le agrega el nodo \textit{fantasma}}
+\label{2}
+\end{figure} 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosConNodoFantasmaSolucion.png}
+\caption{AGM con nodo \textit{fantasma}}
+\label{3}
+\end{figure} 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosSolucion.png}
+\caption{Se le quita el nodo \textit{fantasma}}
+\label{4}
+\end{figure} 
+
+\begin{figure}[ht!]
+\centering
+\includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosSolucionSinFantasma.png}
+\caption{Solución final}
+\label{5}
+\end{figure} 
+
+\textbf{Salida}: Costo total de inversión 9. Las rutas utilizadas fueron:
+\begin{itemize}
+\item{de la fábrica 1 al cliente 1.}
+\item{de la fábrica 2 al cliente 2.}
+\end{itemize}
 
 \subsection{Solución}
 
