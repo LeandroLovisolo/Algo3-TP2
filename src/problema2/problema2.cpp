@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <queue>
+#include <climits>
 
 #include "problema2.h"
 
@@ -163,13 +164,39 @@ bool camino_entre_nodos_rec(vector<nodo_lista_adyacencia> &nodos, vector<nodo> &
 }
 
 vector<nodo> camino_entre_nodos(unsigned cant_nodos, vector<enlace> enlaces, nodo inicial, nodo final) {
+    vector<unsigned> distancias = bfs(cant_nodos, enlaces, inicial);
     vector<nodo_lista_adyacencia> nodos = crear_lista_adyacencia(cant_nodos, enlaces);
 
     vector<nodo> camino;
-    camino.reserve(cant_nodos);
 
-    camino_entre_nodos_rec(nodos, camino, inicial, final);
+    nodo actual = final;
+    camino.push_back(actual);
+
+    while(actual != inicial) {
+        nodo mas_proximo;
+        unsigned distancia = UINT_MAX;
+
+        for(size_t i = 0; i < nodos[actual].adyacentes.size(); i++) {
+            nodo adyacente = nodos[actual].adyacentes[i];
+            if(distancias[adyacente] < distancia) {
+                mas_proximo = adyacente;
+                distancia = distancias[adyacente];
+            }
+        }
+
+        actual = mas_proximo;
+        camino.push_back(actual);
+    }
+
     return camino;
+
+    // vector<nodo_lista_adyacencia> nodos = crear_lista_adyacencia(cant_nodos, enlaces);
+
+    // vector<nodo> camino;
+    // camino.reserve(cant_nodos);
+
+    // camino_entre_nodos_rec(nodos, camino, inicial, final);
+    // return camino;
 }
 
 
