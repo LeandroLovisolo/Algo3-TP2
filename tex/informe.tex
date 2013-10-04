@@ -804,55 +804,28 @@ La idea de la utilización del algoritmo de Kruskal nace de la necesidad de cons
 
 El resultado obtenido será un árbol AGM al cual, al sacarle el nodo \textit{fantasma} y las aristas de las fábricas a este, como solo se unían los set disjuntos con una sola fábrica, se forma un bósque, donde los árboles de este tendran las rutas necesarias para pavimentar y minimizar el costo de inversión.
 
+
 \subsubsection{Pseudocódigo}
+
 \begin{pseudo}
-
-\State ranking : vector de enteros
-
-\State $tupla <nodo1 : entero, nodo2 : entero, costo : entero>$ es $ruta$
-\Procedure{problema3}{nodos : entero, cantFabricas : entero, rutas : vector de ruta}
-	\For{i=0 To Tamaño(parent)} parent[i] = i \EndFor						\Ode{C}
-	\For{i=0 To Tamaño(ranking)} ranking[i] = 0 \EndFor						\Ode{C}
-
-    \State camino\_minimo : vector de ruta									\Ode{1}
-    \For{unsigned i = 0; i < cantFabricas; ++i}								\Ode{1}
-        \State rutas.Agregar(ruta(i, nodos, 0))								\Ode{1}
+  \Procedure{Transportes-Pesados}{$f,\; G=(V, E)$}
+    \State $v \leftarrow |V| + 1$ \Comment{Creamos un nodo fantasma}
+    \State $V \leftarrow V \cup \{ v \}$ \Comment{Agregamos el nodo fantasma al grafo}
+    \For{$i \leftarrow$ \To $f$}                                                         \Ode{|V|}
+      \State $E \leftarrow E \cup \{ (i, v, 0)  \}$ \Comment{Conectamos cada fábrica al nodo fantasma con costo 0}
     \EndFor
-
-	
-
-    \State Ordenar(rutas) ordenar de manera creciente las rutas por costo \Ode{R log R}
-
-    \For{i = 0 To Tamaño(rutas)}
-        \State set1 : entero = Find(nodo1(rutas[i]))						\Ode{1}
-        \State set2 : entero = Find(nodo2(rutas[i]))						\Ode{1}
-        \If{set1 != set2}													\Ode{1}
-            \State Make\_union(set1, set2)									\Ode{1}
-            \State camino\_minimo.Agregar(rutas[i])							\Ode{1}
-        \EndIf    
-    \EndFor
-
-	 
-
-    \State res : vector de rutas de tamaño (camino\_minimo.size() - cantFabricas)   \Ode{C}
-    \For{i = cantFabricas To Tamaño(camino\_minimo)}
-        \State res.Agregar(ruta(nodo1(camino\_minimo[i]), nodo2(camino\_minimo[i]), costo(camino\_minimo[i])))	\Ode{1}
-    \EndFor
-    \Return res
-\EndProcedure
-
+    \State $E' \leftarrow \textsc{Kruskal}(G)$                                           \Ode{|E| \times log\, |V|}
+    \State Recorrer $E'$ y quitarle las rutas que conectan al nodo fantasma $v$          \Ode{|E'|}
+    \PReturn $E'$
+  \EndProcedure
 \end{pseudo}
 
 
 \subsection{Complejidad}
 
-Como se agrega un conjunto nuevo de aristas acotado por la cantidad de fábricas, se obtiene un costo de O(F) para crear las nuevas rutas que se conectarán al nodo \textit{fantasma}. Como R $>$ F, O(F) $\in$ O(R) acotando la cantidad de rutas a O(R).
+El algoritmo agrega al grafo $f$ rutas que conectan cada fábrica al nodo fantasma con costo $O(|V|)$ (pues $f < |V|$). Luego ejecuta el algoritmo de Kruskal con costo $O(|E| \times log\, |V|)$ y finalmente recorre las aristas del árbol generador mínimo resultante, con costo $O(|E'|)$. Como se trata de las aristas de un árbol con $|V|$ vértices, vale que $O(|E'|) = O(|V|)$.
 
-Debido a que para el ordenamiento de las rutas, utilizamos la función Sort() de la STL de C++, se obtiene una costo de O(R * log R), siendo R rutas, lo que equivale a O(R * log $(C+F)^2$), siendo C clientes y F fábricas por ser C+F la mayor cantidad de aristas posibles. Por ser F menor que C, O(F) $\subset$ O(C), log($(C+F)^2$) $\subset$ log($C^2$). Siendo O($C^2$) la cota superior para la cantidad de aristas, la complejidad equivale a O(R * 2 log C) $\subset$ O(R * log C).
-
-Como se utiliza el algoritmo de Kruskal, al igual que en el segundo problema, la complejidad de obtener los subconjuntos de rutas que unen clientes con fábricas es de O(R).
-
-Como O(R) $\subset$ O(R * log C), la complejidad final del algoritmo es O(R * log C).
+Luego la complejidad total resulta $O(|V|) + O(|E| \times log\, |V|) + O(|V|) = O(|E| \times log\, |V|) = O(R \times log\, C)$.
 
 
 \subsection{Correctitud}
