@@ -676,6 +676,8 @@ Una vez obtenido el camino, el nodo que se encuentre en la mitad de este, será 
 
 Mostrar con un contraejemplo que es posible resolver las dos partes por separado de manera óptima pero que aún así haya una solución en la que la replicación termine en menos tiempo. Comentar posibles soluciones al problema.
 
+El contraejemplo elegido es el siguiente:
+
 \begin{figure}[H]
 \centering
 \includegraphics[width=65mm]{contraej.png}
@@ -689,6 +691,8 @@ Mostrar con un contraejemplo que es posible resolver las dos partes por separado
 \includegraphics[width=80mm]{contraejMasterB.png}
 \caption{Grafo original (figura izquierda), se consigue el nodo maestro más conveniente (figura derecha) donde el tiempo de terminación es 1}
 \end{figure} 
+
+Obteniendo el AGM del grafo original y consiguiendo el nodo master, se obtiene un tiempo de replicación de 2 (siendo una unidad cada nodo por el que pasa el mensaje desde el nodo master). En el segundo caso, puede verse que es posible elegir un nodo master del grafo original que realize la replicación en menos tiempo.
 
 ¿Cómo se debe modificar la solución si en lugar de transmitir por broadcast se lo hace por
 multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
