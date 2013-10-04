@@ -622,7 +622,7 @@ Notamos con $G.Ady(v)$ a la lista de adyacencia del vértice $v \in V$ en el gra
 
 \subsubsection{Complejidad}
 
-El procedimiento \textsc{Nodo-Master} realiza dos búsquedas BFS con costo $O(|V| + |E|)$. Luego invoca a \textsc{Camino-Entre-Nodos}, que a su vez realiza otra búsquda BFS con costo $O(|V| + |E|)$ y recorre un camino entre dos nodos del árbol. En el peor de los casos este camino incluye todos los nodos del árbol. Además, para cada nodo del camino se recorre su lista de adyacencia. Ahora bien, como se trata de un grafo no dirigido, una arista cualquiera aparece en las listas de adyacencia de ambos extremos. Como $G$ es un árbol, la cantidad de aristas es $|V| - 1$, y como en el peor caso se recorren las listas de adyacencia de todos los nodos, se recorren un total de $2 \times (|V| + 1)$ aristas, con una complejidad total de $O(|V| + 2 \times (|V| + 1)) = O(|V|)$.
+El procedimiento \textsc{Nodo-Master} realiza dos búsquedas BFS con costo $O(|V| + |E|)$. Luego invoca a \textsc{Camino-Entre-Nodos}, que a su vez realiza otra búsquda BFS con costo $O(|V| + |E|)$ y recorre un camino entre dos nodos del árbol. En el peor de los casos este camino incluye todos los nodos del árbol. Además, para cada nodo del camino se recorre su lista de adyacencia. Ahora bien, como se trata de un grafo no dirigido, una arista cualquiera aparece en las listas de adyacencia de ambos extremos. Como $G$ es un árbol, la cantidad de aristas es $|V| - 1$, y como en el peor caso se recorren las listas de adyacencia de todos los nodos, se recorren un total de $2 \times (|V| - 1)$ aristas, con una complejidad total de $O(|V| + 2 \times (|V| - 1)) = O(|V|)$.
 
 La complejidad total del procedimiento es entonces $O(|V| + |E|) = O(|V| + |V| - 1) = O(|V|) = O(n)$.
 
