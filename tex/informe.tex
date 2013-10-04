@@ -681,8 +681,33 @@ Mostrar con un contraejemplo que es posible resolver las dos partes por separado
 multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
 
 
-\subsection{Experimentos computacionales}
+\subsection{Instancias del problema para verificar la correctitud del algoritmo}
 
+\textbf{Caso borde:} Un sólo nodo.
+
+\textbf{Entrada:} $V = \{ 1 \}, E = \emptyset$. \\
+\textbf{Salida:}  Nodo maestro: $1$. Enlaces: $\emptyset$ (costo total: 0)
+\\
+
+\textbf{Caso borde:} Dos nodos
+
+\textbf{Entrada:} $V = \{ 1, 2 \}, E = \{ (1, 2, 1) \}$\\
+\textbf{Salida:} Nodo maestro: $2$. Enlaces: $\{ (1, 2, 1) \}$ (costo total: 1)
+\\
+
+\textbf{Caso general:}
+
+\textbf{Entrada:} $V = \{ 0, \cdots, 8 \}, E = \{ (0, 1, 4), (1, 2, 8), (2, 3, 7), (3, 4, 9), (4, 5, 10), (5, 6, 2), (6, 7, 1),$\\
+\phantom{\textbf{Entrada:} $V = \{ 0, \cdots, 8 \}, E = \{ $}$(0, 7, 8), (7, 8, 7), (1, 7, 11), (2, 8, 2), (2, 5, 4), (3, 5, 14), (6, 8, 6) \}$\\
+\textbf{Salida:} Nodo maestro: $2$. Enlaces: $\{ (6, 7, 1), (5, 6, 2), (2, 8, 2), (0, 1, 4), (2, 5, 4), (2, 3, 7), (1, 2, 8), (3, 4, 9) \}$ (costo total: 37)
+
+
+
+
+
+
+
+\subsection{Experimentos computacionales}
 
 \subsubsection{Caso general}
 

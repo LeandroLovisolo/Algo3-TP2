@@ -1,43 +1,60 @@
 #include <iostream>
+
 #include "problema2.h"
 
 using namespace std;
 
 int main() {
-	while(true) {
-		vector<enlace> enlaces;
-	    // Leo la cantidad de tareas.
-	    unsigned cantServidores, cantEnlaces;
-	    cin >> cantServidores;
-	    // Termino el ciclo si la lectura anterior fracasó.
-	    if(cin.eof()) break;
-	    cin >> cantEnlaces;
-	    // Leo los costos de preparacion de los trabajos.
-	    unsigned v1, v2, costo;
-	    for(unsigned i = 0; i < cantEnlaces; i++) {
-	    	cin >> v1;
-	    	cin >> v2;
-	    	cin >> costo;
-	    	enlaces.push_back(enlace(v1,v2,costo));
-	    }
+	for(int k = 1; k < 10; k++) {
 
-	    // Ignoro el resto de la línea (numero 0 y comentarios posteriores.)
-	    //¿Qué onda esto?
-	    //string s;
-	    //getline(cin, s);
+        // Leo la cantidad de servidores.
+        unsigned n;
+        cin >> n;
 
-	    // Resuelvo el problema
-	    unsigned costoTotal=0;
-		pair<unsigned, vector<enlace> > solucion = problema2(cantServidores, enlaces);
-		for(unsigned i = 0; i < solucion.second.size(); i++) {
-			costoTotal += costo(solucion.second[i]);
+        if(n == 0) break;
+
+        // Ignoro el resto de la línea.
+        string s;
+        getline(cin, s);
+
+        // Leo la cantidad de enlaces
+        unsigned m;
+        cin >> m;
+
+        // Ignoro el resto de la línea.
+        getline(cin, s);
+
+        // Leo los enlaces
+        vector<enlace> enlaces;
+        for(unsigned i = 0; i < m; i++) {
+        	unsigned a, b, c;
+        	cin >> a; // Leo nodo 1
+        	cin >> b; // Leo nodo 2
+        	cin >> c; // Leo costo del enlace
+        	enlaces.push_back(enlace(a, b, c));
+
+        	// Ignoro el resto de la línea.
+        	getline(cin, s);        
+        }
+
+	    // Resuelvo.
+        pair<nodo, vector<enlace>> res = problema2(n, enlaces);
+
+        // Computo el costo total de la solución.
+	    unsigned costo_total = 0;
+		for(size_t i = 0; i < res.second.size(); i++) {
+			costo_total += costo(res.second[i]);
 		}
-	    // Imprimo
-	    cout << costoTotal << " " << solucion.first << " " << solucion.second.size();
-	    for(unsigned i = 0; i < solucion.second.size(); ++i) {
-	    	cout << " " << nodo1(solucion.second[i]) << " " << nodo2(solucion.second[i]);
-	    }
-	    cout << endl;
+
+		// Imprimo costo total, nodo master y cantidad de enlaces.
+		cout << costo_total << " " << res.first << " " << res.second.size() << " ";
+
+		// Imprimo los enlaces utilizados.
+		for(size_t i = 0; i < res.second.size(); i++) {
+			cout << nodo1(res.second[i]) << " " << nodo2(res.second[i]) << " ";
+		}
+		cout << endl;
 	}
+
     return 0;
 }
