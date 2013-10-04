@@ -1,45 +1,61 @@
 #include <iostream>
+
 #include "problema3.h"
 
 using namespace std;
 
 int main() {
-	while(true) {
-		vector<ruta> rutas;
-	    // Leo la cantidad de tareas.
-	    unsigned cantFabricas, cantClientes, cantRutas;
-	    cin >> cantFabricas;
-	    // Termino el ciclo si la lectura anterior fracasó.
-	    if(cin.eof()) break;
-	    cin >> cantClientes;
-	    cin >> cantRutas;
+    while(true) {
+    
+        // Leo la cantidad de fábricas.
+        unsigned f;
+        cin >> f;
 
-	    // Leo los costos de preparacion de los trabajos.
-	    unsigned v1, v2, costo;
-	    for(unsigned i = 0; i < cantRutas; i++) {
-	    	cin >> v1;
-	    	cin >> v2;
-	    	cin >> costo;
-	    	rutas.push_back(ruta(v1,v2,costo));
-	    }
+        if(f == 0) break;
 
-	    // Ignoro el resto de la línea (numero 0 y comentarios posteriores.)
-	    //¿Qué onda esto?
-	    //string s;
-	    //getline(cin, s);
+        // Leo la cantidad de clientes.
+        unsigned c;
+        cin >> c;
 
-	    // Resuelvo el problema
-	    unsigned costoTotal=0;
-		vector<ruta> solucion = problema3(cantClientes + cantFabricas, cantFabricas, rutas);
-		for(unsigned i = 0; i < solucion.size(); i++) {
-			costoTotal += costo(solucion[i]);
-		}
-	    // Imprimo
-	    cout << costoTotal << " " << solucion.size();
-	    for(unsigned i = 0; i < solucion.size(); ++i) {
-	    	cout << " " << nodo1(solucion[i]) << " " << nodo2(solucion[i]);
-	    }
-	    cout << endl;
-	}
-	return 0;
+        // Leo la cantidad de rutas.
+        unsigned r;
+        cin >> r;
+
+        // Ignoro el resto de la línea.
+        string s;
+        getline(cin, s);
+
+        // Leo las rutas.
+        vector<ruta> rutas;
+        for(unsigned i = 0; i < r; i++) {
+            unsigned a, b, c;
+            cin >> a; // Leo nodo 1.
+            cin >> b; // Leo nodo 2.
+            cin >> c; // Leo costo de la ruta.
+            rutas.push_back(ruta(a, b, c));
+
+            // Ignoro el resto de la línea.
+            getline(cin, s);            
+        }
+
+        // Resuelvo.
+        vector<ruta> res = problema3(c + f, f, rutas);
+
+        // Computo el costo total de la solución.
+        unsigned costo_total = 0;
+        for(unsigned i = 0; i < res.size(); i++) {
+            costo_total += costo(res[i]);
+        }
+
+        // Imprimo costo total y cantidad de rutas.
+        cout << costo_total << " " << res.size();
+
+        // Imprimo las rutas utilizadas.
+        for(unsigned i = 0; i < res.size(); i++) {
+            cout << " " << nodo1(res[i]) << " " << nodo2(res[i]);
+        }
+        cout << endl;
+    }
+
+    return 0;
 }
