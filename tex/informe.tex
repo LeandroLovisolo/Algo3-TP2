@@ -709,6 +709,15 @@ multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
 
 \subsection{Experimentos computacionales}
 
+Realizamos dos conjuntos de experimentos: caso general e instancias aleatorias.
+
+Para el caso general, se generan grafos con cantidad de vértices $n$ en el rango $1, \cdots, 1000$. La estructura del grafo es un nodo central que está conectado a los $n - 1$ nodos restantes mediante enlaces directos de costo 1.
+
+Las instancias aleatorias se generan tomando grafos con cantidad de vértices $n$ en el rango $1, \cdots, 1000$ y generando $n$ enlaces entre nodos al azar, con costo al azar.
+
+\newpage
+
+
 \subsubsection{Caso general}
 
 \begin{figure}[H]
@@ -729,6 +738,13 @@ multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
 \end{figure}
 
 \newpage
+
+
+\subsection{Conclusiones}
+
+Deducimos del análisis del algoritmo que éste no presenta instancias que requieran distintas cantidades de operaciones para un mismo tamaño de problema $n$. Dado un árbol $G = (V, E)$, el costo temporal de resolver el segundo subproblema está dominado por las varias búsquedas BFS que se realizan. Estas búsquedas siempre recorren todas las aristas y visitan todos los nodos del árbol, independientemente de su estructura, por lo que a nivel teórico no tiene sentido la presencia de casos especialmente malos.
+
+La experimentación computacional se condice con el análisis teórico.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -882,6 +898,18 @@ Podemos concluir, por el absurdo que el bosque solución obtenido es el óptimo 
 
 \subsection{Experimentos computacionales}
 
+Realizamos tres conjuntos de experimentos: peor caso, mejor caso e instancias aleatorias.
+
+Consideramos que la única parte del algoritmo sujeta a casos mejores o peores para problemas de un mismo tamaño es el ordenamiento de las aristas realizado durante la ejecución del algoritmo de Kruskal. Los experimentos a continuación ponen a prueba esta hipótesis.
+
+En todos los casos, los experimentos se realizan con una única fábrica.
+
+Para el peor caso, se generan grafos con cantidad de clientes $c$ en el rango $1, \cdots, 1000$. Para cada cliente se crea una ruta entre el mismo y la única fábrica, y otra ruta entre el cliente y otro cliente al azar. A las rutas se les asignan costos estrictamente decrecientes en el orden que son generadas.
+
+Para el mejor caso se realiza el mismo procedimiento, pero a las rutas se les asignan costos estrictamente crecientes en el orden que son generadas.
+
+Para las instancias aleatorias también se realiza el mismo procedimiento, pero a las rutas se les asignan costos al azar.
+
 \newpage
 
 
@@ -918,16 +946,13 @@ Podemos concluir, por el absurdo que el bosque solución obtenido es el óptimo 
 \end{figure}
 
 
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-%% Conclusiones                                                              %%
-%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\subsection{Conclusiones}
 
+El algoritmo respeta las cotas de complejidad temporal pedidas.
 
-\newpage
+Observamos que el orden en el que el algoritmo recibe las rutas determina el caso del problema (peor, mejor, etc.)
 
-\section{Conclusiones}
-
-
+Podemos ver que el caso que supusimos peor demora bastante más tiempo que el caso mejor y aleatorio, y podemos ver que el caso mejor requiere menos tiempo que el aleatorio y peor. Estas diferencias se hacen más notables a medida que el tamaño del problema crece. Esto verifica nuestra hipótesis.
 
 
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
