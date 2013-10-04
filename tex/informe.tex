@@ -694,6 +694,8 @@ El contraejemplo elegido es el siguiente:
 
 Obteniendo el AGM del grafo original y consiguiendo el nodo master, se obtiene un tiempo de replicación de 2 (siendo una unidad cada nodo por el que pasa el mensaje desde el nodo master). En el segundo caso, puede verse que es posible elegir un nodo master del grafo original que realize la replicación en menos tiempo.
 
+Para obtener conexiones entre servidores de costo mínimo y de replicación mínima, el master del AGM debe ser el master del grafo original. Si el master del grafo original no es el mismo que el del AGM y existe un único AGM, entonces no hay otra manera de arreglar el problema, ya que es necesario utilizar las aristas de peso mínimo. Si hay más de un AGM, se puede calcular el nodo master para cada uno de ellos y ver si coincide con el nodo master del grafo original, si esto pasa, habremos encontrado un AGM con replicación óptima.
+
 ¿Cómo se debe modificar la solución si en lugar de transmitir por broadcast se lo hace por
 multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
 
