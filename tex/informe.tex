@@ -20,7 +20,7 @@
 %%%%%%%%%% Configuración de Fancyhdr - Inicio %%%%%%%%%%
 \pagestyle{fancy}
 \thispagestyle{fancy}
-\lhead{Trabajo Práctico 1 · Algoritmos y Estructuras de Datos III}
+\lhead{Trabajo Práctico 2 · Algoritmos y Estructuras de Datos III}
 \rhead{Lovisolo · Petaccio · Rossi}
 \renewcommand{\footrulewidth}{0.4pt}
 \cfoot{\thepage /\pageref{LastPage}}
@@ -281,13 +281,13 @@ Sean $n$ la cantidad de trabajos a realizar, $dp$ un arreglo de enteros no negat
 
     \While{$j < n$} \Comment{Recorremos el arreglo $dp$ y construimos $t$}
       \If{$dp[i][j] = dp[i][j + 1] + c[j][j + 1]$} \Comment{Avanzamos de $(i, j)$ a $(i, j + 1)$}
-        \If{$\textsc{último}(t) = j$} 
-          \State $t \leftarrow t \cup \{j + 1 \}$
+        \If{$\textsc{último}(t) = j$}                                                     \Ode{1}
+          \State $t \leftarrow t \cup \{j + 1 \}$                                         \Ode{1}
         \EndIf
         \State $j \leftarrow j + 1$
       \Else \Comment{Avanzamos de $(i, j)$ a $(j, j + 1)$}
-        \If{$\textsc{último}(t) = i$}
-          \State $t \leftarrow t \cup \{j + 1 \}$
+        \If{$\textsc{último}(t) = i$}                                                     \Ode{1}
+          \State $t \leftarrow t \cup \{j + 1 \}$                                         \Ode{1}
         \EndIf
         \State $i \leftarrow j$
         \State $j \leftarrow j + 1$    
