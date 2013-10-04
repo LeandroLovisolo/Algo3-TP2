@@ -415,15 +415,11 @@ Como las operaciones sobre la estructura Disjoint-Set se realizan a lo sumo $m$ 
 La complejidad del algoritmo es O($N^2$ log N + $N^2$) $\subset$ O($N^2$ log N).
 
 \subsubsection{Correctitud}
+Sea G un AGM, G es conexo por ser árbol, es decir, todos los servidores están conectados y, por ser mínimo, cumple que la suma de los costos de las aristas seleccionadas es mínimo. Como sincronizar todos los servidores implicará recorrer todas las aristas, el costo de sincronización será la suma de los pesos de las aristas seleccionadas, siendo este mínimo.
 
-Queremos probar que, el árbol generador mínimo obtenido del algoritmo de Kruskal representa la solución del problema.
+Como el AGM cumple con los requisitos de la solución, la solución es un AGM.
 
-Sea G el árbol generador mínimo devuelto por el algoritmo de Kruskal, G por ser árbol cumple que es conexo, es decir, todos los servidores están conectados y, por ser mínimo, cumple que la suma de los costos de las aristas seleccionadas es mínimo. Como sincronizar todos los servidores implicará recorrer todas las aristas, el costo de sincronización será la suma de los pesos de las aristas seleccionadas. \\
-((((\textbf{lo sacaria y lo dmeostraria por el absurdo} que como era mínimo por ser G un árbol generador mínimo, G será la solución correcta. )))
-
-\paragraph{Por el absurdo:\\}
-Supongo que G no minimiza el costo y existe G' AGM distinto de G, talque minimiza el costo. Absurdo, ya que G era el AGM dado por el algoritmo de Kruscal y sabemos que es correcto [poner referencia].
-
+Para encontrar el AGM requerido, utilizamos Kruskal.
 
 \subsection{Minimizar el tiempo de replicación}
 
