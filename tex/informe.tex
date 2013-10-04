@@ -696,8 +696,18 @@ Obteniendo el AGM del grafo original y consiguiendo el nodo master, se obtiene u
 
 Para obtener conexiones entre servidores de costo mínimo y de replicación mínima, el master del AGM debe ser el master del grafo original. Si el master del grafo original no es el mismo que el del AGM y existe un único AGM, entonces no hay otra manera de arreglar el problema, ya que es necesario utilizar las aristas de peso mínimo. Si hay más de un AGM, se puede calcular el nodo master para cada uno de ellos y ver si coincide con el nodo master del grafo original, si esto pasa, habremos encontrado un AGM con replicación óptima.
 
-¿Cómo se debe modificar la solución si en lugar de transmitir por broadcast se lo hace por
-multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
+\vspace{1em}
+
+\textbf{¿Cómo se debe modificar la solución si en lugar de transmitir por broadcast se lo hace por
+multicast, es decir, se debe mandar un paquete a cada destino, sin hacer copias?}
+
+Sea $u$ un nodo cualquiera. El costo monetario de replicación del contenido de $u$ a otro nodo cualquiera $v$ es igual al costo del camino entre $u$ y $v$ por el que se envió la copia. Es decir que para minimizar el costo monetario de enviar una copia desde $u$ a $v$ basta con hallar el camino mínimo entre ambos.
+
+El proceso de replicación por multicast no es más que repetir el proceso anterior secuencialmente para todo vértice $v$ distinto de $u$. Entonces el costo monetario mínimo de replicar el contenido por multicast desde el vértice $u$ al resto de los nodos está dado por la suma de los costos de los caminos mínimos entre $u$ y cada $v$ distinto de $u$.
+
+Entonces para minimizar globalmente el costo de replicar el contenido por multicast, basta con hallar la suma de los caminos mínimos entre el nodo $u$ y el resto de los nodos del grafo, para todo $u$, y quedarnos con el nodo $u$ que minimiza este costo. Por ejemplo, podemos ejecutar el algoritmo de Dijkstra tomando como nodo origen cada nodo del grafo y quedarnos con el nodo que minimiza la suma de todos los caminos mínimos entre sí mismo y el resto de los nodos del grafo.
+
+Una vez que hallamos este nodo, podemos descartar los enlaces que no son usados por ningún camino mínimo.
 
 
 \subsection{Instancias del problema para verificar la correctitud del algoritmo}
