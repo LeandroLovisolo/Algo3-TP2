@@ -676,6 +676,11 @@ Una vez obtenido el camino, el nodo que se encuentre en la mitad de este, será 
 
 Mostrar con un contraejemplo que es posible resolver las dos partes por separado de manera óptima pero que aún así haya una solución en la que la replicación termine en menos tiempo. Comentarposibles soluciones al problema.
 
+\begin{figure}[H]
+\centering
+\includegraphics[width=80mm]{contraej.png}
+\caption{Contraej}
+\end{figure} 
 
 ¿Cómo se debe modificar la solución si en lugar de transmitir por broadcast se lo hace por
 multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
@@ -700,7 +705,6 @@ multicast ,es decir, se debe mandar un paquete a cada destino, sin hacer copias?
 \textbf{Entrada:} $V = \{ 0, \cdots, 8 \}, E = \{ (0, 1, 4), (1, 2, 8), (2, 3, 7), (3, 4, 9), (4, 5, 10), (5, 6, 2), (6, 7, 1),$\\
 \phantom{\textbf{Entrada:} $V = \{ 0, \cdots, 8 \}, E = \{ $}$(0, 7, 8), (7, 8, 7), (1, 7, 11), (2, 8, 2), (2, 5, 4), (3, 5, 14), (6, 8, 6) \}$\\
 \textbf{Salida:} Nodo maestro: $2$. Enlaces: $\{ (6, 7, 1), (5, 6, 2), (2, 8, 2), (0, 1, 4), (2, 5, 4), (2, 3, 7), (1, 2, 8), (3, 4, 9) \}$ (costo total: 37)
-
 
 
 
