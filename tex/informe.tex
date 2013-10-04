@@ -755,6 +755,8 @@ Como se utiliza el algoritmo de Kruskal, al igual que en el segundo problema, la
 
 Como O(R) $\subset$ O(R * log C), la complejidad final del algoritmo es O(R * log C).
 \subsection{Correctitud}
+Un bosque con aristas de peso mínimo y una sola conexión a una fábrica para cada árbol, es una solución correcta, ya que, para todo árbol del bosque, sus nodos (clientes) y única fábrica (ya que más de una necesitaría otra ruta y no sería mínimo), estan conectados mediante las aristas de menor costo de pavimentación, haciendo que el costo sea mínimo.
+
 Para demostrar la correctitud del algoritmo, debemos demostrar que Kruskal aplicado a la modificación realizada a nuestro conjunto de datos devuelve un AGM al que, al podarle el nodo \textit{fantasma} se convierte en un bosque de árboles, cada uno con clientes y una fábrica asociada conectados con costo mínimo.
 
 Debido a que asumimos que los costos de pavimentación de todas las rutas son mayor a 0 (ya que el costo es proporcional a la longitud), en las primeras iteraciones (exactamente \#(F)) del algoritmo, se unirán todas las fábricas en único set. Por esta unión, Kruskal se encargará de unir una única vez una fábrica con los conjuntos de clientes. En las próximas iteraciones de Kruskal, el algoritmo se comportará  de la manera habitual.
