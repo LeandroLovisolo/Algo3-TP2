@@ -552,7 +552,11 @@ Para el cálculo del nodo \textit{master} , las dos ejecuciones de BFS tienen un
 
 Dado el AGM provisto por la ejecución de Kruskal, se busca probar que el procedimiento de encontrar el nodo \textit{master} es correcto.
 
-Debido que el algoritmo de BFS siempre termina en una hoja (si terminara en un nodo, habría una hoja más por la que seguir) y todo camino máximo tiene un extremo en una hoja (ya que si fuera un nodo su extremo, habría una hoja que sería camino más largo), se busca probar que la aplicación del algoritmo desde cualquier nodo arbitrario dará un extremo del camino máximo en el árbol.
+Sean U y V dos nodos tales que las distancias entre ellos, l(U,V) , es máxima. Se puede ver que tomando R nodo que se encuentra en la mitad del camino entre U y V, la altura máxima del árbol considerado con R como raíz es l(U,V)/2. Si se seleccionara un vértice distinto de R, es fácil notar que se obtendría una altura mayor a l(U,V)/2.
+
+Supongamos que elegimos como nodo maestro R. Sea l() la función de distancia entre dos nodos. La l(U,R) = l(U,V)/2 y l(R,V) $\leq$ l(U,V)/2. Si existiera otro nodo W, tal que l(R,W) > l(U,V)/2 tendríamos l(U,R) < l(R,W) y luego, debido a que solo hay un único camino entre dos nodos distintos en un árbol, tenemos que l(U,V) = l(U,R) + l(R,V) < l(U,R) + l(R,W) = l(U,W), l(U,V) < l(U,W) lo cuál contradice que l(U,V) tienen la mayor distancia. Por lo tanto, la profundidad, dado R como nodo maestro es l(U,V)/2. Ahora solo resta encontrar el camino máximo.
+
+Debido que el algoritmo de BFS siempre termina en una hoja (si terminara en un nodo, habría una hoja más por la que seguir) y todo camino máximo tiene un extremo en una hoja (ya que si fuera un nodo su extremo, habría una hoja que sería camino más largo), se busca probar que la aplicación del algoritmo desde cualquier nodo arbitrario tendrá como nodo más distante un extremo del camino máximo en el árbol.
 
 Dado un árbol AGM, el nodo arbitrario N1 elegido puede tener las siguientes ubicaciones:
 
@@ -588,14 +592,7 @@ La función recorre para cada nodo, de forma recursiva, sus nodos adyacentes, si
 Al recorrer una única vez cada nodo y como es un árbol (existe un camino para todo par de nodos), se recorrerá todo el árbol y eventualmente se llegará al nodo buscado. Al llegar al nodo buscado, la función devolverá true, haciendo que se agreguen los caminos recorridos hacia el hasta llegar al inicial.
 \end{itemize}
 
-Una vez obtenido el camino, el nodo que se encuentre en la mitad de este, será el nodo master, es decir, el nodo que se encuentra a menor distancia de todos los nodos.
-
-Hay que probar que el nodo master seleccionado desde el camino máximo va a ser el master que queremos!
-Supongamos ahora, que el nodo master no se encontrara en el camino máximo. (Falta)
-
-Supongamos que el nodo master no se encontrara en la mitad del camino máximo, si no, en otra parte de este. Esto sería absurdo, ya que una elección diferente a la mitad, no cumpliría el estar a menor distancia posible de todos los nodos, ya que, estaría más cerca de alguno de sus extremos.
-
-\paragraph{Verificación de correctitud}
+Una vez obtenido el camino, el nodo que se encuentre en la mitad de este, será el nodo master.
 
 \subsection{Preguntas adicionales}
 Mostrar con un contraejemplo que es posible resolver las dos partes por separado de manera óptima pero que aún así haya una solución en la que la replicación termine en menos tiempo. Comentarposibles soluciones al problema.
