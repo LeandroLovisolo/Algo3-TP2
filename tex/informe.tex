@@ -257,7 +257,7 @@ Sean $n$ la cantidad de trabajos a realizar, $dp$ un arreglo de enteros no negat
 
 
 \begin{pseudo}
-  \Procedure{Impresiones-ordenadas}{$n, c$}
+  \Procedure{Impresiones-Ordenadas}{$n, c$}
     \State $dp \leftarrow $ arreglo de enteros de dimensión $(n + 1) \times (n + 1)$,
            inicializado en 0                                                              \Ode{n^2}
     \For{$j \leftarrow n - 1$ \To $0$} \Comment{Computamos $dp$}
@@ -393,7 +393,7 @@ Si $t_{j + 1}$ se encola en la misma impresora que $t_j$ entonces vale que $dp[i
 
 Con esto último ya estamos en condiciones de construir la cola de trabajos devuelta por el algoritmo: si el último trabajo en dicha cola coincide con el último trabajo de la impresora en la que se encoló $t_{j + 1}$, lo agregamos al final de la cola devuelta por el algoritmo.
 
-El pseudocódigo refleja lo explicado recién: primero inicializa la cola de trabajos $t$ devuelta por el algoritmo agregando el primer trabajo: $t \leftarrow \{ 1 \}$. Luego comienza un ciclo con $i = 0$ y $j = 1$, en el que evalua $dp[i][j]$ para determinar en qué impresora se encoló $t_{j + 1}$, agrega este trabajo a $t$ si $\textsc{último}(t)$ coincide con el último trabajo de la impresora en la que se encoló $t_{j + 1}$ y actualiza $i$ y $j$ según corresponda, hasta llegar a un caso base ($j = n$).
+El pseudocódigo refleja lo explicado recién: primero inicializa la cola de trabajos $t$ agregando el primer trabajo: $t \leftarrow \{ 1 \}$. Luego comienza un ciclo con $i = 0$ y $j = 1$, en el que evalua $dp[i][j]$ para determinar en qué impresora se encoló $t_{j + 1}$, agrega este trabajo a $t$ si $\textsc{último}(t)$ coincide con el último trabajo de la impresora en la que se encoló $t_{j + 1}$ y actualiza $i$ y $j$ según corresponda, hasta llegar a un caso base ($j = n$).
 
 
 \subsection{Instancias del problema para verificar la correctitud del algoritmo}
@@ -425,7 +425,6 @@ Realizamos dos conjuntos de experimentos: caso general e instancias aleatorias.
 Para el caso general, medimos el tiempo de ejecución para cantidad de trabajos $n$ en el rango $1, \cdots, 1000$ y asignamos los costos de preparación $c_{ij}$ de forma creciente. Por ejemplo, para $n = 3$ estos costos serían $c_{0, 1} = 1$, $c_{0, 2} = 2$, $c_{0, 3} = 3$, $c_{1, 2} = 4$, $c_{1, 3} = 5$, $c_{2, 3} = 6$.
 
 Los experimentos sobre instancias aleatorias se realizan de la misma manera, con la diferencia que los costos $c_{ij}$ se toman de un generador de números pseudoaleatorios.
-
 
 \newpage
 
@@ -468,13 +467,26 @@ La experimentación computacional se condice con el análisis teórico.
 
 \section{Problema 2: Recopilación de contenido}
 
-Dado $N$ servidores interconectados mediante $M$ enlaces de alta velocidad, una organización debe implementar una solución de replicación de contenido para su red. Para esto, se selecciona un servidor como \textbf{master}, que será el primero en recibir los datos a replicar. Luego, la información será transmitida a otros servidores que, se guardarán una copia y retrasmitiran los datos hasta que los $N$ servidores tengan la nueva información. El uso de los enlaces tiene un costo en función del tráfico que transmiten.
+Se dispone de una red de $n$ servidores interconectados mediante $m$ enlaces \textit{backbone} de alta velocidad. Se desea armar una red de entrega de contenidos, seleccionando un nodo para cumplir el rol de \textit{master} que enviará copias del contenido al resto de la red por medio de un proceso de \textit{broadcast}.
 
-Se nos pide:
-\begin{itemize}
-    \item{Elegir los enlaces que se deberán utilizar de manera que la información pueda distribuirse a todos los servidores con un costo mínimo, con una complejidad temporal de \textbf{peor caso estrictamente menor que O($N^3$).}}
-    \item{Definir que servidor seleccionar como \textbf{master} de manera que la replicación termine en el menor tiempo posible, con una complejidad temporal de \textbf{peor caso O($N$).}}
-\end{itemize}
+El proceso de broadcast funciona de la siguiente manera: en el instante 1, el nodo maestro envía copias del contenido a los nodos con los que tiene un enlace directo. En el instante 2, los nodos que recibieron una copia del contenido en el instante anterior envían a su vez copias del contenido a todos los nodos con los que tienen enlace directo y que aún no recibieron el contenido. El proceso se repite hasta que todos los nodos de la red reciben una copia del contenido.
+
+Los enlaces son bidireccionales. Es decir, si dos nodos están conectados por un enlace, cualquiera podría enviarle una copia del contenido al otro.
+
+El tiempo que demora transmitir una copia a través de un enlace es siempre el mismo, independientemente del enlace. Por otro lado, transmitir contenido por un enlace entre dos nodos cualquiera tiene un costo monetario proporcional a la longitud del enlace.
+
+Se pide escribir dos algoritmos para resolver los siguientes subproblemas por separado:
+
+\begin{enumerate}
+  \item{
+    Hallar un subconjunto de enlaces tal que el costo de replicar el contenido a los $n$ nodos por el mecanismo de broadcast sea mínimo.
+  }
+  \item{
+    Dado un subconjunto de enlaces que interconecta los $n$ nodos, determinar qué nodo minimiza el tiempo de replicación si se lo utiliza como nodo master.
+  }
+\end{enumerate}
+
+El primer subproblema debe ser resuelto con una cota de complejidad de peor caso estrictamente menor que $O(n^3)$, mientras que el segundo debe ser resuelto con una cota de complejidad de peor caso de $O(n)$.
 
 \textbf{Ejemplos del problema y sus soluciones:}
 
@@ -484,84 +496,65 @@ Se nos pide:
 \textbf{Entrada}:. \\
 \textbf{Salida}: . \\
 
-\subsection{Minimizar costo de enlaces}
-\subsubsection{Solución}
-Utilizamos para la representación de la solución un AGM. 
-Para conseguir este AGM, utilizamos el algoritmo de Kruskal.
+
+\subsection{Solución (subproblema 1)}
+
+Devolvemos un árbol generador mínimo del grafo que representa la red, obtenido utilizando el algoritmo de Kruskal.
+
+El algoritmo de Kruskal fue implementado como se explica en el capítulo 21 de \textit{Introduction to Algorithms, 3rd Ed., Cormen, Leiserson, Rivest, Stein}, utilizando las heurísticas \textbf{union by rank} y \textbf{path compression}.
+
 
 \subsubsection{Pseudocódigo}
 
 \begin{pseudo}
-
-\State parent : vector de enteros
-\State ranking : vector de enteros
-
-\Procedure{Make\_union}{x : entero, y : entero}
-    \State set\_x : unsigned = Find(x)                   	\Ode{1}
-    \State set\_y : unsigned = Find(y)                    	\Ode{1}
-    \If{ranking[set\_x] $>$ ranking[set\_y]}                \Ode{1}
-    \State parent[set\_y] = set\_x                    		\Ode{1}
-    \Else
-        \State parent[set\_x] = set\_y                 	  	\Ode{1}
-    \EndIf
-    
-    \If{ranking[set\_x] == ranking[set\_y]}                 \Ode{1}
-        \State ranking[set\_y]++                     		\Ode{1}
-    \EndIf
-\EndProcedure
-
-\Procedure{Find}{x : entero} $\rightarrow$ entero
-    \If{x != parent[x]}                           			\Ode{1}
-        \State parent[x] = Find(parent[x])                  \Ode{1}
-    \EndIf
-    \Return parent[x]
-\EndProcedure
-
-\Procedure{Kruskal}{cant\_nodos: entero, enlaces: vector de enlace} $\rightarrow$ vector de enlace
-    \State arbol\_generador\_minimo : vector de enlace
-    \For{i=0 To Tamaño(parent)} parent[i] = i \EndFor						\Ode{M}
-	\For{i=0 To Tamaño(ranking)} ranking[i] = 0 \EndFor						\Ode{M}
-
-    \State Ordenar(enlaces) por costo de manera ascendente					\Ode{M log M}
-
-    \For{i = 0 To Tamaño(enlaces)}
-        \State set1 : entero = Find(nodo1(enlaces[i]))						\Ode{1}
-        \State set2 : entero = Find(nodo2(enlaces[i]))						\Ode{1}
-        \If{set1 != set2}													\Ode{1}
-            \State Make\_union(set1, set2)									\Ode{1}
-            \State arbol\_generador\_minimo.Agregar(enlaces[i])				\Ode{1}
-        \EndIf        
-    \EndFor
-
-    \Return arbol\_generador\_minimo
-\EndProcedure
+  \Procedure{Enlaces-Costo-Mínimo}{$G = (V, E)$}
+    \State $E' \leftarrow \textsc{Kruskal}(G)$                 \Ode{|E| \times log\, |V|}
+    \PReturn $E'$
+  \EndProcedure
 \end{pseudo}
 
 
+\subsection{Complejidad (subproblema 1)}
 
-\subsubsection{Complejidad}
+La complejidad total de la operación es $O(|E| \times log\, |V|)$. Como un grafo puede tener a lo sumo $|V|^2$ aristas, vale que $O(|E| \times log\, |V|) \subseteq O(|V|^2 \times log\, |V|)$. Recordando que nuestra red tenía $n$ servidores, reescribimos esta cota como $O(n^2 \times log\, n)$, que es estrictamente inferior a $O(n^3)$.
 
-Para la implementación del algoritmo de Kruskal, se utilizó la estructura Disjoint-Set, compuesta por las funciones Make\_union() y Find() y 3 arreglos de longitud cantidad de nodos.
-La función Find() consiste en una función recursiva la cual recorre los padres del nodo para ver encontrar el nodo que define al conjunto. En cada entrada a la función, se realiza un procedimiento llamado compresión de caminos. Cuando se utiliza la función, actualiza el nodo de donde se llamó y todos los nodos que recorre, con el nodo representante del conjunto.
 
-La función Make\_union realiza una unión de dos subconjuntos. La operación de unión se da sobre el nodo de ranking menor, es decir, el nodo que tenga menos hojas, haciendo que cada unión quede lo más cercana a la raíz posible, comprimiendo distancias.
+\subsection{Correctitud (subproblema 1)}
 
-Mediante la utilización de estas dos funciones se logra que cada llamada a estas tenga una complejidad amortizada de O($\alpha(N)$), donde $\alpha$ corresponde a la función inversa de Ackermann para la cual $\alpha(n)$ es menor a 5 para casi todos los n utilizados en la práctica, haciendo que las operaciones tengan una complejidad de O(1) amortizada.
+Veamos que lo que se nos pide se satisface con un árbol generador mínimo del grafo que representa la red servidores.
 
-Para realizar el ordenamiento, se obtiene una complejidad de O(m log m) utilizando Sort() de la STL de C++, que por ser M a lo sumo $N^2$, O(M log M) $\subset$ O(m log $N^2$) $\subset$ O(M 2*log N) $\subset$ O(m log n) $\subset$ O($N^2$ log N) que es estrictamente menor a O($N^3$).
+Para simplificar el análisis, supongamos que dados dos nodos $u$ y $v$ tales que existe un enlace entre ambos, $u$ transmite una copia del contenido a $v$ en el instante a continuación de haber recibido el contenido si y sólo si $v$ todavía no recibió una copia del contenido.
 
-Como las operaciones sobre la estructura Disjoint-Set se realizan a lo sumo $m$ veces, se obtiene una complejidad de O($N$) = O($N^2$) para conseguir el AGM.
+\newtheorem*{2a-arbol}{Teorema}
+\begin{2a-arbol}
+  Sea $G = (V, E)$ una instancia del problema y sea $u \in V$ un nodo que seleccionamos como master para el mecanismo de broadcast. Entonces el subgrafo $G'$ formado por $V$ y el subconjunto de enlaces $E' \subseteq E$ empleado para replicar el contenido desde $u$ al resto de los nodos es un árbol.
+\end{2a-arbol}
 
-La complejidad del algoritmo es O($N^2$ log N + $N^2$) $\subset$ O($N^2$ log N).
+\begin{proof}
+  $G'$ es conexo, pues el mecanismo de broadcast alcanza todos los nodos del grafo, entonces existe un camino simple entre $u$ y el resto de los nodos en $V$. $G'$ no tiene ciclos, pues si los tuviera, algún nodo recibiría una copia del contenido más de una vez. Luego $G'$ es un árbol.
+\end{proof}
 
-\subsubsection{Correctitud}
-Sea G un AGM, G es conexo por ser árbol, es decir, todos los servidores están conectados y, por ser mínimo, cumple que la suma de los costos de las aristas seleccionadas es mínimo. Como sincronizar todos los servidores implicará recorrer todas las aristas, el costo de sincronización será la suma de los pesos de las aristas seleccionadas, siendo este mínimo.
+\newtheorem*{2a-costo}{Teorema}
+\begin{2a-costo}
+  Sea $G = (V, E)$ una instancia del problema, sea $w: E \rightarrow \mathbb{N}$ la función de costo de los enlaces y sea $u \in V$. Entonces el costo de replicar el contenido desde $u$ al resto de los nodos por el mecanismo de broadcast es la suma del costo de los enlaces empleados $E' \subseteq E$, es decir $\sum_{i=1}^{|E'|} w(e_i)$.
+\end{2a-costo}
 
-Como el AGM cumple con los requisitos de la solución, la solución es un AGM.
+\begin{proof}
+  Cada nodo distinto del master recibe una copia del contenido una sola vez, es decir, se transmiten $|V| - 1$ copias de la información. Como $G$ es un árbol, éste tiene $|V| - 1$ aristas, y por cada una se transmite exactamente una de las $|V| - 1$ copias, pues en caso contrario al menos un nodo recibiría una copia del contenido más de una vez y al menos un nodo nunca recibiría su copia. Luego el costo total es la suma de transmitir exactamente una vez por cada enlace.
+\end{proof}
 
-Para encontrar el AGM requerido, utilizamos Kruskal.
+Establecimos entonces que el subconjunto de enlaces usado por el mecanismo de broadcast forma un árbol y que el costo de esta operación es la suma de los costos de tales enlaces. 
 
-\subsection{Minimizar el tiempo de replicación}
+Se nos pide hallar un subconjunto de enlaces para realizar broadcast a todos los nodos tal que el costo sea mínimo.
+
+Es suficiente, pero no necesario, restringirnos a los subconjuntos de enlaces que forman árboles (un contraejemplo posible sería una red tal que todos sus enlaces tengan costo 0). Es decir, el conjunto de árboles generadores del grafo que representa la red, pues estos árboles necesariamente conectan todos los nodos del grafo.
+
+Entonces un subconjunto de enlaces para realizar broadcast con costo mínimo, restringiéndonos al conjunto de árboles generadores del grafo que representa la red, es necesariamente un árbol generador mínimo.
+
+Luego, basta con devolver cualquier árbol generador mínimo para satisfacer lo pedido.
+
+
+\subsection{Solución (subproblema 2)}
 
 \subsubsection{Solución}
 
