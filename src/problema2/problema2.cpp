@@ -84,7 +84,8 @@ struct nodo_lista_adyacencia {
     bool visitado = false;
 };
 
-vector<nodo_lista_adyacencia> crear_lista_adyacencia(unsigned cant_nodos, vector<enlace> enlaces){
+vector<nodo_lista_adyacencia> crear_lista_adyacencia(unsigned cant_nodos,
+                                                     vector<enlace> enlaces) {
     vector<nodo_lista_adyacencia> nodos(cant_nodos);
     for(size_t i = 0; i < enlaces.size(); i++) {
         nodos[nodo1(enlaces[i])].adyacentes.push_back(nodo2(enlaces[i]));
@@ -122,18 +123,19 @@ vector<unsigned> bfs(unsigned cant_nodos, vector<enlace> enlaces, nodo inicial) 
 }
 
 nodo nodo_mas_distante(vector<unsigned> distancias) {
-	nodo mas_distante;
-	unsigned distancia_maxima = 0;
-	for(nodo n = 0; n < distancias.size(); n++) {
-		if(distancias[n] > distancia_maxima) {
-			distancia_maxima = distancias[n];
-			mas_distante = n;
-		}
-	}
-	return mas_distante;
+    nodo mas_distante;
+    unsigned distancia_maxima = 0;
+    for(nodo n = 0; n < distancias.size(); n++) {
+        if(distancias[n] > distancia_maxima) {
+            distancia_maxima = distancias[n];
+            mas_distante = n;
+        }
+    }
+    return mas_distante;
 }
 
-vector<nodo> camino_entre_nodos(unsigned cant_nodos, vector<enlace> enlaces, nodo inicial, nodo final) {
+vector<nodo> camino_entre_nodos(unsigned cant_nodos, vector<enlace> enlaces,
+                                nodo inicial, nodo final) {
     vector<unsigned> distancias = bfs(cant_nodos, enlaces, inicial);
     vector<nodo_lista_adyacencia> nodos = crear_lista_adyacencia(cant_nodos, enlaces);
     vector<nodo> camino = {final};
@@ -157,17 +159,17 @@ nodo problema2b(unsigned cant_nodos, vector<enlace> enlaces) {
     // Caso borde
     if(cant_nodos == 1) return 0;
 
-	// Busco un extremo de un camino máximo dentro del árbol.
-	vector<unsigned> distancias = bfs(cant_nodos, enlaces, nodo1(enlaces[0]));
-	nodo inicial = nodo_mas_distante(distancias);
+    // Busco un extremo de un camino máximo dentro del árbol.
+    vector<unsigned> distancias = bfs(cant_nodos, enlaces, nodo1(enlaces[0]));
+    nodo inicial = nodo_mas_distante(distancias);
 
-	// Busco el otro extremo del camino máximo dentro del árbol.
-	distancias = bfs(cant_nodos, enlaces, inicial);
-	nodo final = nodo_mas_distante(distancias);
+    // Busco el otro extremo del camino máximo dentro del árbol.
+    distancias = bfs(cant_nodos, enlaces, inicial);
+    nodo final = nodo_mas_distante(distancias);
 
-	// Obtengo el camino máximo.
-	vector<nodo> camino = camino_entre_nodos(cant_nodos, enlaces, inicial, final);
+    // Obtengo el camino máximo.
+    vector<nodo> camino = camino_entre_nodos(cant_nodos, enlaces, inicial, final);
 
-	// Devuelvo el punto medio del camino.
-	return camino[camino.size() / 2];
+    // Devuelvo el punto medio del camino.
+    return camino[camino.size() / 2];
 }

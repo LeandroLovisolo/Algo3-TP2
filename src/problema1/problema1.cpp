@@ -3,7 +3,7 @@
 using namespace std;
 
 costos crear_costos(unsigned n) {
-	return vector<vector<costo>>(n, vector<costo>(n + 1, 0));
+    return vector<vector<costo>>(n, vector<costo>(n + 1, 0));
 }
 
 pair<costo, vector<trabajo>> problema1(unsigned n, costos c) {

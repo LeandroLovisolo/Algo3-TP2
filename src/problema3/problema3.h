@@ -15,7 +15,7 @@ typedef std::tuple<nodo, nodo, costo_ruta> ruta;
 #define costo(e) get<2>(e)
 
 std::vector<ruta> problema3(unsigned cant_nodos,
-	                        unsigned cant_fabricas,
-	                        const std::vector<ruta> &rutas);
+                            unsigned cant_fabricas,
+                            const std::vector<ruta> &rutas);
 
 #endif // PROBLEMA3_H
