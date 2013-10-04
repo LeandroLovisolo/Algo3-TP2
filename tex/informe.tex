@@ -488,14 +488,28 @@ Se pide escribir dos algoritmos para resolver los siguientes subproblemas por se
 
 El primer subproblema debe ser resuelto con una cota de complejidad de peor caso estrictamente menor que $O(n^3)$, mientras que el segundo debe ser resuelto con una cota de complejidad de peor caso de $O(n)$.
 
-\textbf{Ejemplos del problema y sus soluciones:}
+\textbf{Ejemplo del problema y solucion:}
 
-\textbf{Entrada}:. \\
-\textbf{Salida}: . \\
+\begin{figure}[H]
+\includegraphics[width=80mm]{ej2aInicial.png}
+\includegraphics[width=80mm]{ej2aKruskal.png}
+\caption{Comenzamos con el grafo incial (figura izquierda) y obtenemos el AGM utilizando Kruskal (figura derecha)}
+\label{overflow}
+\end{figure}  
 
-\textbf{Entrada}:. \\
-\textbf{Salida}: . \\
+\begin{figure}[H]
+\includegraphics[width=80mm]{ej2aBFS1.png}
+\includegraphics[width=80mm]{ej2aBFS2.png}
+\caption{Aplicamos BFS desde un nodo arbitrario, en este caso b (figura izquierda) y luego lo aplicamos otra vez desde el nodo más lejano a b, en este caso e (figura derecha)}
+\label{overflow}
+\end{figure}  
 
+\begin{figure}[H]
+\includegraphics[width=80mm]{ej2aCMax.png}
+\includegraphics[width=80mm]{ej2aMaster.png}
+\caption{Conseguimos el camino máximo (entre b y e) (figura izquierda) para después conseguir el nodo en la mitad del camino el cuál será el nodo master (figura derecha)}
+\label{overflow}
+\end{figure}  
 
 \subsection{Solución (subproblema 1)}
 
