@@ -633,7 +633,7 @@ Dado el AGM provisto por la ejecución de Kruskal, se busca probar que el proced
 
 Sean U y V dos nodos tales que las distancias entre ellos, l(U,V) , es máxima. Se puede ver que tomando R nodo que se encuentra en la mitad del camino entre U y V, la altura máxima del árbol considerado con R como raíz es l(U,V)/2. Si se seleccionara un vértice distinto de R, es fácil notar que se obtendría una altura mayor a l(U,V)/2.
 
-Supongamos que elegimos como nodo maestro R. Sea l() la función de distancia entre dos nodos. La l(U,R) = l(U,V)/2 y l(R,V) $\leq$ l(U,V)/2. Si existiera otro nodo W, tal que l(R,W) > l(U,V)/2 tendríamos l(U,R) < l(R,W) y luego, debido a que solo hay un único camino entre dos nodos distintos en un árbol, tenemos que l(U,V) = l(U,R) + l(R,V) < l(U,R) + l(R,W) = l(U,W), l(U,V) < l(U,W) lo cuál contradice que l(U,V) tienen la mayor distancia. Por lo tanto, la profundidad, dado R como nodo maestro es l(U,V)/2. Ahora solo resta encontrar el camino máximo.
+Supongamos que elegimos como nodo maestro R. Sea l() la función de distancia entre dos nodos. La l(U,R) = l(U,V)/2 y l(R,V) $\leq$ l(U,V)/2. Si existiera otro nodo W, tal que l(R,W) $>$ l(U,V)/2 tendríamos l(U,R) $<$ l(R,W) y luego, debido a que solo hay un único camino entre dos nodos distintos en un árbol, tenemos que l(U,V) = l(U,R) + l(R,V) $<$ l(U,R) + l(R,W) = l(U,W), l(U,V) $<$ l(U,W) lo cuál contradice que l(U,V) tienen la mayor distancia. Por lo tanto, la profundidad, dado R como nodo maestro es l(U,V)/2. Ahora solo resta encontrar el camino máximo.
 
 Debido que el algoritmo de BFS siempre termina en una hoja (si terminara en un nodo, habría una hoja más por la que seguir) y todo camino máximo tiene un extremo en una hoja (ya que si fuera un nodo su extremo, habría una hoja que sería camino más largo), se busca probar que la aplicación del algoritmo desde cualquier nodo arbitrario tendrá como nodo más distante un extremo del camino máximo en el árbol.
 
@@ -737,13 +737,13 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 
 \begin{figure}[H]
 \includegraphics[width=70mm]{../ejemplo_graficos/CosoDosSubconjuntosConNodoFantasmaSolucion.png}
-\includegraphics[width=70mm]{../ejemplo_graficos/CosoDosSubconjuntosSolucion.png}
+\includegraphics[width=70mm]{../ejemplo_graficos/CosoDosSubconjuntosSolucionSinFantasma.png}
 \caption{AGM resultante con nodo \textit{fantasma} (figura izquierda) y su remoción la cuál pasa a ser un bosque (figura derecha)}
 \end{figure} 
 
 \begin{figure}[H]
 \centering
-\includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosSolucionSinFantasma.png}
+\includegraphics[width=60mm]{../ejemplo_graficos/CosoDosSubconjuntosSolucion.png}
 \caption{Solución final}
 \label{5}
 \end{figure} 
