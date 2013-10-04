@@ -622,7 +622,7 @@ Notamos con $G.Ady(v)$ a la lista de adyacencia del vértice $v \in V$ en el gra
 
 \subsubsection{Complejidad}
 
-El procedimiento \textsc{Nodo-Master} realiza dos búsquedas BFS con costo $O(|V| + |E|)$. Luego invoca a \textsc{Camino-Entre-Nodos}, que a su vez realiza otra búsquda BFS con costo $O(|V| + |E|)$ y recorre un camino entre dos nodos del árbol. En el peor de los casos este camino incluye todos los nodos del árbol. Además, para cada nodo del camino se recorre su lista de adyacencia. Ahora bien, como se trata de un grafo no dirigido, una arista cualquiera aparece en las listas de adyacencia de ambos extremos. Como $G$ es un árbol, la cantidad de aristas es $|V| - 1$, y como en el peor caso se recorren las listas de adyacencia de todos los nodos, se recorren un total de $2 \times (|V| - 1)$ aristas, con una complejidad total de $O(|V| + 2 \times (|V| - 1)) = O(|V|)$.
+El procedimiento \textsc{Nodo-Master} realiza dos búsquedas BFS con costo $O(|V| + |E|)$. Luego invoca a \textsc{Camino-Entre-Nodos}, que a su vez realiza otra búsqueda BFS con costo $O(|V| + |E|)$ y recorre un camino entre dos nodos del árbol. En el peor de los casos este camino incluye todos los nodos del árbol. Además, para cada nodo del camino se recorre su lista de adyacencia. Ahora bien, como se trata de un grafo no dirigido, una arista cualquiera aparece en las listas de adyacencia de ambos extremos. Como $G$ es un árbol, la cantidad de aristas es $|V| - 1$, y como en el peor caso se recorren las listas de adyacencia de todos los nodos, se recorren un total de $2 \times (|V| - 1)$ aristas, con una complejidad total de $O(|V| + 2 \times (|V| - 1)) = O(|V|)$.
 
 La complejidad total del procedimiento es entonces $O(|V| + |E|) = O(|V| + |V| - 1) = O(|V|) = O(n)$.
 
@@ -674,7 +674,7 @@ Una vez obtenido el camino, el nodo que se encuentre en la mitad de este, será 
 
 \subsection{Preguntas adicionales}
 
-Mostrar con un contraejemplo que es posible resolver las dos partes por separado de manera óptima pero que aún así haya una solución en la que la replicación termine en menos tiempo. Comentarposibles soluciones al problema.
+Mostrar con un contraejemplo que es posible resolver las dos partes por separado de manera óptima pero que aún así haya una solución en la que la replicación termine en menos tiempo. Comentar posibles soluciones al problema.
 
 \begin{figure}[H]
 \centering
@@ -762,7 +762,7 @@ La experimentación computacional se condice con el análisis teórico.
 
 \section{Problema 3: Transportes pesados}
 
-Una empresa que fabrica ladrillos tiene sus fábricas en varios puntos de una provincia. La misma se encarga de transportar los ladrillos a los clientes que están distribuísdos en distintas ciudades de la provincia.\\
+Una empresa que fabrica ladrillos tiene sus fábricas en varios puntos de una provincia. La misma se encarga de transportar los ladrillos a los clientes que están distribuídos en distintas ciudades de la provincia.\\
 Como las rutas de esta provincia no están preparadas para soportar el paso de los camiones, la empresa tiene que fortalecer las rutas para que puedan ser utilizadas por los camiones.\\
 Dado que cada ruta tiene un costo de inversión proporcional a la longitud de la misma, se pide replanificar las rutas habituales de manera tal de minimizar los gastos que implicará el fortalecimiento de las rutas para que cada cliente pueda ser provisto desde al menos una fábrica.\\
 La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o bien \textbf{O(R$log$(C)).}
@@ -805,7 +805,7 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 
 \subsection{Solución}
 
-Dada una serie de aristas y sus respectivos costos, que representan las rutas entre clientes y fábricas y el costo de pavimentación, utilizamos para la resolución una modificación del conjuto de datos para luego aplicar el algoritmo de Kruskal con la estrucuta Disjoint-Set.
+Dada una serie de aristas y sus respectivos costos, que representan las rutas entre clientes y fábricas y el costo de pavimentación, utilizamos para la resolución una modificación del conjunto de datos para luego aplicar el algoritmo de Kruskal con la estructura Disjoint-Set.
 
 La idea de la utilización del algoritmo de Kruskal nace de la necesidad de conseguir un bosque de AGM's entre clientes y fábricas, lo que nos permitirá conseguir los caminos que los interconecten de mínimo costo. Como en nuestro caso, solo se necesita que una fábrica este conectada por una serie de rutas a otros clientes, creamos un nodo \textit{fantasma} al cuál le conectamos cada fábrica mediante una arista de costo cero para poder tener un único set que forzará a que el algoritmo solo conecte una única vez una fábrica con cada set disjunto.
 
