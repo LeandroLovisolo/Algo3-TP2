@@ -753,12 +753,17 @@ La experimentación computacional se condice con el análisis teórico.
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
+\newpage
+
 \section{Problema 3: Transportes pesados}
 
-Una empresa que fabrica ladrillos tiene sus fábricas en varios puntos de una provincia. La misma se encarga de transportar los ladrillos a los clientes que están distribuísdos en distintas ciudades de la provincia.\\
-Como las rutas de esta provincia no están preparadas para soportar el paso de los camiones, la empresa tiene que fortalecer las rutas para que puedan ser utilizadas por los camiones.\\
-Dado que cada ruta tiene un costo de inversión proporcional a la longitud de la misma, se pide replanificar las rutas habituales de manera tal de minimizar los gastos que implicará el fortalecimiento de las rutas para que cada cliente pueda ser provisto desde al menos una fábrica.\\
-La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o bien \textbf{O(R$log$(C)).}
+Una empresa que fabrica ladrillos tiene sus fábricas en varios puntos de una provincia. La misma se encarga de transportar los ladrillos a los clientes que están distribuídos en distintas ciudades de la provincia.
+
+Como las rutas de esta provincia no están preparadas para soportar el paso de los camiones, la empresa tiene que fortalecer las rutas para que puedan ser utilizadas por los camiones.
+
+Dado que cada ruta tiene un costo de inversión proporcional a la longitud de la misma, se pide replanificar las rutas habituales de manera tal de minimizar los gastos que implicará el fortalecimiento de las rutas para que cada cliente pueda ser provisto desde al menos una fábrica.
+
+La complejidad temporal del \textbf{peor caso} deberá ser $O(C^2)$ o bien $O(R \times log \, C)$.
 
 \textbf{Ejemplos del problema y sus soluciones:}
 
@@ -798,6 +803,8 @@ La complejidad temporal del \textbf{peor caso} deberá ser \textbf{O($C^2$)} o b
 
 \subsection{Solución}
 
+% Creamos un nodo fantasma que conecta todas las fábricas a través de rutas de costo cero. Luego obtenemos un árbol generador mínimo por medio del algoritmo de Kruskal. Finalmente quitamos el nodo fantasma del árbol generador mínimo obtenido junto con las rutas asociadas y devolvemos el bosque resultante.
+
 Dada una serie de aristas y sus respectivos costos, que representan las rutas entre clientes y fábricas y el costo de pavimentación, utilizamos para la resolución una modificación del conjuto de datos para luego aplicar el algoritmo de Kruskal con la estrucuta Disjoint-Set.
 
 La idea de la utilización del algoritmo de Kruskal nace de la necesidad de conseguir un bosque de AGM's entre clientes y fábricas, lo que nos permitirá conseguir los caminos que los interconecten de mínimo costo. Como en nuestro caso, solo se necesita que una fábrica este conectada por una serie de rutas a otros clientes, creamos un nodo \textit{fantasma} al cuál le conectamos cada fábrica mediante una arista de costo cero para poder tener un único set que forzará a que el algoritmo solo conecte una única vez una fábrica con cada set disjunto.
@@ -829,6 +836,17 @@ Luego la complejidad total resulta $O(|V|) + O(|E| \times log\, |V|) + O(|V|) = 
 
 
 \subsection{Correctitud}
+
+% Se desea hallar el subconjunto de rutas con costo mínimo tal que todos los clientes tienen una ruta hacia una fábrica.
+
+% Lo que se nos pide es un bosque de árboles que no necesariamente son generadores, pues un conjunto de clientes conectados entre sí se satisface con una sola fábrica, y en caso de haber más de una fábrica conectada únicamente a este conjunto de clientes, es correcto quedarnos con la fábrica cuya ruta al grafo de clientes es mínima y desconectar el resto de las fábricas.
+
+% Para simplificar el problema, introducimos un nodo fantasma conectado a todas las fábricas por medio de rutas de costo cero.
+
+% Lo que esto logra es que al correr el algoritmo de Kruskal sobre el grafo resultante, los nodos del grafo van conectarse entre sí uno a la vez, siguiendo una estructura de árbol, consumiendo las rutas por orden de costo creciente. Esto quiere decir que primero se van a conectar todas las fábricas entre sí, formando un árbol de fábricas unidas por el nodo fantasma, pues las rutas de este nodo son las de menor costo (costo cero). Luego se van a unir los clientes entre sí y con las fábricas, conectándose siempre primero por las rutas más baratas, hasta que todos los nodos del grafo estén unidos o hasta haber agotado las rutas.
+
+% Es cierto que un árbol de clientes queda unido al árbol de fábricas por medio del 
+
 
 Un bosque con aristas de peso mínimo y una sola conexión a una fábrica para cada árbol, es una solución correcta, ya que, para todo árbol del bosque, sus nodos (clientes) y única fábrica (ya que más de una necesitaría otra ruta y no sería mínimo), estan conectados mediante las aristas de menor costo de pavimentación, haciendo que el costo sea mínimo.
 
